@@ -1,0 +1,21 @@
+/*copyright 2022-2023 Sodexis
+  license OPL-1 (see license file for full copyright and licensing details). */
+
+.test-ribbon {
+    width: 100%;
+    top: 0px;
+    text-align: center;
+    padding: 7px;
+    line-height: 5px;
+    letter-spacing: 1px;
+    color: #f0f0f0;
+    z-index: 9999;
+    position: fixed;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.test-ribbon b {
+    font-size: 20px;
+}

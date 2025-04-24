@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+        <record id="gc_account_wh_islr_doc_form_customers" model="ir.ui.view">
+            <field name="name">gc.account.wh.islr.doc_form_customers</field>
+            <field name="model">account.wh.islr.doc</field>
+            <field name="inherit_id" ref="l10n_ve_full.view_islr_form_customers"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_id']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                    <attribute name="options">{"no_open" : True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                    <attribute name="options">{"no_open" : True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                    <attribute name="options">{"no_open" : True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_ret']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='account_id']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                    <attribute name="options">{"no_open" : True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='number']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_uid']" position="attributes">
+                    <attribute name="readonly">state in ('done', 'cancel')</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="ribbon_horizontal_account_payment_extend_form">
+            <field name="name">ribbon.horizontal.account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <form position="attributes">
+                    <attribute name="duplicate">false</attribute>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="ribbon_horizontal_account_payment_extend_form">
+            <field name="name">ribbon.horizontal.account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account_dual_currency.account_payment_dual_currency"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tax_today']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ribbon_horizontal_account_payment_extend_tree">
+            <field name="name">ribbon.horizontal.account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="duplicate">false</attribute>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="ribbon_horizontal_move_form_inherit_views" model="ir.ui.view">
+            <field name="name">ribbon.horizontal.move.form.inherit.views</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_post'][contains(@invisible, 'display_inactive_currency_warning')]" position="attributes">
+                    <attribute name="confirm">¿Está seguro que desea publicar este documento?</attribute>
+                </xpath>
+                <!-- <xpath expr="//header/button[@name='action_post'][1]" position="attributes">
+                    <attribute name="confirm">¿Está seguro de publicar?</attribute>
+                </xpath> -->
+                <xpath expr="//header/button[@name='button_draft']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>    
+                <xpath expr="//group[@id='header_right_group']/div[@name='journal_div']/field[@name='journal_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_open': True, 'no_edit': True}</attribute>
+                </xpath>
+
+                <xpath expr="//group[@id='header_right_group']/div[@name='due_date']/field[@name='invoice_date_due']" position="attributes">
+                    <attribute name="readonly">state != 'draft'</attribute>
+                </xpath>
+                <form position="attributes">
+                    <attribute name="duplicate">false</attribute>
+                </form>
+            </field>
+        </record>
+
+        <record id="ribbon_horizontal_move_tree_inherit_views" model="ir.ui.view">
+            <field name="name">ribbon.horizontal.move.tree.inherit.views</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="duplicate">false</attribute>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>
