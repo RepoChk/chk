@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Facturas Pagadas -->
+    <record id="view_account_move_filter_paid" model="ir.ui.view">
+        <field name="name">account.move.search.paid</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="payment_state"/>
+                <field name="state"/>
+                <filter string="Facturas Pagadas" name="filter_paid" domain="[('payment_state', '=', 'paid'), ('state', '=', 'posted')]"/>
+            </search>
+        </field>
+    </record>
+    
+    <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_account_move_filter_paid"/>
+    </record>
+</odoo>

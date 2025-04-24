@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+        <record id="gc_view_account_debit_note_inherit" model="ir.ui.view">
+            <field name="name">gc.view.account.debit.note.form.inherit</field>
+            <field name="model">account.debit.note</field>
+            <field name="inherit_id" ref="account_debit_note.view_account_debit_note"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_id']" position="after">
+                    <field name="invoice_number" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

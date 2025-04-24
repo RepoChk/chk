@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_report_bank_conciliation" model="ir.actions.report">
+        <field name="name">DIARIO DE BANCO</field>
+        <field name="model">bank.conciliation.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gchakao_custom.report_bank_conciliation</field>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_vat_summary"/>
+    </record>
+
+    <template id="report_bank_conciliation">
+        <t t-name="gchakao_custom.report_bank_conciliation">
+            <main>
+                <html>
+                    <head>
+                        <meta charset="UTF-8"/>
+                    </head>
+                    <body t-att-style="'font-family: Arial, sans-serif; margin: 1px;'">
+                        <!-- Cabecera -->
+                        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid red; padding-bottom: 10px;">
+                            <div style="display: flex; align-items: center;">
+                                <span style="margin-left: 1px; color: black; font-size: 16px; font-weight: bold;">GRUPO CHAKAO</span>
+                            </div>
+                            <div style="text-align: center; flex-grow: 1;">
+                                <h2 style="font-weight: bold; color: black; margin: 0;">DIARIO DE BANCO</h2>
+                            </div>
+                        </div>
+
+                        <!-- Información General -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0;">
+                            <div style="font-size: 12px;">
+                                <p><strong>Empresa:</strong> <t t-esc="company or 'No Disponible'"/></p>
+                                <p><strong>Banco:</strong> <t t-esc="journal or 'No Disponible'"/></p>
+                                <p><strong>Cuenta Contable:</strong> <t t-esc="account_code or 'No Disponible'"/> - <t t-esc="account_name or 'No Disponible'"/></p>
+                            </div>
+                            <div style="font-size: 12px;">
+                                <p><strong>Fecha:</strong> <t t-esc="date_from"/> / <t t-esc="date_to"/></p>
+                                <p><strong>Saldo Inicial:</strong> <t t-esc="saldo_inicial" t-options="{'widget': 'float', 'precision': 2}"/></p>
+                                <p><strong>Saldo Final:</strong> <t t-esc="saldo_final" t-options="{'widget': 'float', 'precision': 2}"/></p>
+                            </div>
+                        </div>
+
+                        <!-- Detalles -->
+                        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 20px;">
+                            <thead>
+                                <tr style="background-color: red; color: white; text-align: left;">
+                                    <th style="padding: 8px; border: 1px solid black; width: 100px; white-space: nowrap;">Fecha</th>
+                                    <th style="padding: 8px; border: 1px solid black;">Cuenta</th>
+                                    <th style="padding: 8px; border: 1px solid black;">Cliente/Proveedor</th>
+                                    <th style="padding: 8px; border: 1px solid black;">Referencia</th>
+                                    <th style="padding: 8px; border: 1px solid black;">Descripción</th>
+                                    <th style="padding: 8px; border: 1px solid black; text-align:right;">Debe</th>
+                                    <th style="padding: 8px; border: 1px solid black; text-align:right;">Haber</th>
+                                    <th style="padding: 8px; border: 1px solid black; text-align:right;">Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="items" t-as="item">
+                                    <tr t-att-style="'background-color: #f9f9f9;'">
+                                        <td style="padding: 8px; border: 1px solid black;"><t t-esc="item['date']"/></td>
+                                        <td style="padding: 8px; border: 1px solid black;"><t t-esc="item['account']"/></td>
+                                        <td style="padding: 8px; border: 1px solid black;"><t t-esc="item['partner']"/></td>
+                                        <td style="padding: 8px; border: 1px solid black;"><t t-esc="item['reference']"/></td>
+                                        <td style="padding: 8px; border: 1px solid black;"><t t-esc="item['description']"/></td>
+                                        <td style="padding: 8px; border: 1px solid black; text-align: right;"><t t-esc="item['debit']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td style="padding: 8px; border: 1px solid black; text-align:right;"><t t-esc="item['credit']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td style="padding: 8px; border: 1px solid black; text-align:right;"><t t-esc="item['saldo']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Pie de Página -->
+                        <div class="footer" style="margin-top: 30px; text-align:center;color:black;font-size=10;">
+                            Página <span class="page"/> /<span class="topage"/>
+                        </div>
+                    </body>
+                </html>
+            </main>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View merch_in_transit_wizard form -->
+    <record id="view_merch_transit_wizard_form" model="ir.ui.view">
+        <field name="name">view.merch.transit.wizard.form</field>
+        <field name="model">merch.transit.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Merch_in_transit_wizard"> 
+                <group>
+                    <group>              
+                        <field name="landed_cost_id" options="{'no_create_edit':True}"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="name" colspan="4" invisible="1"/>
+                        <field name="report" filename="name"/>
+                        <field name="state" invisible="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="generate_xls_report" type="object" string="Aceptar" class="oe_highlight"/>
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action merch_in_transit_wizard -->
+    <record id="action_merch_in_transit_wizard" model="ir.actions.act_window">
+        <field name="name">Merch_in_transit_wizard</field>
+        <field name="res_model">merch.transit.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_report_merch_in_transit" name="Mercancia en Transito"  action="action_merch_in_transit_wizard" parent="purchase.purchase_report_main"/>
+</odoo>

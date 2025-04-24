@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="view_pay_fee_wizard_form" model="ir.ui.view">
+        <field name="name">pay.fee.wizard.form</field>
+        <field name="model">pay.fee</field>
+        <field name="arch" type="xml">
+            <form string="Pago de Cuota">
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="loan_line_id" invisible="1"/>
+                        <field name="employee_id"/>
+                        <!-- <field name="date"/> -->
+                        <field name="total_installment"/>
+                        <field name="total_debt"/>
+                    </group>
+                    <group>
+                        <field name="company_id" invisible="1"/>
+                        <field name="currency_id_dif"/>
+                        <field name="journal_id"/>
+                        <field name="amount"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Pagar" type="object" name="action_pay_line" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

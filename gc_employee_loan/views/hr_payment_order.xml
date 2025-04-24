@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gc_hr_payment_order_form" model="ir.ui.view">
+        <field name="name">gc.hr.payment.order.form</field>
+        <field name="model">hr.payment.order</field>
+        <field name="inherit_id" ref="gchakao_custom.hr_payment_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payslip_id']" position="after">
+                <field name="loan_id" readonly="state != 'draft'" invisible="type_payment_order != 'loan'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+

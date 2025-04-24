@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="material_account_move_form_inherit_views" model="ir.ui.view">
+            <field name="name">material.account.move.form.inherit.views</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='other_info']/group/group[4]" position="after">
+                    <group>
+                        <field name="custom_requisition_id" domain="[('requisition_type', 'in', ['cxp']), ('state', '=', 'approve')]" options="{'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

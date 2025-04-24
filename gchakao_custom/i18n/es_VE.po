@@ -1,0 +1,80 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* gchakao_custom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-17 22:45+0000\n"
+"PO-Revision-Date: 2021-06-17 22:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: gchakao_custom
+#: model:ir.model.fields,field_description:gchakao_custom.field_product_product__prices_list_item_ids
+#: model:ir.model.fields,field_description:gchakao_custom.field_product_template__prices_list_item_ids
+msgid " Prices"
+msgstr " Precios"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.external_layout_prices_list_report
+msgid ""
+"<b style=\"font-size:12px;\">Page <span class=\"page\" style=\"font-"
+"size:12px;\"/> / <span class=\"topage\" style=\"font-size:12px;\"/></b><br/>"
+msgstr ""
+"<b style=\"font-size:12px;\">Página <span class=\"page\" style=\"font-"
+"size:12px;\"/> / <span class=\"topage\" style=\"font-size:12px;\"/></b><br/>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.external_layout_prices_list_report
+msgid ""
+"<br/>\n"
+"                            <b style=\"font-size:20px;\">Prices List</b><br/>"
+msgstr ""
+"<br/>\n"
+"                            <b style=\"font-size:20px;\">Lista de Precios</b><br/>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Brand</span>"
+msgstr "<span style=\"font-size:14px;\">Marca</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Description</span>"
+msgstr "<span style=\"font-size:14px;\">Descripción</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Measures</span>"
+msgstr "<span style=\"font-size:14px;\">Medidas</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Model</span>"
+msgstr "<span style=\"font-size:14px;\">Modelo</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Price $</span>"
+msgstr "<span style=\"font-size:14px;\">Precio $</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Price Bs.</span>"
+msgstr "<span style=\"font-size:14px;\">Precio Bs.</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Qty / Available</span>"
+msgstr "<span style=\"font-size:14px;\">Cant / Disponible</span>"
+
+#. module: gchakao_custom
+#: model_terms:ir.ui.view,arch_db:gchakao_custom.product_price_list_report
+msgid "<span style=\"font-size:14px;\">Tarps</span>"
+msgstr "<span style=\"font-size:14px;\">Lonas</span>"

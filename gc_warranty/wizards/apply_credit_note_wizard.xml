@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="apply_credit_note_wizard_form" model="ir.ui.view">
+        <field name="name">apply.credit.note.wizard.form</field>
+        <field name="model">apply.credit.note.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="journal_id" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generar" type="object" name="action_generate_cn" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

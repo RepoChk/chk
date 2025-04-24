@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payslip_discount_resume_tree" model="ir.ui.view">
+        <field name="name">hr.payslip.discount.resume.tree</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree string="Recibos con descuentos por prestamos">
+                <field name="number"/>
+                <field name="payslip_run_id" string="Lote"/>
+                <field name="employee_id"/>
+                <field name="discount_total_usd" sum="Total USD"/>
+                <field name="discount_total_bs" sum="Total Bs"/>
+                <field name="discount_status" widget="badge"/>
+                <field name="currency_id_dif" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="gc_payslip_search" model="ir.ui.view">
+        <field name="name">Buscar recibos</field>
+        <field name="model">hr.payslip</field>
+        <field name="arch" type="xml">
+            <search string="Buscar">
+                <field name="number"/>
+                <field name="employee_id"/>
+                <field name="payslip_run_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <group expand="1" string="Agrupar por">
+                    <filter string="Fecha" name="group_by_date" context="{'group_by':'date_from'}"/>
+                    <filter string="Empleado" name="group_by_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Estatus" name="group_by_discount_status" context="{'group_by':'discount_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hr_payslip_discount_resume_action" model="ir.actions.act_window">
+        <field name="name">Recibos con descuentos por prestamos</field>
+        <field name="res_model">hr.payslip</field>
+        <field name="view_id" ref="hr_payslip_discount_resume_tree"/>
+        <field name="search_view_id" ref="gc_payslip_search"/>
+        <field name="domain">[('add_discount', '=', True)]</field>
+        <field name="context">{'group_by':'payslip_run_id'}</field>
+    </record>
+
+    <menuitem 
+        action="hr_payslip_discount_resume_action" 
+        id="menu_hr_payslip_discount_resume" 
+        parent="hr_payroll.menu_hr_payroll_payslips" 
+        sequence="200"/>
+</odoo>
+
+

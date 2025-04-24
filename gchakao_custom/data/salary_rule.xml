@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+    
+        <record id="rule_DPPRESTAMO" model="hr.salary.rule">
+            <field name="name">Descuento por préstamo</field>
+            <field name="code">DPP</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = payslip.add_discount
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+total_descuentos = 0.0
+
+for descuento in payslip.discount_ids:
+    total_descuentos += descuento.amount_usd
+
+result = total_descuentos * payslip.tasa_cambio
+            </field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="sequence" eval="5"/>
+            <field name="struct_id" ref="l10n_ve_payroll.structure_quincenal"/>
+        </record>
+
+        <record id="rule_DISCOUNT_HC" model="hr.salary.rule">
+            <field name="name">Descuento Poliza</field>
+            <field name="code">DPLZ</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = contract.is_discount_hc
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+
+result = contract.discount_hc_usd * payslip.tasa_cambio
+            </field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="sequence" eval="5"/>
+            <field name="struct_id" ref="l10n_ve_payroll.structure_quincenal"/>
+        </record>
+    </data>
+</odoo>

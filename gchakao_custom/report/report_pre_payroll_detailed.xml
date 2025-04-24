@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_pre_payroll_detailed">
+        <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="40"/>
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h5>Reporte Pre-nomina: <span t-esc="name"/></h5>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <t t-set="acum_ded" t-value="0"/>
+                            <t t-set="acum_asig" t-value="0"/>
+                            <t t-set="acum_apor" t-value="0"/>
+                            <div class="col-12">
+                                <t t-foreach="form" t-as="data">
+                                    <t t-foreach="data['department_ids']" t-as="department">
+                                        <div style="page-break-inside: avoid; page-break-after: auto;">
+                                            <div class="row" t-if="run_id != data['id']">
+                                                <div class="col-12 primary text-start fw-bold">
+                                                    <span class="text-decoration-underline" t-esc="data['name'].upper()"/>
+                                                </div>
+                                            </div>
+                                            <p>DEPARTAMENTO: <mark><span t-esc="department['name'].upper()"/></mark></p>
+                                            <t t-set="department_asig" t-value="0"/>
+                                            <t t-set="department_ded" t-value="0"/>
+                                            <t t-set="department_apor" t-value="0"/>
+                                            <t t-foreach="data['slip_ids']" t-as="slip">
+                                                <t t-if="slip['department_id'] == department['id'] and slip['payslip_run_id'] == data['id']">
+                                                    <table class="table table-bordered" width="100%">
+                                                        <colgroup>
+                                                            <col span="1" style="width: 25%;"/>
+                                                            <col span="1" style="width: 15%;"/>
+                                                            <col span="1" style="width: 20%;"/>
+                                                            <col span="1" style="width: 10%;"/>
+                                                            <col span="1" style="width: 10%;"/>
+                                                            <col span="1" style="width: 20%;"/>
+                                                        </colgroup>
+                                                        <thead>
+                                                            <tr>
+                                                                <th colspan="2" class="text-center p-0">
+                                                                    Empleado: <span t-esc="slip['employee_name']"/>
+                                                                </th>
+                                                                <th class="text-center p-0">
+                                                                    <span t-esc="slip['employee_cdi']"/>
+                                                                </th>
+                                                                <th colspan="3" class="text-center p-0">
+                                                                    Cta: <span t-esc="slip['bank_account_id']"/>
+                                                                </th>
+                                                            </tr>
+                                                            <tr t-if="slip['vaca'] == 0">
+                                                                <th>
+                                                                    Sueldo Mensual a la fecha
+                                                                </th>
+                                                                <th>
+                                                                    <span t-esc="slip['wage']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                </th>
+                                                                <th>
+                                                                    Sueldo diario
+                                                                </th>
+                                                                <th colspan="3">
+                                                                    <span t-esc="slip['wage']/30" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <t t-if="slip['vaca'] == 1">
+                                                                <tr>
+                                                                    <td colspan="6" class="text-center">
+                                                                        <h2>VACACIONES</h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <tr class="text-white bg-secondary fw-bold">
+                                                                    <td class="text-center">Concepto</td>
+                                                                    <td class="text-center">Referencia</td>
+                                                                    <td class="text-center">Asignaciones</td>
+                                                                    <td class="text-center">Deducciones</td>
+                                                                    <td class="text-center">Aporte Emp.</td>
+                                                                    <td class="text-center">Saldo Préstamo</td>
+                                                                </tr>
+                                                                <t t-set="asig" t-value="0"/>
+                                                                <t t-set="ded" t-value="0"/>
+                                                                <t t-set="apor" t-value="0"/>
+                                                                <t t-foreach="slip['line_ids']" t-as="line">
+                                                                    <tr>
+                                                                        <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                                            <span t-esc="line['name']"/>
+                                                                        </td>
+                                                                        <td class="text-center p-0">
+                                                                            <!-- <t t-if="slip['hr_payment_type'] == 'cesta_ticket'">
+                                                                                30
+                                                                            </t>
+                                                                            <t t-else="">
+                                                                                <span t-esc="line['dias']"/>
+                                                                            </t> -->
+                                                                            <span t-esc="line['dias']"/>
+                                                                        </td>
+                                                                        <td class="text-end pt-0 ps-0 pe-1 pb-0">
+                                                                            <t t-if="line['asig'] &gt; 0">
+                                                                                <span t-esc="line['asig']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                                <t t-set="asig" t-value="asig+line['asig']"/>
+                                                                                <t t-set="department_asig" t-value="department_asig + line['asig']"/>
+                                                                                <t t-set="acum_asig" t-value="acum_asig +  line['asig']"/>
+                                                                            </t>
+                                                                            <t t-else=""/>
+                                                                        </td>
+                                                                        <td class="text-end pt-0 ps-0 pe-1 pb-0">
+                                                                            <t t-if="line['ded'] &gt; 0">
+                                                                                <span t-esc="line['ded']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                                <t t-set="ded" t-value="ded+line['ded']"/>
+                                                                                <t t-set="department_ded" t-value="department_ded + line['ded']"/>
+                                                                                <t t-set="acum_ded" t-value="acum_ded + line['ded']"/>
+                                                                            </t>
+                                                                            <t t-else=""/>
+                                                                        </td>
+                                                                        <td class="text-end pt-0 ps-0 pe-1 pb-0">
+                                                                            <t t-if="line['apor'] &gt; 0">
+                                                                                <span t-esc="line['apor']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                                <t t-set="apor" t-value="apor+line['apor']"/>
+                                                                                <t t-set="department_apor" t-value="department_apor + line['apor']"/>
+                                                                                <t t-set="acum_apor" t-value="acum_apor + line['apor']"/>
+                                                                            </t>
+                                                                            <t t-else=""/>
+                                                                        </td>
+                                                                        <td/>
+                                                                    </tr>
+                                                                </t>
+                                                            </t>
+                                                            <t t-if="slip['vaca'] == 0">
+                                                                <tr class="fw-bold">
+                                                                    <td colspan="2" class="text-end align-middle pt-0 ps-0 pe-1 pb-0">Totales</td>
+                                                                    <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                                        <span t-esc="asig" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                    </td>
+                                                                    <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                                        <span t-esc="ded" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                    </td>
+                                                                    <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                                        <span t-esc="apor" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                    </td>
+                                                                    <td class="text-end align-middle p-0"/>
+                                                                </tr>
+                                                                <tr class="fw-bold">
+                                                                    <td colspan="3" class="text-end align-middle pt-0 ps-0 pe-1 pb-0">NETO</td>
+                                                                    <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                                        <span t-esc="(asig-ded)" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                    </td>
+                                                                    <td/>
+                                                                    <td/>
+                                                                </tr>
+                                                            </t>
+                                                        </tbody>
+                                                    </table>
+                                                </t>
+                                            </t>
+                                            <br/>
+                                            <table class="table table-bordered">
+                                                <colgroup>
+                                                    <col span="1" style="width: 25%;"/>
+                                                    <col span="1" style="width: 15%;"/>
+                                                    <col span="1" style="width: 20%;"/>
+                                                    <col span="1" style="width: 10%;"/>
+                                                    <col span="1" style="width: 10%;"/>
+                                                    <col span="1" style="width: 20%;"/>
+                                                </colgroup>
+                                                <thead>
+                                                    <tr class="text-white bg-dark fw-bold">
+                                                        <th colspan="2" class="text-start pt-0 pb-0">
+                                                            TOTAL POR DPTO: <span t-esc="department['name'].upper()"/>
+                                                        </th>
+                                                        <th class="text-end pt-0 pb-0">
+                                                            <span t-esc="department_asig" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </th>
+                                                        <th class="text-end pt-0 pb-0">
+                                                            <span t-esc="department_ded" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </th>
+                                                        <th class="text-end pt-0 pb-0">
+                                                            <span t-esc="department_apor" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </th>
+                                                        <th class="pt-0 pb-0"/>
+                                                    </tr>
+                                                    <tr class="text-white bg-secondary fw-bold">
+                                                        <th colspan="3" class="text-end pt-0 pb-0">
+                                                            NETO:
+                                                        </th>
+                                                        <th class="text-end pt-0 pb-0">
+                                                            <span t-esc="(department_asig - department_ded)" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </th>
+                                                        <th class="pt-0 pb-0"/>
+                                                        <th class="pt-0 pb-0"/>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                        <t t-set="department_id" t-value="department['id']"/>
+                                        <t t-set="run_id" t-value="data['id']"/>
+                                    </t>
+                                </t>
+                                <br/>
+                                <table class="table table-bordered">
+                                    <colgroup>
+                                        <col span="1" style="width: 25%;"/>
+                                        <col span="1" style="width: 15%;"/>
+                                        <col span="1" style="width: 20%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 20%;"/>
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="text-white bg-dark fw-bold">
+                                            <th colspan="6" class="text-start">
+                                                TOTAL GENERAL
+                                            </th>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="3" class="text-end pt-0 pb-0">
+                                                TOTAL ASIGNACIONES:
+                                            </th>
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                <span t-esc="acum_asig" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="3" class="text-end pt-0 pb-0">
+                                                TOTAL DEDUCCIONES:
+                                            </th>
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                <span t-esc="acum_ded" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="3" class="text-end pt-0 pb-0">
+                                                TOTAL APORTES EMPRESA:
+                                            </th>
+                                            <th colspan="2"/>
+                                            <th>
+                                                <span t-esc="acum_apor" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="3" class="text-end pt-0 pb-0">
+                                                TOTAL NETO:
+                                            </th>
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                <span t-esc="(acum_asig - acum_ded)" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

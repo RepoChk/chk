@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="product_template_dual_currency_form" model="ir.ui.view">
+            <field name="name">product.template.dual_currency</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']/span[last()]" position="after">
+                    <span class="d-inline-block">
+                        <field name="is_battery"/>
+                        <label for="is_battery"/>
+                    </span>
+                </xpath>
+
+                <xpath expr="//div[@name='volume']" position="after">
+                    <field name="filler" />
+                </xpath>
+
+                <xpath expr="//field[@name='last_cost_usd']" position="attributes">
+                    <attribute name="string">Costo DDP $</attribute>
+                </xpath>
+
+                <xpath expr="//label[@for='list_price']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//div[@name='pricing']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='list_price']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='list_price_usd']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//label[@for='standard_price']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//div[@name='standard_price_uom']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='standard_price']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='standard_price_usd']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='last_cost_usd']" position="attributes">
+                    <attribute name="groups">gchakao_custom.cost_and_price_use_groups</attribute>
+                </xpath>
+                
+                <xpath expr="//group[@name='group_general']" position="inside">
+                    <field name="measure" />
+                    <field name="model" />
+                    <field name="brand_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="tarps" />
+                    <field name="load_speed" />
+                    <field name="rin" />
+                    <field name="tier" />
+                    <field name="type_tire" />
+                    <field name="construction_type" />
+                    <field name="tire_class" />
+                    <field name="qty_hq" />
+                </xpath>
+                <xpath expr="//field[@name='taxes_id']" position="after">
+                    <field name="customer_no_fiscal_taxes_ids" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="gc_product_template_only_form_view" model="ir.ui.view">
+            <field name="name">gc.product.template.only.form.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="is_sequence" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="force_save">1</attribute>
+                    <attribute name="readonly">is_sequence</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

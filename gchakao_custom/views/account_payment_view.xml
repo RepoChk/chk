@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="account_payment_register_extend_form">
+            <field name="name">account.payment.register.form</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_bank_id']" position="after">
+                    <field name="account_holder_name"/>
+                    <field name="account_holder_id_number"/>
+                </xpath>
+                <xpath expr="//field[@name='communication']" position="after">
+                    <field name="invoice_user_id"/>                    
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_payment_extend_form">
+            <field name="name">account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_open_invoice_wizard" type="object" string="Agregar Facturas" class="oe_highlight" invisible="id == False or state != 'draft' or from_payment_order"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_bank_id']" position="after">
+                    <field name="account_holder_name" readonly="state != 'draft' or is_concilied_inv != False"/>
+                    <field name="account_holder_id_number" readonly="state != 'draft' or is_concilied_inv != False"/>
+                    <field name="store_payment_date" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_ids']" position="after">
+                    <field name="amount_due_invoices" invisible="state != 'draft'"/>
+                    <field name="residual_amount" invisible="state != 'posted'"/>
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="invoice_user_id" invisible="from_payment_order" options="{'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                    <field name="team_id" invisible="from_payment_order" options="{'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                    <field name="from_payment_order" invisible="1"/>
+                    <field name="hr_payment_order_id" groups="gchakao_custom.hr_payment_order_groups"/>
+                </xpath>
+                <xpath expr="//field[@name='destination_journal_id']" position="after">
+                    <field name="payment_free" groups="gchakao_custom.is_payment_free_groups"/>
+                    <field name="destination_account_id" invisible="payment_free != True" options="{'no_create': True, 'no_open': True, 'no_edit': True}" groups="gchakao_custom.is_payment_free_groups" domain="[('deprecated', '=', False)]"/>
+                    <field name="is_concilied" invisible="payment_type == 'outbound' or not requires_conciliation" groups="gchakao_custom.is_concilied_groups" required="payment_type == 'inbound' and requires_conciliation"/>
+                    <field name="is_concilied_inv" invisible="1"/>
+                    <field name="is_confirmed_payment" invisible="payment_type == 'outbound'" groups="gchakao_custom.is_confirmed_payment" required="payment_type == 'inbound'"/>
+                    <field name="validation_date" readonly="1"/>
+                </xpath>
+                <xpath expr="//button[@name='action_post']" position="attributes">
+                    <attribute name="context">{'form_payment': True}</attribute>
+                </xpath>
+
+                <!-- Atributes options -->
+                <xpath expr="//field[@name='journal_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='currency_id_dif']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="attributes">
+                    <attribute name="string">Referencia</attribute>
+                    <attribute name="required">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='is_internal_transfer']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_type']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>
+<!--                 <xpath expr="//field[@name='amount']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>     -->
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>    
+<!--                 <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='ref']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_user_id']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>
+                <xpath expr="//field[@name='journal_id']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_method_line_id']" position="attributes">
+                    <attribute name="readonly">state != 'draft' or is_concilied_inv != False</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                    <field name="requires_conciliation" invisible="1"/>
+                    <field name="gc_payment_method_available" invisible="1"/>
+                    <field name="gc_payment_method_id" required="1" options="{'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                </xpath>
+                <xpath expr="//group[@name='main_group']" position="after">
+                    <field name="payment_notes" placeholder="Notas..."/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_payment_kanban_inherited" model="ir.ui.view">
+            <field name="name">account.payment.kanban.inherited</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="create">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="gchakao_account_payment_extend_form">
+            <field name="name">gchakao.account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account_dual_currency.account_payment_dual_currency"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_ids']" position="attributes">
+                    <attribute name="invisible">from_payment_order</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_payment_kanban_inherited" model="ir.ui.view">
+            <field name="name">account.payment.kanban.inherited</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="create">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_payment_extend_tree">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="invoice_user_id"/>
+                </xpath>
+                <xpath expr="//field[@name='analytic_distribution']" position="after">
+                    <field name="is_concilied" readonly="1" optional="hide"/>
+                    <field name="is_confirmed_payment" readonly="1" optional="show"/>
+                </xpath>
+                <field name="amount_ref" position="attributes">
+                    <attribute name="sum">Total</attribute>
+                </field>
+                <xpath expr="//field[@name='amount_ref']" position="after">
+                    <field name="residual_amount" readonly="1" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_move_tree_custom" model="ir.ui.view">
+            <field name="name">account.move.tree.custom</field>
+            <field name="model">account.move</field>
+            <field name="arch" type="xml">
+                <tree string="Facturas" default_order="date asc">
+                    <header>
+                        <button name="action_assign_invoices" type="object" string="Asignar facturas" class="oe_highlight" context="{'active_ids': active_ids}"/>
+                    </header>
+                    <field name="invoice_number"/>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="tax_today"/>
+                    <field name="amount_residual_usd"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+    <!-- View purchase.order form -->
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">view.purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="sub_partner_ids" invisible="1"/>
+                <field name="approvals_approver_ids" invisible="1"/>
+                <field name="sub_provider_id" readonly="state in ['purchase', 'done', 'cancel']"/>
+            </xpath>
+            <xpath expr="//div[@name='reminder']" position="after">
+                <field name="remove_approval" invisible="1"/>
+                <field name="is_approval" readonly="not remove_approval"/>
+                <field name="is_approval_progress" widget="boolean_toggle" invisible="1"/>
+                <field name="approver_ids" widget="many2many_tags" invisible="is_approval == False" required="is_approval == True"/>
+            </xpath>
+
+            <xpath expr="//field[@name='date_order']" position="replace">
+                <label for="date_order" invisible="state in ('purchase', 'done')"/>
+                <div name="date_order" invisible="state in ('purchase', 'done')" class="o_row" >
+                    <field name="date_order" invisible="state in ('purchase', 'done')" readonly="state in ['cancel', 'done', 'purchase']"/>
+                    <field name="update_tax_today"/>
+                    <label for="update_tax_today" class="text-muted"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page name="info_imports" string="Información de Enbarque" invisible="requisition_id == ''">
+                    <group>
+                        <group name="bl_info">
+                            <field name="bl_number"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group name="output_info" string="Información de Salida">
+                            <field name="date_shipment"/>
+                            <field name="date_departure"/>
+                        </group>
+                        <group name="arrival_info" string="Información de Llegada">
+                            <field name="date_arrival_port"/>
+                            <field name="date_arrival_warehouse"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="approval" string="Aprobaciones Enviadas" invisible="is_approval == False">
+                    <field name="approvals_ids"  mode="tree">
+                        <tree create="false" edit="false" no_open="1">
+                            <field name="order_id" column_invisible="True"/>
+                            <field name="request_owner_id" widget="many2one_avatar_user" on_change="1" string="Solicitante"/>
+                            <field name="name"/>
+                            <field name="category_id"/>
+                            <field name="request_status" 
+                                decoration-info="request_status == 'new'" 
+                                decoration-warning="request_status == 'pending'" 
+                                decoration-success="request_status == 'approved'" 
+                                decoration-danger="request_status == 'refused'" 
+                                widget="badge" 
+                            />
+                            <field name="reason" optional="hide"/>
+                        </tree>
+                    </field>
+                </page>
+                <page name="approval_info" string="Aprobaciones" invisible="not approvals_approver_ids">
+                    <field name="approvals_approver_ids" readonly="1" options="{'no_open': True}">
+                        <tree create="false" edit="false" delete="false" editable="bottom" options="{'no_open': True}">
+                            <field name="request_id"/>
+                            <field name="user_id"/>
+                            <field name="required"/>
+                            <field name="write_date"/>
+                            <field name="status" 
+                                decoration-info="status == 'new'" 
+                                decoration-warning="status == 'pending'" 
+                                decoration-success="status == 'approved'" 
+                                decoration-danger="status == 'refused'" 
+                                widget="badge" 
+                            />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//button[@name='button_confirm']" position="after">
+                <button string="Solicitud de Aprobacion" name="approvals_request_purchase" type="object" class="oe_highlight"
+                invisible="is_approval == False or state in ('cancel', 'purchase')"/>
+            </xpath>
+            <xpath expr="//notebook/page/field[@name='order_line']/tree" position="inside">
+                <field name="analytic_distribution_char" force_save="1" optional="show" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- Add you code here -->
+    <record id="wizard_forma_1312_form" model="ir.ui.view">
+        <field name="name">Forma 13-12</field>
+        <field name="model">wizard.forma.1312</field>
+        <field name="arch" type="xml">
+            <form string="Forma 13-12">
+                <group>
+                    <field name="user_id" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="date_now"/>
+                    <field name="company_id"/>
+                </group>
+                <div invisible="state != 'get'">
+                    <group>
+                        <field name="name" invisible="1"/>
+                        <field name="report" filename="name"/>
+                    </group>
+                </div>
+                <footer>
+                    <button name="generate_xls_report" string="Exportar EXCEL" type="object" class="oe_highlight" />
+                    <button special="cancel" string="Cancelar" class="oe_highlight" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_forma_1312" model="ir.actions.act_window">
+        <field name="name">Forma 13-12</field>
+        <field name="res_model">wizard.forma.1312</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem 
+        name="Forma 13-12" 
+        parent="hr.hr_menu_hr_reports" 
+        id="forma_1312_menu" 
+        action="action_forma_1312" 
+        sequence="10"/>
+</odoo>

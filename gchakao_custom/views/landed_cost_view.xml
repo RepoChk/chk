@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id='view_stock_landed_cost_inherit_form' model='ir.ui.view'>
+        <field name="name">stock.landed.cost.inherit.form</field>
+        <field name="model">stock.landed.cost</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='button_validate']" position="after">
+                <button name="calculate_ddp_cost" string="Calcular DDP" invisible="state != 'draft'" class="oe_highlight" type="object"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

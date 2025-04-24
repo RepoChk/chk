@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Add you code here -->
+        <record id="action_product_prices_list_report_template" model="ir.actions.report">
+            <field name="name">Reporte de Lista de Precios de Productos</field>
+            <field name="model">product.price.list</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.product_price_list_report</field>
+            <field name="report_file">gchakao_custom.product_price_list_report</field>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="product_price_list_report">
+            <t t-call="web.html_container">
+                <t t-call="web.internal_layout">
+                    <div class="page">
+                        <style>
+                            .border-black {
+                                border-top: 1px solid black;
+                            }
+
+                        </style>
+                        <t t-foreach="category_names" t-as="category">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th colspan="100">
+                                            <h5>
+                                                <span t-esc="category"/>
+                                            </h5>
+                                        </th>
+                                    </tr>
+                                    <tr style="font-size:12px">
+                                        <th class="text-center align-middle" style="border-top:1px solid #dadada; border-bottom:1px solid #dadada" width="20%"><strong>Producto</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada" t-if="is_qty_available"><strong>Cant. Dispo.</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada" t-if="is_qty_total"><strong>Cant. Total</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada" width="20%"><strong>Modelo</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada"><strong>Lonas</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada"><strong>Load/speed</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada"><strong>Marca</strong></th>
+                                        <th class="text-center align-middle" style="border:1px solid #dadada"><strong>Tipo</strong></th>
+                                        <t t-foreach="pricelist_ids" t-as="pricelist">
+                                            <th class="text-center bb-0" style="border:1px solid #dadada">
+                                                <strong><span t-esc="pricelist.name"/></strong>
+                                            </th>
+                                        </t>
+                                        <th class="text-center align-middle" style="border-top:1px solid #dadada; border-bottom:1px solid #dadada" width="4%"><b>Alic.</b></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody" style="font-size: 12px;">
+                                    <t t-set="previous_brand" t-value="None"/>
+                                    <t t-foreach="data" t-as="d">
+                                        <t t-if="d['category'] == category">
+                                            <t t-if="d['qty_available'] &gt;=1">
+                                                <tr t-att-class="d['brand_id'] != previous_brand and 'pt-4 border-top border-black' or ''">
+                                                    <t t-set="previous_brand" t-value="d['brand_id']"/>
+                                                    <td class="text-left">
+                                                        <span t-esc="d['measure']"/>
+                                                    </td>
+                                                    <td class="text-center" t-if="is_qty_available">
+                                                        <span t-esc="int(d['qty_available'])"/>
+                                                    </td>
+                                                    <td class="text-center" t-if="is_qty_total">
+                                                        <span t-esc="int(d['qty'])"/>
+                                                    </td>
+                                                    <td class="text-center"><span t-esc="d['model']"/></td>
+                                                    <td class="text-center"><span t-esc="d['tarps']"/></td>
+                                                    <td class="text-center"><span t-esc="d['load_speed']"/></td>
+                                                    <td class="text-center">
+                                                        <span t-esc="d['brand_id']"/>
+                                                    </td>
+                                                    <td class="text-right"/>
+                                                    <t t-foreach="pricelist_ids" t-as="pricelist">
+                                                        <t t-foreach="d['pricelist_ids']" t-as="p">
+                                                            <t t-if="p['list_id'] == pricelist.id">
+                                                                <td class="text-right">
+                                                                    <span t-esc="p['price']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                </td>
+                                                            </t>
+                                                        </t>
+                                                    </t>
+                                                    <td class="text-center">
+                                                        <span t-esc="d['aliquot']"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>       
+    </data>
+</odoo>

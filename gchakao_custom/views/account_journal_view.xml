@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="gc_account_journal_form_inherit_views" model="ir.ui.view">
+            <field name="name">gc.account.journal.form.inherit.views</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="exclude_fiscal_documents"/>
+                </xpath>
+                <xpath expr="//notebook/page[@name='advanced_settings']" position="after">
+                    <page string="Metodos de Pago" name="gc_payment_method">
+                        <group string="Metodos de Pago">
+                            <group col="2">
+                                <field name="gc_payment_method" string="Para pagos entrantes" options="{'no_create': True, 'no_open': True}" widget="many2many_checkboxes" domain="[('payment_type', '=', 'inbound')]"/>
+                            </group>
+
+                            <group col="2">
+                                <field name="gc_payment_method" string="Para pagos salientes" options="{'no_create': True, 'no_open': True}" widget="many2many_checkboxes" domain="[('payment_type', '=', 'outbound')]"/>
+                            </group>
+                        </group>
+
+                    </page>
+                    <page string="Secuencias" name="invoice_seq" invisible="type not in ['sale','sale_refund','sale_debit']">
+                        <group>
+                            <group col="2">
+                                <field name="branch_id" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <label for="invoice_seq_number_next" string="Proximo Nro documento"/>
+                                <div>
+                                    <field name="invoice_seq_id" required="type in ['sale','sale_refund','sale_debit']"/>  
+                                    <field name="invoice_seq_number_next" string="Proximo Nro Documento"/>
+                                </div>
+                            </group>
+                            <group>
+                                <label for="ctrl_seq_number_next" string="Proximo Nro Control"/>
+                                <div>
+                                    <field name="invoice_ctrl_seq_id" required="type in ['sale','sale_refund','sale_debit']" />
+                                    <field name="ctrl_seq_number_next" string="Proximo Nro Control"/>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="gc_account_journal_tree_inherit" model="ir.ui.view">
+            <field name="name">gc.account.journal.tree.inherit</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="branch_id" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

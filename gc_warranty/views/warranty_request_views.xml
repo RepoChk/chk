@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="warranty_request_tree" model="ir.ui.view">
+        <field name="name">warranty.request.tree</field>
+        <field name="model">warranty.request</field>
+        <field name="arch" type="xml">
+            <tree string="Solicitud de garantia"
+                    decoration-muted="state=='refused'" 
+                    decoration-info="state == 'draft'">
+                <field name="name" readonly="1"/>
+                <field name="description"/>
+                <field name="partner_id"/>
+                <field name="product_type"/>
+                <field name="product_id"/>
+                <field name="schedule_date" optional="hide"/>
+                <field name="date" optional="hide"/>
+                <field name="product_type" optional="hide"/>
+                <field name="company_id" optional="show"/>
+                <field name="state" string="Estatus" widget="badge" 
+                    decoration-muted="state == 'draft'" 
+                    decoration-success="state == 'process'" 
+                    decoration-primary="state == 'confirm'" 
+                    decoration-danger="state == 'refused'" 
+                    decoration-info="state == 'done'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_warranty_request_filter" model="ir.ui.view">
+        <field name="name">warranty_request.select</field>
+        <field name="model">warranty.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Warranty Request">
+                <field name="name" string="Título"
+                    filter_domain="[('name', 'ilike', self)]"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <filter name="my_warranty" string="Mis garantias" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="draft" string="Borrador" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirm" string="Confirmado" domain="[('state', '=', 'confirm')]"/>
+                <filter name="done" string="Entregado" domain="[('state', '=', 'done')]"/>
+                <filter name="refused" string="Rechazado" domain="[('state', '=', 'refused')]"/>
+                <filter name="reposition_product" string="Contiene producto de reposición" domain="[('is_reposition_product', '=', True)]"/>
+                <separator/>
+                <filter name="warranty_date" string="Fecha prevista" date="schedule_date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Solicitante" name="vendor" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Estatus" name="warranty_state" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Fech de solicitud" name="date" domain="[]" context="{'group_by': 'date'}"/>
+                    <filter string="Producto" name="producto" domain="[]" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="warranty_request" model="ir.actions.act_window">
+        <field name="name">Solicitud de garantía</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">warranty.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="warranty_request_tree"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_warranty_request_filter"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Crea una nueva solicitud de garantía
+          </p>
+        </field>
+    </record>
+
+    <record id="warranty_request_form" model="ir.ui.view">
+        <field name="name">warranty.request.form</field>
+        <field name="model">warranty.request</field>
+        <field name="arch" type="xml">
+            <form string="Solicitud de garantia">
+                <header>
+                    <button name="button_confirm" type="object" 
+                        string="Confirmar" class="btn-primary" invisible="state != 'draft'"/>
+                    
+                    <button name="button_process" type="object" 
+                        string="Proceso" class="btn-primary" invisible="state != 'confirm' or (is_approval and not approval_accepted)"/>
+                    
+                    <button name="action_send_approval" type="object" 
+                        string="Solicitud de aprobación" class="btn-primary" invisible="state != 'confirm' or not is_approval or (approval_send or approval_accepted)"/>
+                    
+                    <button name="button_draft" 
+                        string="Pasar a Borrador" type="object" invisible="state in ('draft','done','refused')" confirm="Esta acción cancelara todas las Aprobaciones. ¿Desea continuar?"/>
+                    
+                    <button name="button_done" type="object" 
+                        string="Finalizar" class="btn-primary" invisible="state != 'process' or (not approval_accepted and is_approval)"/>
+                    
+                    <button name="button_refused" type="object" 
+                        string="Rechazar" class="btn-primary" invisible="state not in ('confirm','process')"/>
+
+                    <button name="apply_credit_note" type="object" 
+                        string="Generar Nota de Crédito" class="btn-primary" invisible="state != 'done' or nc_id"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,process,done,refused"/>
+                </header>
+                <sheet>                    
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_sale" class="oe_stat_button" icon="fa-pencil-square-o" invisible="sale_count == 0 or state != 'done'">
+                            <field name="sale_count" widget="statinfo" string="Orden de Venta"/>
+                            <field name="sale_order_ids" invisible="1"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="approval_send" invisible="1"/>
+                            <field name="approval_accepted" invisible="1"/>
+                            <field name="is_battery" invisible="1"/>
+                            <field name="manual" invisible="1"/>
+                            <field name="description" readonly="state in ('done','refused')"/>
+                            <field name="product_type" force_save="1" readonly="state not in ('draft','process')"/>
+                            <label for="is_manual" string="Llenado manual"/>
+                            <div>
+                                <field name="is_manual" readonly="state != 'draft'" class="oe_inline"/>
+                                <button name="action_manual_wizard" type="object" string="Buscar factura" icon="fa-arrow-right" class="btn-link oe_inline ml-2" invisible="not is_manual or state != 'draft'"/>
+                            </div>
+                            <field name="product_id" force_save="1" readonly="state != 'draft'"/>
+                            <label for="warranty_period" string="Período de garantia"/>
+                            <div>
+                                <field name="warranty_period" nolabel="1" class="oe_inline"/>
+                                <span class="oe_inline">
+                                meses / restan
+                                </span>
+                                <field name="total_months" class="oe_inline" nolabel="1"/>
+                            </div>
+                            <field name="lot_ids" invisible="1"/>
+                            <field name="invoice_id" readonly="state in ('done','refused')"/>
+                            <field name="invoice_ids" invisible="1"/>
+                            <field name="partner_id" options="{'no_open': True}" force_save="1" readonly="state in ('done','refused')"/>
+                            <field name="seller_id" options="{'no_open': True}" force_save="1" readonly="state in ('done','refused')"/>
+                            <field name="invoice_date" force_save="1"/>
+                            <label for="percentage" string="Porcentaje" invisible="product_type == 'bateria'"/>
+                            <div invisible="product_type == 'bateria'">
+                                <field name="percentage" nolabel="1" class="oe_inline" required="product_type == 'neumatico'"/>
+                                <span class="oe_inline">
+                                %
+                                </span>
+                            </div>
+                            <field name="currency_id" readonly="state in ('done','refused')"/>
+                            <field name="amount_nc" readonly="state in ('done','refused')"/>
+                        </group>
+                        <group>                            
+                            <field name="duration" widget="float_time" readonly="state in ('done','refused')"/>
+                            <field name="schedule_date" readonly="state in ('done','refused')"/>
+                            <field name="date_sale" readonly="state in ('done','refused')"/>                            
+                            <field name="is_approval" readonly="state in ('done','refused','process') or approval_accepted or approval_send"/>
+                            <field name="approver_ids" widget="many2many_tags" invisible="not is_approval"/>
+                            <field name="technical_ids" widget="many2many_tags" readonly="state in ('done','refused')"/>
+                            <field name="is_reposition_product" readonly="state != 'draft'"/>
+                            <field name="reposition_product_id" force_save="1" required="is_reposition_product" invisible="not is_reposition_product" readonly="state != 'draft'" options="{'no_create': True, 'no_edit': True}"/>
+                        </group>
+                        <field name="product_ids" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page name="info" string="Información">
+                            <group>
+                                <group>
+                                    <field name="company_id" options="{'no_open': True}" force_save="1"/>
+                                    <field name="date"/>
+                                </group>
+                                <group>
+                                    <field name="nc_id" invisible="not nc_id"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="observation" required="is_manual"/>
+                            </group>
+                        </page>
+                        <page name="approval" string="Aprobaciones enviadas" invisible="is_approval == False">
+                            <field name="approvals_ids">
+                                <tree create="false" edit="false">
+                                    <field name="order_id" column_invisible="True"/>
+                                    <field name="request_owner_id" widget="many2one_avatar_user" on_change="1" string="Solicitante"/>
+                                    <field name="name"/>
+                                    <field name="category_id"/>
+                                    <field name="request_status" decoration-info="request_status == 'new'" decoration-warning="request_status == 'pending'" decoration-success="request_status == 'approved'" decoration-danger="request_status == 'refused'" widget="badge"/>
+                                    <field name="date_confirmed" decoration-bf="1"/>
+                                    <field name="reason" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="approval_info" string="Aprobaciones" invisible="not approvals_approver_ids">
+                            <field name="approvals_approver_ids">
+                                <tree create="false" edit="false" delete="false" editable="bottom" options="{'no_open': True}">
+                                    <field name="request_id"/>
+                                    <field name="user_id"/>
+                                    <field name="required"/>
+                                    <field name="write_date"/>
+                                    <field name="status"
+                                           decoration-info="status == 'new'"
+                                           decoration-warning="status == 'pending'"
+                                           decoration-success="status == 'approved'"
+                                           decoration-danger="status == 'refused'"
+                                           widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="warranty_request_action_generic" model="ir.actions.act_window">
+        <field name="name">Solicitud de garantia</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">warranty.request</field>
+        <field name="domain">[]</field>
+        <field name="view_id" ref="warranty_request_form"/>
+    </record>
+</odoo>

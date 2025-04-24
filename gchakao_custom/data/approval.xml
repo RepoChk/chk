@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <!-- Sequences for purchase requence Sequence -->
+        <record id="purchase_approval" model="approval.category">
+            <field name="name">Aprobación de Compras</field>
+            <field name="is_purchase">required</field>
+        </record>
+
+        <record id="sale_approval" model="approval.category">
+            <field name="name">Aprobación de Ventas</field>
+            <field name="is_order">required</field>
+        </record>
+
+        <record id="payment_order_approval" model="approval.category">
+            <field name="name">Aprobación de Orden de Pago</field>
+            <field name="is_order_payment">required</field>
+        </record>
+    </data>
+</odoo>

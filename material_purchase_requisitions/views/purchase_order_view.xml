@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View purchase.order form -->
+    <record id="material_view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">material.view.purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="is_requisition"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">                
+                <page string="Requisiciones" name="page_requisition" invisible="not is_requisition">
+                    <field name="gc_requisition_ids" mode="tree" options="{'delete': [('state', '=', 'draft')]}">
+                        <tree string="Requisiciones" editable="bottom">
+                            <field name="requisition_id" required="parent.is_requisition" domain="[('requisition_type', 'in', ['purchase','service_purchase']),('state', '=', 'approve')]" readonly="parent.state in ('purchase','done')"/>
+                            <field name="request_date" readonly="1"/>
+                            <field name="user_id" readonly="1" options="{ 'no_open': True}"/>
+                            <field name="department_id" readonly="1" options="{ 'no_open': True}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

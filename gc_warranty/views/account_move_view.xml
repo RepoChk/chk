@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="gc_warranty_move_form_inherit_views" model="ir.ui.view">
+            <field name="name">gc_warranty.account.move.form.inherit.views</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                    <field name="warranty_id" invisible="not warranty_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

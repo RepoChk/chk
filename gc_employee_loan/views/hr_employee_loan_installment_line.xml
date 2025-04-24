@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="gc_installment_line_tree"  model="ir.ui.view">
+        <field name="name">gc.installment.line.tree</field>
+        <field name="model">hr.employee.loan.installment.line</field>
+        <field name="inherit_id" ref="l10n_ve_payroll.installment_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='interest']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='installment_amt']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ins_interest']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='total_installment']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='amount']" position="before">
+                <field name="struct_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gc_view_loan_emi_form" model="ir.ui.view">
+        <field name="name">gc.view.loan.emi.form</field>
+        <field name="model">hr.employee.loan.installment.line</field>
+        <field name="inherit_id" ref="l10n_ve_payroll.view_loan_emi_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_skip']" position="after">
+                <field name="is_paid" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='interest']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='installment_amt']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ins_interest']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='total_installment']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='is_skip']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payslip_id']" position="attributes">
+                <attribute name="invisible">not is_paid</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

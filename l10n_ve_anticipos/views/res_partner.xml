@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="extra_partner_account_venezuela_anticipos" model="ir.ui.view">
+            <field name="name">Extra partner account Venezuela anticipos</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='accounting_entries']" position="after">
+                    <group string="Cuentas de Anticipos">
+                        <field name="cuenta_anticipo_proveedores_id" domain="[('deprecated', '=', False)]"/>
+                        <field name="cuenta_anticipo_clientes_id" domain="[('deprecated', '=', False)]"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+</odoo>

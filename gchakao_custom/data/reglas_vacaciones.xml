@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="structure_vacaciones_chakao" model="hr.payroll.structure">
+            <field name="name">Vacaciones Chakao</field>
+            <field name="type_id" ref="l10n_ve_payroll.structure_type_vacaciones_anual"/>
+            <field name="country_id" eval="False"/>
+        </record>
+        <record id="rule_dias_vacaciones_art_190" model="hr.salary.rule">
+            <field name="name">Días de Vacaciones Art. 190 LOTTT</field>
+            <field name="code">DVA</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = 'VACA' in worked_days
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+if contract.is_average:
+    monto = (contract.average_wage + contract.wage_usd) * payslip.tasa_cambio
+else:
+    monto = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+result = (monto / 30) * 15
+            </field>
+            <field name="category_id" ref="l10n_ve_payroll.category_asignacion"/>
+            <field name="sequence" eval="1"/>
+            <field name="mostrar_cantidad">dias</field>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_dia_adicional_vacaciones_art_190" model="hr.salary.rule">
+            <field name="name">D/Adicional de Vacaciones Art. 190 LOTTT</field>
+            <field name="code">DAVA</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = 'VACA' in worked_days
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+if contract.is_average:
+    monto = (contract.average_wage + contract.wage_usd) * payslip.tasa_cambio
+else:
+    monto = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+dias_adicionales= payslip.dia_adicional_vaca
+result = (monto / 30) * dias_adicionales
+            </field>
+            <field name="category_id" ref="l10n_ve_payroll.category_asignacion"/>
+            <field name="sequence" eval="2"/>
+            <field name="mostrar_cantidad">dias</field>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_dia_bono_vac_art_192" model="hr.salary.rule">
+            <field name="name">D/Bono Vacac. Art. 192 LOTTT</field>
+            <field name="code">DBVA</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = 'VACA' in worked_days
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+if contract.is_average:
+    monto = (contract.average_wage + contract.wage_usd) * payslip.tasa_cambio
+else:
+    monto = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+result = (monto / 30) * 15
+            </field>
+            <field name="category_id" ref="l10n_ve_payroll.category_asignacion"/>
+            <field name="sequence" eval="3"/>
+            <field name="mostrar_cantidad">dias</field>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_dia_adicional_bono_vac_art_192" model="hr.salary.rule">
+            <field name="name">D/Adicional de Bono Art. 192 LOTTT</field>
+            <field name="code">DABA</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = 'VACA' in worked_days
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+if contract.is_average:
+    monto = (contract.average_wage + contract.wage_usd) * payslip.tasa_cambio
+else:
+    monto = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+dias_adicionales= payslip.dia_adicional_bono
+result = (monto / 30) * dias_adicionales
+            </field>
+            <field name="category_id" ref="l10n_ve_payroll.category_asignacion"/>
+            <field name="sequence" eval="4"/>
+            <field name="mostrar_cantidad">dias</field>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_dias_des_fer_vac" model="hr.salary.rule">
+            <field name="name">Días de Descansos y Feriados</field>
+            <field name="code">DDFVACA</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = 'DDFVACA' in worked_days
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+if contract.is_average:
+    monto = (contract.average_wage + contract.wage_usd) * payslip.tasa_cambio
+else:
+    monto = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+DDFVACA = worked_days['DDFVACA'].number_of_days if 'DDFVACA' in worked_days else 0
+result = (monto / 30) * DDFVACA
+            </field>
+            <field name="category_id" ref="l10n_ve_payroll.category_asignacion_subsidio"/>
+            <field name="sequence" eval="5"/>
+            <field name="mostrar_cantidad">dias</field>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <!--    Deducciones 6 -->
+        <record id="rule_DESCSSO_vac" model="hr.salary.rule">
+            <field name="name">Seguro Social Obligatorio</field>
+            <field name="code">SSO</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = contract.retencion_sso
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+monto_base = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+if monto_base > (employee.company_id.salario_minimo * 5):
+ monto_base = (employee.company_id.salario_minimo * 5)
+result = ((monto_base*12)/52) * (employee.company_id.por_aporte_sso/100) * payslip.lunes_trabajados
+            </field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="sequence" eval="6"/>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_RPE_vac" model="hr.salary.rule">
+            <field name="name">Paro Forzoso</field>
+            <field name="code">RPE</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = contract.retencion_rpe
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+monto_base = contract.wage if not contract.basado_usd else contract.wage_usd * payslip.tasa_cambio
+if monto_base > (employee.company_id.salario_minimo * 10):
+ monto_base = (employee.company_id.salario_minimo * 10)
+result = ((monto_base*12)/52) * (employee.company_id.por_empleado_rpe/100) * payslip.lunes_trabajados
+            </field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="sequence" eval="7"/>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_FAOV_vac" model="hr.salary.rule">
+            <field name="name">Ahorro Habitacional</field>
+            <field name="code">FAOV</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = contract.retencion_faov
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = ((categories['BASIC'] + categories['ASIGNA'] + categories['SUBS'] + categories['BONO'])) * (employee.company_id.por_empleado_lph/100)
+            </field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="sequence" eval="8"/>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+        <record id="rule_NET_vac" model="hr.salary.rule">
+            <field name="name">Total</field>
+            <field name="code">TOTAL</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = categories['ASIGNA'] - categories['DED']
+            </field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="sequence" eval="9"/>
+            <field name="struct_id" ref="structure_vacaciones_chakao"/>
+        </record>
+    </data>
+</odoo>

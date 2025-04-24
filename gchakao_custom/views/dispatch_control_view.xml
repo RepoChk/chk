@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_move_tree_inherited_dispatch_control" model="ir.ui.view">
+        <field name="name">dispatch.control.picking.move.tree</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_picking_move_tree"/>
+        <field name="mode">primary</field>
+        <field name="priority" eval="1000"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="picking_id"
+                    required="1"
+                    readonly="id"
+                    domain="[('id', 'in', parent.picking_ids)]"
+                    options="{'no_create': True, 'no_edit': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='quantity']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_move_line_tree_dispatch_control" model="ir.ui.view">
+        <field name="name">dispatch.control.move.line.tree</field>
+        <field name="model">stock.move.line</field>
+        <field name="arch" type="xml">
+            <tree editable="top" decoration-muted="state == 'cancel'" string="Move Lines" default_order="location_id">
+                <field name="tracking" column_invisible="True"/>
+                <field name="state" column_invisible="True"/>
+                <field name="company_id" column_invisible="True"/>
+                <field name="product_id" context="{'default_detailed_type': 'product'}" required="1" readonly="id"/>
+                <field name="picking_id" required="1" readonly="id"
+                    options="{'no_create_edit': True}" domain="[('id', 'in', parent.picking_ids)]"/>
+                <field name="lot_id"   groups="stock.group_production_lot" readonly="tracking not in ['lot', 'serial']" column_invisible="parent.show_lots_text" />
+                <field name="lot_name" groups="stock.group_production_lot" readonly="tracking not in ['lot', 'serial']" column_invisible="not parent.show_lots_text"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="package_id" groups="stock.group_tracking_lot"/>
+                <field name="result_package_id" groups="stock.group_tracking_lot"/>
+                <field name="product_uom_id" options="{'no_create': True}"
+                    groups="uom.group_uom" readonly="1" force_save="1"/>
+                <field name="quantity"/>
+                <field name="company_id" groups="base.group_multi_company" force_save="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="dispatch_control_form" model="ir.ui.view">
+        <field name="name">dispatch.control.form</field>
+        <field name="model">dispatch.control</field>
+        <field name="arch" type="xml">
+            <form string="Control de Despachos">
+                <field name="company_id" invisible="1"/>
+                <field name="show_check_availability" invisible="1"/>
+                <header>
+                    <button name="action_confirm" invisible="state != 'draft'" string="Confirmar" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Validar" type="object" class="oe_highlight"
+                        invisible="state != 'in_progress'"/>
+                    <button name="action_print" invisible="state not in ('in_progress', 'done')" string="Imprimir" type="object"/>
+                    <button name="action_draft" string="Cambiar a borrador" type="object" invisible="state == 'draft'"/>
+                    <button name="action_cancel" string="Cancelar" type="object" invisible="state not in ('in_progress', 'done')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="vehicle_id" required="1" readonly="state not in ['draft', 'in_progress']"/>
+                            <field name="driver_id" required="1" readonly="state not in ['draft', 'in_progress']"/>
+                            <field name="user_id" readonly="state not in ['draft', 'in_progress']"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="picking_ids" force_save="1"/>
+                            <field name="date_start" string="Fecha desde" required="1"/>
+                            <field name="date_end" required="1"/>
+                            <field name="delivery_date" readonly="state != 'done'"/>
+                        </group>
+                        <group>
+                            <field name="vehicle_filler" readonly="1"/>
+                            <field name="loaded_filler" readonly="1"/>
+                            <field name="available_filler" readonly="1"/>
+                            <label for="vehicle_weight"/>
+                            <div class="o_row o_hr_narrow_field" name="vehicle_weight">
+                                <field name="vehicle_weight" readonly="1"/><span>kg</span>
+                            </div>
+                            <label for="loaded_weight"/>
+                            <div class="o_row o_hr_narrow_field" name="loaded_weight">
+                                <field name="loaded_weight" readonly="1"/><span>kg</span>
+                            </div>
+                            <label for="available_weight"/>
+                            <div class="o_row o_hr_narrow_field" name="available_weight">
+                                <field name="available_weight" readonly="1"/><span>kg</span>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Operaciones" name="page_operations" invisible="state == 'draft'">
+                            <field name="move_ids" options="{'no_create': True}" context="{'tree_view_ref': 'dispatcha_control.view_picking_move_tree_inherited'}"/>
+                        </page>
+                        <page string="Transferencias" name="page_transfers">
+                            <field name="allowed_picking_ids" invisible="1"/>
+                            <field name="picking_ids" options="{'no_create': True}"
+                             widget="many2many" mode="tree,kanban" readonly="state not in ['draft', 'in_progress']"/>
+                        </page>
+                        <page string="Otra Información">
+                            <label for="type_vehicle" class="me-3 my-3"/>
+                            <field name="type_vehicle" readonly="1"/>
+                            <group>
+                                <group>
+                                    <field name="currency_id_dif" invisible="1"/>
+                                    <label for="km_estimate"/>
+                                    <div class="o_row o_hr_narrow_field" name="km_estimate">
+                                        <field name="km_estimate" required="1" readonly="state == 'cancel'"/><span>km</span>
+                                    </div>
+                                    <field name="coste_km" required="1" readonly="state == 'cancel'" invisible="type_vehicle != 'external'" widget="monetary" options="{'currency_field': 'currency_id_dif', 'field_digits': True}"/>
+                                    <field name="total_value_road" readonly="1" invisible="type_vehicle != 'external'" widget="monetary" options="{'currency_field': 'currency_id_dif', 'field_digits': True}"/>
+                                    <field name="exclude_kpi"/>
+                                </group>
+                                <group>
+                                    <label for="initial_km"/>
+                                    <div class="o_row o_hr_narrow_field" name="initial_km">
+                                        <field name="initial_km" readonly="state == 'cancel'"/><span>km</span>
+                                    </div>
+                                    <label for="end_km"/>
+                                    <div class="o_row o_hr_narrow_field" name="end_km">
+                                        <field name="end_km" readonly="state == 'cancel'"/><span>km</span>
+                                    </div>
+                                    <label for="km_total"/>
+                                    <div class="o_row o_hr_narrow_field" name="end_km" readonly="1"> 
+                                        <field name="km_total" readonly="1"/><span>km</span>
+                                    </div>
+                                    
+                                    <label for="disel_consumed" invisible="type_vehicle != 'internal'"/>
+                                    <div class="o_row o_hr_narrow_field" name="disel_consumed" invisible="type_vehicle != 'internal'" >
+                                        <field name="disel_consumed" required="1" readonly="state == 'cancel'"/><span>L</span>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <field name="road_ids" mode="tree" nolabel="1" readonly="state == 'cancel'">
+                                <tree editable="bottom" no_open="1">
+                                    <field name="road" string="Ruta"/>
+                                    <field name="city_id" string="Ciudad"/>
+                                    <field name="kilometres" string="Kilómetros"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="dispatch_control_tree" model="ir.ui.view">
+        <field name="name">dispatch.control.tree</field>
+        <field name="model">dispatch.control</field>
+        <field name="arch" type="xml">
+            <tree string="Stock Batch Transfer" multi_edit="1" sample="1">
+                <field name="company_id" column_invisible="True"/>
+                <field name="name" decoration-bf="1"/>
+                <field name="vehicle_id"/>
+                <field name="driver_id"/>
+                <field name="loaded_filler"/>
+                <field name="loaded_weight" optional="hide"/>
+                <field name="date_start" readonly="state in ['cancel', 'done']"/>
+                <field name="date_end" readonly="state in ['cancel', 'done']"/>
+                <field name="user_id" widget="many2one_avatar_user" readonly="state not in ['draft', 'in_progress']"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" string="Estado" widget="badge" decoration-success="state == 'done'" decoration-info="state in ('draft', 'in_progress')" decoration-danger="state == 'cancel'"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+    <record id="dispatch_control_kanban" model="ir.ui.view">
+        <field name="name">dispatch.control.kanban</field>
+        <field name="model">dispatch.control</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb16">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                </div>
+                                <field name="state" widget="label_selection"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="date_start" widget="date" readonly="state in ['cancel', 'done']"/>
+                                    <field name="user_id" widget="many2one_avatar_user" readonly="state not in ['draft', 'in_progress']"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="dispatch_control_filter" model="ir.ui.view">
+        <field name="name">dispatch.control.filter</field>
+        <field name="model">dispatch.control</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Despachos">
+                <field name="name" string="Despachos"/>
+                <field name="user_id"/>
+                <filter name="to_do_transfers" string="To Do" domain="['&amp;',('user_id', 'in', [uid, False]),('state','not in',['done','cancel'])]"/>
+                <filter name="my_transfers" string="Mis despachos" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="draft" string="Borrador" domain="[('state', '=', 'draft')]"/>
+                <filter name="in_progress" string="En Progreso" domain="[('state', '=', 'in_progress')]" help="Envío no finalizado"/>
+                <filter name="done" string="Hecho" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter invisible="1" string="Actividades tardías" name="activities_overdue"
+                    domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                    help="Mostrar todos los registros cuya fecha de próxima acción sea anterior a hoy"/>
+                <filter invisible="1" string="Actividades de hoy" name="activities_today"
+                    domain="[('my_activity_date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Actividades futuras" name="activities_upcoming_all"
+                    domain="[('my_activity_date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Grupo Por">
+                    <filter string="Responsable" name="user" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string="Estado" name="state" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+    <record id="dispatch_control_action" model="ir.actions.act_window">
+        <field name="name">Control de Despachos</field>
+        <field name="res_model">dispatch.control</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_draft': True, 'search_default_in_progress': True}</field>
+        <field name="search_view_id" ref="dispatch_control_filter"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Crear un nuevo despacho
+          </p><p>
+            El objetivo de los depacos es agrupar operaciones 
+            que pueden (deben) realizarse juntas para aumentar su eficacia. 
+            También puede ser útil para asignar trabajos (una persona = un picking) o 
+            ayudar a la gestión del calendario de operaciones 
+            (tareas que deben realizarse a las 13:00).
+          </p>
+        </field>
+    </record>
+    <menuitem name="Despachos" action="dispatch_control_action" id="dispatch_control_menu" parent="fleet.menu_root" sequence="12"/>
+
+    <record id="vpicktree_inherit_dispatch_control" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="dispatch_id" optional="hide"
+                    domain="[
+                        ('state', 'in', ['draft', 'in_progress']),
+                        '|',
+                    ]"
+                    readonly="state in ['cancel', 'done']"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_picking_internal_search_inherit_dispatch_control" model="ir.ui.view">
+        <field name="name">stock.picking.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="dispatch_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_move_line_tree_inherit_dispatch_control" model="ir.ui.view">
+        <field name="name">stock.move.line.tree.dispatch_control</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="dispatch_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_move_line_view_search_inherit_dispatch_control" model="ir.ui.view">
+        <field name="name">stock.move.line.search.dispatch_control</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.stock_move_line_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='groupby']" position="inside">
+                <filter string="Despacho" name="by_dispatch_id" context="{'group_by': 'dispatch_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

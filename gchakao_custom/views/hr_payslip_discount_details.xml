@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_discount_details_tree" model="ir.ui.view">
+        <field name="name">hr.discount.details.tree</field>
+        <field name="model">hr.discount</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree string="Recibos con descuentos por prestamos" editable="bottom">
+                <field name="discount_type_id" options="{'no_open': True, 'no_edit': True, 'no_create': True}"/>
+                <field name="payslip_run_id" string="Lote" column_invisible="True"/>
+                <field name="employee_id" options="{'no_open': True, 'no_edit': True, 'no_create': True}"/>
+                <field name="amount_usd" sum="Total USD"/>
+                <field name="amount_bs" sum="Total Bs" column_invisible="True"/>
+                <field name="date_to"/>
+                <field name="struct_id" options="{'no_open': True, 'no_edit': True, 'no_create': True}"/>
+                <field name="payslip_id" readonly="1"/>
+                <field name="company_id" options="{'no_open': True, 'no_edit': True, 'no_create': True}"/>
+                <field name="currency_id_dif" column_invisible="True"/>
+                <field name="currency_id_company" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="payslip_discount_search" model="ir.ui.view">
+        <field name="name">Buscar recibos</field>
+        <field name="model">hr.discount</field>
+        <field name="arch" type="xml">
+            <search string="Buscar">
+                <field name="discount_type_id"/>
+                <field name="employee_id"/>
+                <field name="payslip_id"/>
+                <field name="payslip_run_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <group expand="1" string="Agrupar por">
+                    <filter string="Tipo" name="group_by_discount" context="{'group_by':'discount_type_id'}"/>
+                    <filter string="Empleado" name="group_by_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Fecha" name="group_by_date_from" context="{'group_by':'date_from'}"/>
+                    <filter string="Fecha de Cobro" name="group_by_date" context="{'group_by':'date_to'}"/>
+                    <filter string="Lote" name="group_by_payslip" context="{'group_by':'payslip_run_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="payslip_discount_action" model="ir.actions.act_window">
+        <field name="name">Listado de descuentos</field>
+        <field name="view_mode">tree</field>
+        <field name="res_model">hr.discount</field>
+        <field name="view_id" ref="hr_discount_details_tree"/>
+        <field name="search_view_id" ref="payslip_discount_search"/>
+        <field name="context">{'search_default_group_by_employee': 1}</field>
+    </record>
+
+
+    <menuitem 
+        action="payslip_discount_action" 
+        id="menu_payslip_discount" 
+        parent="hr_payroll.menu_hr_payroll_report" 
+        sequence="5"/>
+</odoo>
+
+

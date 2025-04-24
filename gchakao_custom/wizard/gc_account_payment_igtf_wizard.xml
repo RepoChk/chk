@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_gc_account_payment_igtf_wizard_form" model="ir.ui.view">
+            <field name="name">gc.account.payment.igtf.wizard.form</field>
+            <field name="model">gc.account.payment.igtf.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="state" invisible="1"/>
+                    <group>
+                        <field name="range" widget="radio" options="{'horizontal': true}"/>
+                    </group>
+                    
+                    <group invisible="range == 'all'">
+                        <!-- Fecha Desde/Hasta -->
+                        <field name="date_start" 
+                               string="Desde"
+                               invisible="range != 'dates'"
+                               required="range == 'dates'"/>
+                        <field name="date_end" 
+                               string="Hasta"
+                               invisible="range != 'dates'"
+                               required="range == 'dates'"/>
+                        
+                        <!-- Fecha específica -->
+                        <field name="date_def" 
+                               invisible="range != 'date'"/>
+                        
+                        <!-- Mes/Año -->
+                        <field name="month" 
+                               invisible="range != 'month'"
+                               required="range == 'month'"/>
+                        <field name="year" 
+                               invisible="range != 'month'"
+                               required="range == 'month'"/>
+                    </group>
+                    
+                    <group>
+                        <field name="partner_type" 
+                               string="IGTF de"
+                               widget="radio" 
+                               options="{'horizontal': true}"/>
+                    </group>
+                    
+                    <!-- Estado Get -->
+                    <group invisible="state != 'get'">
+                        <field name="name" invisible="1"/>
+                        <field name="report" filename="name"/>
+                    </group>
+                    
+                    <footer>
+                        <button string='Exportar a pdf' 
+                                name="action_print_pdf" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Exportar a Excel" 
+                                name="generate_xls_report"  
+                                type="object"  
+                                class="oe_highlight" />
+                        <button string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel" 
+                                data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="gc_account_payment_igtf_wizard_action" model="ir.actions.act_window">
+            <field name="name">Resumen IGTF</field>
+            <field name="res_model">gc.account.payment.igtf.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="gc_custom_menu_reporting" name="Informes extras" parent="account.menu_finance_reports"/>
+
+        <menuitem 
+            id="gc_account_payment_igtf_wizard_menu" 
+            name="Resumen IGTF"
+            parent="account.account_reports_management_menu" 
+            action="gc_account_payment_igtf_wizard_action"
+            sequence="20"
+            />
+    </data>
+</odoo>

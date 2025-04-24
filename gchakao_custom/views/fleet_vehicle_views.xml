@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View fleet.vehicle form -->
+    <record id="view_fleet_vehicle_form_inherit" model="ir.ui.view">
+        <field name="name">view.fleet.vehicle.form.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']" position="after">
+                <label for="type_vehicle" class="me-3 mt-2"/>
+                <field name="type_vehicle" required="1" class="oe_inline"/>
+            </xpath>
+
+            <xpath expr="//field[@name='location']" position="after">
+                <field name="currency_id_dif" invisible="true"/>
+                <field name="coste_km" required="1" invisible="type_vehicle != 'external'" widget="monetary" options="{'currency_field': 'currency_id_dif', 'field_digits': True}"/>
+                <field name="vehicle_filler" required="1"/>
+                <label for="vehicle_weight"/>
+                <div class="o_row o_hr_narrow_field" name="vehicle_weight">
+                    <field name="vehicle_weight" required="1"/><span>kg</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

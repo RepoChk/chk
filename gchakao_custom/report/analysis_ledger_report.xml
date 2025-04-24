@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="gc_basic_layout_analysis_ledger_template">
+        <div class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">
+                        <!-- <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="max-height: 100px; max-width: 150px; margin-top:22px;"/> -->
+                        <b style="font-size:16px;"><t t-esc="company"/></b><br/>
+                        <span style="font-size:14px;">R.I.F. <t t-esc="ruc"/></span><br/>
+                        <b style="font-size:16px;">Libro Mayor de Análisis</b><br/>
+                        <small style="font-size:12px;">Desde: <t t-esc="date_from" t-options="{'widget': 'date'}"/> Hasta: <t t-esc="date_to" t-options="{'widget': 'date'}"/></small><br/>
+                        <span style="font-size:12px;">Moneda: <t t-esc="currency"/></span><br/>
+                    </div>
+                    <div class="col-4 text-center">
+                    </div>
+                    <div class="col-4 text-end">
+                        <b style="font-size:12px;">Página <span class="page" style="font-size:12px;"/> de <span class="topage" style="font-size:12px;"/></b><br/>
+                        <b style="font-size:12px;" t-esc="date_now" t-options="{'widget': 'date'}"></b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer" style="border-top: 1px solid black;"/>
+        
+    </template>
+
+    <template id="analysis_ledger_report">
+        <t t-call="web.html_container">
+            <t t-call="gchakao_custom.gc_basic_layout_analysis_ledger_template">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <t t-foreach="accounts" t-as="account">
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <table style="width: 100%;">
+                                        <colgroup>
+                                            <col span="1" style="width: 25%;"/>
+                                            <col span="1" style="width: 75%;"/>
+                                        </colgroup>
+                                        <thead> 
+                                            <tr>
+                                                <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Código</span>
+                                                </th>
+                                                <th style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Descripción de la Cuenta</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <!-- <span style="font-size:12px;"><t t-esc="account.group_id.code_prefix"/></span><br/> -->
+                                                <span style="font-size:12px;"><t t-esc="account['code']"/></span>
+                                            </td>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <!-- <span style="font-size:12px;"><t t-esc="account.group_id.name"/></span><br/> -->
+                                                <span style="font-size:12px;"><t t-esc="account['name']"/></span>
+                                            </td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-4 text-center">
+                                </div>
+                                <div class="col-4 text-end">
+                                    <b style="font-size:12px;">Saldo Anterior: <t t-esc="previous_amount" t-options="{'widget': 'float', 'precision': 2}"/></b><br/>
+                                </div>
+                            </div>
+                        </div>
+                        <table style="width: 100%;">
+                            <colgroup>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 20%;"/>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 10%;"/>
+                                <col span="1" style="width: 10%;"/>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Fecha Contable</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Cuenta Analítica</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">N° Comprobante</span>
+                                    </th>
+                                    <!-- <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Tipo de Documento</span>
+                                    </th> -->
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">N° Documento</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Empresa/Cliente/Proveedor</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Descripción del Movimiento</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Débito</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Crédito</span>
+                                    </th>
+                                    <th class="text-center" style="border-bottom: 1px solid black; display: table-cell; vertical-align: middle;">
+                                        <span style="font-size:14px;">Saldo Actual</span>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                                <!-- Totals -->
+                                <t t-set="total_previous" t-value="0"/>
+                                <t t-set="total_debit" t-value="0"/>
+                                <t t-set="total_credit" t-value="0"/>
+                                <t t-set="total_current" t-value="0"/>
+                                <!-- Totals -->
+
+                            <tbody>
+                                <t t-set="cuenta" t-value="0"/>
+                                <t t-foreach="items" t-as="item">
+                                    <tr t-if="item['account_id'] == account['id']">
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                            <span style="font-size:12px;"><t t-esc="item['date']" t-options="{'widget': 'date'}"/></span>
+                                        </td>
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-start">
+                                            <t t-if="item['analytic_distribution']" t-esc="item['analytic_distribution']"/> 
+                                        </td>
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-start">
+                                            <span style="font-size:12px;"><t t-esc="item['comp_number']"/></span>
+                                        </td>
+                                        <!-- <td style="display: table-cell; vertical-align: middle;" class="text-start">
+                                            <span style="font-size:12px;"><t t-esc="dict(item._fields['doc_type'].selection).get(item.doc_type)"/></span>
+                                        </td> -->
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-start">
+                                            <span style="font-size:12px;"><t t-esc="item['doc_num']"/></span>
+                                        </td>
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-start">
+                                            <span style="font-size:12px;"><t t-esc="item['partner']"/></span>
+                                        </td>
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-start">
+                                            <span style="font-size:12px;"><t t-esc="item['description']"/></span>
+                                        </td>
+                                        <!-- <td style="display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end">
+                                            <span style="font-size:12px;"><t t-esc="item.previous" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></span>
+                                        </td> -->
+                                        <td style="display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end">
+                                            <span style="font-size:12px;"><t t-esc="item['debit']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                        </td>
+                                        <td style="display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end">
+                                            <span style="font-size:12px;"><t t-esc="item['credit']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                        </td>
+                                        <td style="display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end">
+                                            <span style="font-size:12px;"><t t-esc="item['current']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                        </td>
+                                    </tr>
+
+                                    <!-- <t t-set="total_previous" t-value="total_previous + item.previous"/> -->
+                                    <t t-set="total_debit" t-value="total_debit + item['debit']"/>
+                                    <t t-set="total_credit" t-value="total_credit + item['credit']"/>
+                                    <t t-set="total_current" t-value="total_current + item['current']"/>
+                                    
+                                </t>
+                                    <tr>
+                                        <td colspan="6" style="display: table-cell; vertical-align: middle;" class="text-center"><b style="font-size:12px;">Total General</b></td>
+                                        <!-- <td style="border-top: 1px solid black; display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end"><span style="font-size:12px;"><t t-esc="total_previous" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></span></td> -->
+                                        <td style="border-top: 1px solid black; display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end"><span style="font-size:12px;"><t t-esc="total_debit" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                        <td style="border-top: 1px solid black; display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end"><span style="font-size:12px;"><t t-esc="total_credit" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                        <td style="border-top: 1px solid black; display: table-cell; vertical-align: middle; padding-right: 5;" class="text-end"><span style="font-size:12px;"></span></td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                        <br/><br/>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

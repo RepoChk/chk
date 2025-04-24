@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="gc_basic_layout_account_payment_template">
+        <div class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">
+                        <!-- <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="max-height: 100px; max-width: 150px; margin-top:22px;"/> -->
+                    </div>
+                    <div class="col-4 text-center"><br/>
+                        <b>Transacciones de Ventas</b><br/>
+                        <small><t t-esc="nombre_reporte"/></small><br/>
+                    </div>
+                    <div class="col-4 text-end">
+                        <b>Página <span class="page"/> / <span class="topage"/></b><br/>
+                        <b t-esc="date_now" t-options="{'widget': 'datetime'}" class="m-0"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer" style="border-top: 1px solid black;"/>
+        
+    </template>
+
+    <template id="gc_account_payment_template">
+        <t t-call="web.html_container">
+            <t t-call="gchakao_custom.gc_basic_layout_account_payment_template">
+                <div class="page">
+                    <div class="oe_structure"/>
+
+                    <table class="table table-bordered" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    <span>Fecha</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>N° de Factura</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Ref. Pago</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Cliente</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Tasa</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Op Bs</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Op $</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Efectivo Bs</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Efectivo $</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Banco Bs</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Banco $</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Asiento bs</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Asiento $</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_bs_gen" t-value="0"/>
+                            <t t-set="total_usd_gen" t-value="0"/>
+                            <t t-set="total_efectivo_bs_gen" t-value="0"/>
+                            <t t-set="total_efectivo_usd_gen" t-value="0"/>
+                            <t t-set="total_banco_bs_gen" t-value="0"/>
+                            <t t-set="total_banco_usd_gen" t-value="0"/>
+                            <t t-set="total_banco_asiento" t-value="0"/>
+                            <t t-set="total_banco_asiento_usd" t-value="0"/>
+                            <t t-foreach="form" t-as="item">
+                                <tr>
+                                    <td class="text-center">
+                                        <span><t t-esc="item['name']"/></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span><t t-esc="item['invoice_num']"/></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span><t t-esc="item['payment_name']"/></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span><t t-esc="item['partner_id']"/></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span><t t-esc="item['currency_rate']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['total_bs']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['total_usd']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['efectivo_bs']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['efectivo_dollar']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['banco_bs']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['banco_dollar']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['asiento_bs']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span><t t-esc="item['asiento_dollar']" t-options="{'widget': 'float', 'precision': 2}"/></span>
+                                    </td>                                    
+                                </tr>
+                                <t t-set="total_bs_gen" t-value="total_bs_gen + item['total_bs']"/>
+                                <t t-set="total_usd_gen" t-value="total_usd_gen + item['total_usd']"/>
+                                <t t-set="total_efectivo_bs_gen" t-value="total_efectivo_bs_gen +  item['efectivo_bs']"/>
+                                <t t-set="total_efectivo_usd_gen" t-value="total_efectivo_usd_gen + item['efectivo_dollar']"/>
+                                <t t-set="total_banco_bs_gen" t-value="total_banco_bs_gen +  item['banco_bs']"/>
+                                <t t-set="total_banco_usd_gen" t-value="total_banco_usd_gen + item['banco_dollar'] "/>
+                                <t t-set="total_banco_asiento" t-value="total_banco_asiento + item['asiento_bs']"/>
+                                <t t-set="total_banco_asiento_usd" t-value="total_banco_asiento_usd + item['asiento_dollar']"/>
+                            </t>
+                            <tr>
+                                <td colspan="5" class="text-center"><b>Totales...</b></td>
+                                <td class="text-end"><span><t t-esc="total_bs_gen" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_usd_gen" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_efectivo_bs_gen" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_efectivo_usd_gen" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_banco_bs_gen" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_banco_usd_gen" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_banco_asiento" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                                <td class="text-end"><span><t t-esc="total_banco_asiento_usd" t-options="{'widget': 'float', 'precision': 2}"/></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/><br/>
+                    <div class="container">
+                        <t t-set="usd_global" t-value="0"/>
+                        <t t-set="bs_global" t-value="0"/>
+                        <div class="row">
+                            <div class="col-2"/>
+                            <div class="col-8">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Diario</th>
+                                            <th class="text-center">Monto $</th>
+                                            <th colspan="2" class="text-center">Monto Bs.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="total_bs" t-value="0"/>
+                                        <t t-set="total_usd" t-value="0"/>
+                                        <t t-foreach="diarios" t-as="line">
+                                            <tr>
+                                                <td>
+                                                    <span t-esc="line['name']"/> (<span t-esc="line['currency_name']"/>):
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-esc="line['amount_dollar']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="total_usd" t-value="total_usd + line['amount_dollar']"/>
+                                                </td>
+                                                <td colspan="2" class="text-end">
+                                                    <span t-esc="line['amount']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="total_bs" t-value="total_bs + line['amount']"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td/>
+                                            <td class="text-end">
+                                                <span t-esc="total_usd" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                <t t-set="usd_global" t-value="usd_global + total_usd"/>
+                                            </td>
+                                            <td colspan="2" class="text-end">
+                                                <span t-esc="total_bs" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                <t t-set="bs_global" t-value="bs_global + total_bs"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                            <div class="col-2"/>
+                        </div>
+                        <div class="row" style="padding-top:10px">
+                            <div class="col-2"/>
+                            <div class="col-4">
+                                <table class="table table-striped">
+                                    <tr style="border-bottom:1px solid black;">
+                                        <td colspan="3" class="text-center">
+                                            Total IGTF:
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">Diario</td>
+                                        <td class="text-end">Monto $</td>
+                                        <td class="text-end">Monto Bs.</td>
+                                    </tr>
+                                    <t t-set="igtf_bs" t-value="0"/>
+                                    <t t-set="igtf_usd" t-value="0"/>
+                                    <tr t-foreach="journal_igtf_ids" t-as="diario">
+                                        <t t-set="igtf_bs" t-value="igtf_bs+diario['asiento_igt_bs']"/>
+                                        <t t-set="igtf_usd" t-value="igtf_usd+diario['asiento_igt_usd']"/>
+                                        <td><span t-esc="diario['diario_igtf_name']"/></td>
+                                        <td class="text-end">
+                                            <span t-esc="diario['asiento_igt_usd']" t-options="{'widget': 'float', 'precision': 2}" />
+                                            <t t-set="usd_global" t-value="usd_global + diario['asiento_igt_usd']"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="diario['asiento_igt_bs']" t-options="{'widget': 'float', 'precision': 2}" />
+                                            <t t-set="bs_global" t-value="bs_global + diario['asiento_igt_bs']"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td/>
+                                        <td class="text-end">
+                                            <span t-esc="igtf_usd" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="igtf_bs" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-4">
+                                <table class="table table-striped">
+                                    <tr style="border-bottom:1px solid black;">
+                                        <td colspan="2" class="text-center">
+                                            Total General:
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end">Monto $</td>
+                                        <td class="text-end">Monto Bs.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end">
+                                            <span t-esc="usd_global" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="bs_global" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-2"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

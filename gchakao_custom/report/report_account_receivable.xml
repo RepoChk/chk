@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_report_account_receivable" model="ir.actions.report">
+        <field name="name">CUENTAS POR COBRAR</field>
+        <field name="model">account.receivable.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gchakao_custom.report_account_receivable</field>
+        <field name="report_file">gchakao_custom.report_account_receivable</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_account_receivable">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-3">
+                            <!-- <img src="/logo.png" alt="Logo" t-att-style="'max-height: 45px;'"/> -->
+                            <span t-att-style="'margin-left: 11px; color: black;'">GRUPO CHAKAO</span>
+                        </div>
+                        <div class="col-6 text-center">
+                            <h2 t-att-style="'font-weight: bold; color: red;'">CUENTAS POR COBRAR</h2>
+                        </div>
+                        <div class="col-3" t-att-style="'text-align: right;'">
+                            Página <span class="page"/> / <span class="topage"/>
+                            <br/>
+                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="page">
+                    <p>CLIENTE(S): <t t-esc="customer"/></p>
+                    <t t-set="grouped_data" t-value="{}"/>
+                    <t t-set="total_cxc" t-value="0"/>
+                    <t t-set="total_vencidas" t-value="0"/>
+                    <t t-set="total_por_vencer" t-value="0"/>
+                    <t t-set="total_insolvencia" t-value="0"/>
+                    <t t-set="total_solvencia" t-value="0"/>
+                    <t t-foreach="data" t-as="line">
+                        <t t-set="partner" t-value="line['partner_name']"/>
+                        <t t-set="grouped_data" t-value="dict(grouped_data, **{partner: grouped_data.get(partner, []) + [line]})"/>
+                        <t t-set="balance" t-value="line['balance']"/>
+                        <t t-if="line['status'] == 'V'">
+                            <t t-set="total_vencidas" t-value="total_vencidas + balance"/>
+                        </t>
+                        <t t-if="line['status'] == 'XV'">
+                            <t t-set="total_por_vencer" t-value="total_por_vencer + balance"/>
+                        </t>
+                        <t t-set="total_cxc" t-value="total_cxc + balance"/>
+                    </t>
+                    <t t-foreach="grouped_data.items()" t-as="partner_data">
+                        <h4 t-att-style="'font-weight: bold; margin-top: 20px; padding: 3px;'"><t t-esc="partner_data[0]"/></h4>
+                        <div t-att-style="'display: flex; justify-content: space-between; width: 100%; padding: 3px;'">
+                            <div t-att-style="'width: 50%; font-size: 11px; padding: 3px;'">
+                                Tipo de Cliente: 
+                                <t t-set="customer_type" t-value="partner_data[1][0]['customer_type']"/>
+                                <t t-esc="dict({'asociaciones_agremiadas': 'Asociaciones Agremiadas', 'consumidor_final': 'Consumidor Final', 'distribuidor': 'Distribuidor', 'distribuidor_eventual': 'Distribuidor Eventual', 'flota': 'Flota', 'otras_entidades': 'Otras Entidades'}).get(customer_type, 'Desconocido')"/>
+                            </div>
+                            <div t-att-style="'width: 50%; font-size: 11px; padding: 3px;'">
+                                Segmentación: 
+                                <t t-set="customer_segmentation" t-value="partner_data[1][0]['customer_segmentation']"/>
+                                <t t-esc="dict({'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'z': 'Z'}).get(customer_segmentation, 'Desconocido')"/>
+                            </div><br/>
+                        </div>
+                        <table t-att-style="'width: 100%; border-collapse: collapse; font-size: 9px; border: 1px solid black; padding: 3px;'">
+                            <thead>
+                                <tr t-att-style="'border: 1px solid black; background-color: #f2f2f2; padding: 3px;'">
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">COMPAÑÍA</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">VENDEDOR</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">FACT.  N°</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">F. EMISIÓN</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">F. ENTREGA</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">F. VENCIMIENTO</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">DÍAS C.</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">DÍAS V.</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">MONTO $</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">PAGOS $</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">NC $</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">RET $</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">SALDO $</th>
+                                    <th t-att-style="'border: 1px solid black; font-size: 9px; background-color: #f2f2f2; padding: 3px;'">ESTADO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="subtotal" t-value="0"/>
+                                <t t-set="current_company" t-value="None"/>
+                                <t t-set="subtotal_cxc" t-value="0"/>
+                                <t t-set="subtotal_vencidas" t-value="0"/>
+                                <t t-set="subtotal_por_vencer" t-value="0"/>
+                                <t t-foreach="partner_data[1]" t-as="line">
+                                    <t t-if="current_company != line['company_id']">
+                                        <t t-if="current_company != None">
+                                            <tr>
+                                                <td colspan="8" t-att-style="'border: none; padding: 3px;'"></td>
+                                                <td t-att-style="'border: 1px solid black; font-weight: bold; text-align: center; padding: 3px; background-color: #f2f2f2;'" colspan="3">Subtotal por Compañía:</td>
+                                                <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'" colspan="2"><span t-esc="subtotal" t-options='{"widget": "float", "precision": 2}'/></td>
+                                            </tr>
+                                        </t>
+                                        <t t-set="current_company" t-value="line['company_id']"/>
+                                        <t t-set="subtotal" t-value="0"/> <!-- Reiniciar subtotal para la nueva compañía -->
+                                    </t>
+                                    <tr t-att-style="'border: 1px solid black; padding: 3px;'">
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['company_id']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['invoice_user_id']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['invoice']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['invoice_date']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'">
+                                            <t t-if="line['delivery_date']">
+                                                <t t-set="delivery_date" t-value="line['delivery_date']"/>
+                                                <t t-if="isinstance(delivery_date, datetime.date)">
+                                                    <span t-esc="delivery_date.strftime('%d-%m-%Y')"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-esc="delivery_date.split(' ')[0]"/> <!-- Mostrar solo la parte de la fecha si es una cadena -->
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span></span>
+                                            </t>
+                                        </td>                                    
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['invoice_date_due']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['credit_days']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['overdue_days']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'">
+                                            <span t-esc="line['amount']" t-options='{"widget": "float", "precision": 2}'/> $
+                                        </td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'">
+                                            <span t-esc="line['payment']" t-options='{"widget": "float", "precision": 2}'/> $
+                                        </td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'">
+                                            <span t-esc="line['credit_note']" t-options='{"widget": "float", "precision": 2}'/> $
+                                        </td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'">
+                                            <span t-esc="line['total_withholdings']" t-options='{"widget": "float", "precision": 2}'/> $
+                                        </td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'">
+                                            <span t-esc="line['balance']" t-options='{"widget": "float", "precision": 2}'/> $
+                                        </td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px;'"><span t-esc="line['status']"/></td>
+                                    </tr>
+                                    <t t-set="subtotal" t-value="subtotal + line['balance']"/> <!-- Acumular el subtotal -->
+                                    <t t-if="line['status'] == 'V'">
+                                        <t t-set="subtotal_vencidas" t-value="subtotal_vencidas + line['balance']"/>
+                                    </t>
+                                    <t t-if="line['status'] == 'XV'">
+                                        <t t-set="subtotal_por_vencer" t-value="subtotal_por_vencer + line['balance']"/>
+                                    </t>
+                                    <t t-set="subtotal_cxc" t-value="subtotal_cxc + line['balance']"/>
+                                </t>
+                                <t t-if="current_company != None">
+                                    <tr>
+                                        <td colspan="8" t-att-style="'border: none; padding: 3px;'"></td>
+                                        <td t-att-style="'border: 1px solid black; font-weight: bold; text-align: center; padding: 3px;'" colspan="4">Subtotal por Compañía:</td>
+                                        <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'" colspan="2"><span t-esc="subtotal" t-options='{"widget": "float", "precision": 2}'/> $</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <br/> <!-- Espacio entre tablas -->
+
+                        <!-- Tabla de acumuladores -->
+                        <table t-att-style="'width: 60%; border-collapse: collapse; font-size: 11px; border: 1px solid black; text-align: center; margin-left: auto; margin-right: 0; padding: 3px; font-weight: bold; page-break-inside: avoid;'">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" t-att-style="'border: none; padding: 3px;'"></th>
+                                    <th t-att-style="'border: 1px solid black; font-weight: bold; text-align: center; padding: 3px; background-color: #f2f2f2;'" colspan="3">TOTAL</th>
+                                    <th t-att-style="'border: 1px solid black; font-weight: bold; text-align: center; padding: 3px; background-color: #f2f2f2;'" colspan="2">VALOR</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="8" t-att-style="'border: none; padding: 3px;'"></th>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px; background-color: #f2f2f2;'" colspan="3">TOTAL CXC</td>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'" colspan="2"><span t-esc="subtotal_cxc" t-options='{"widget": "float", "precision": 2}'/> $</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="8" t-att-style="'border: none; padding: 3px;'"></th>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px; background-color: #f2f2f2;'" colspan="3">TOTAL VENCIDAS</td>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'" colspan="2"><span t-esc="subtotal_vencidas" t-options='{"widget": "float", "precision": 2}'/> $</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="8" t-att-style="'border: none; padding: 3px;'"></th>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px; background-color: #f2f2f2;'" colspan="3">TOTAL POR VENCER</td>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'" colspan="2"><span t-esc="subtotal_por_vencer" t-options='{"widget": "float", "precision": 2}'/> $</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="8" t-att-style="'border: none; padding: 3px;'"></th>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px; background-color: #f2f2f2;'" colspan="3">INSOLVENCIA (%)</td>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                        <span t-esc="round(100 * subtotal_vencidas / subtotal_cxc, 2) if subtotal_cxc > 0 else 0" t-options='{"widget": "float", "precision": 2}'/> %
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="8" t-att-style="'border: none; padding: 3px;'"></th>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px; background-color: #f2f2f2;'" colspan="3">SOLVENCIA (%)</td>
+                                    <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                        <span t-esc="round(100 * subtotal_por_vencer / subtotal_cxc, 2) if subtotal_cxc > 0 else 0" t-options='{"widget": "float", "precision": 2}'/> %
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <br/> <!-- Espacio entre tablas -->
+                    </t>
+                </div> <!-- Cierre de div.page -->
+
+                <!-- Tabla de totales acumulados de todos los clientes -->
+                <div t-att-style="'width: 80%; margin: 0 auto; text-align: center; font-size: 11px; font-weight: bold; padding: 3px;'">
+                    <h4>TOTALIZADO FINAL</h4>
+                    <table t-att-style="'width: 100%; border-collapse: collapse; border: 1px solid black; padding: 3px;'">
+                        <tr>
+                            <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; background-color: #f2f2f2;'">TOTAL CXC:</td>
+                            <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                <span t-esc="total_cxc" t-options='{"widget": "float", "precision": 2}'/> $
+                            </td>
+                        </tr>
+                        <tr>
+                            <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; background-color: #f2f2f2;'">TOTAL VENCIDAS:</td>
+                            <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                <span t-esc="total_vencidas" t-options='{"widget": "float", "precision": 2}'/> $
+                            </td>
+                        </tr>
+                        <tr>
+                            <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; background-color: #f2f2f2;'">TOTAL POR VENCER:</td>
+                            <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                <span t-esc="total_por_vencer" t-options='{"widget": "float", "precision": 2}'/> $
+                            </td>
+                        </tr>
+                        <tr>
+                            <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; background-color: #f2f2f2;'">INSOLVENCIA (%):</td>
+                            <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                <span t-esc="round(100 * total_vencidas / total_cxc, 2) if total_cxc > 0 else 0" t-options='{"widget": "float", "precision": 2}'/> %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; background-color: #f2f2f2;'">SOLVENCIA (%):</td>
+                            <td t-att-style="'border: 1px solid black; text-align: left; padding: 3px;'">
+                                <span t-esc="round(100 * total_por_vencer / total_cxc, 2) if total_cxc > 0 else 0" t-options='{"widget": "float", "precision": 2}'/> %
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br/> <!-- Espacio final -->
+
+                <div class="footer text-center"> <!-- Cierre de div.footer -->
+                    <div class="text-muted">
+                        Página <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div> <!-- Cierre de div.footer -->
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

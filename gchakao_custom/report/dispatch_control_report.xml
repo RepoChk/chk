@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_reporte_despacho">
+        <div class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 100px; max-width: 150px; margin-top:22px; margin-bottom: 22px;" alt="Logo"/>
+                    </div>
+                </div>
+                <div class="w-100 text-center border border-dark p-1 m-0">
+                    <b class="fs-5">Guía de Carga: <t t-esc="o.name"/></b>
+                </div>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer">
+        </div>
+    </template>
+
+    <template id="dispatch_control_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="gchakao_custom.external_layout_reporte_despacho">
+                    <div class="page">
+                        <!-- <br/><br/> -->
+                        <!-- Tabla 1 -->
+                        <table class="table table-sm table-bordered w-100">
+                            <colgroup>
+                                <col span="1" class="w-25"/>
+                                <col span="1" class="w-25"/>
+                                <col span="1" class="w-25"/>
+                                <col span="1" class="w-25"/>
+                            </colgroup>
+                            <tr class="border border-dark">
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Responsable:</b><br/>
+                                    <span class="fw-semibold mt-1">&amp;nbsp;<t t-esc="o.get_responsible()"/></span>
+                                </td>
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Zonas:</b><br/>
+                                    <span class="fw-semibold mt-1">&amp;nbsp;<t t-esc="o.get_zones()"/></span><br/>
+                                    <b class="fw-semibold">&amp;nbsp;Kilometraje:</b><br/>
+                                    <span class="fw-semibold mt-1">&amp;nbsp;<t t-esc="o.km_estimate"/></span>
+                                </td>
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Camión:</b><br/>
+                                    <span class="fw-semibold mt-1">&amp;nbsp;<t t-esc="o.vehicle_id.name"/></span><br/>
+                                    <b class="fw-semibold">&amp;nbsp;Chofer:</b><br/>
+                                    <span class="fw-semibold mt-1">&amp;nbsp;<t t-esc="o.driver_id.name"/></span><br/>
+                                    <b class="fw-semibold">&amp;nbsp;Teléfono:</b><br/>
+                                    <t t-if="o.driver_id.phone"><span class="fw-semibold mt-1">&amp;nbsp;<t t-esc="o.driver_id.phone"/></span><br/> </t>
+                                    <span class="fw-semibold mt-1">&amp;nbsp;<t t-if="o.driver_id.mobile" t-esc="o.driver_id.mobile"/></span>
+                                </td>
+                                
+                                <t t-set="filler_loaded" t-value="0"/>
+                                <t t-set="weight_loaded" t-value="0"/>
+                                <t t-set="qty_filler" t-value="0"/>
+                                <t t-set="qty_weight" t-value="0"/>
+                                <t t-foreach="o.picking_ids.move_ids_without_package.filtered(lambda line: line.filler != 'False' or line.weight != 'False')" t-as="line">
+                                    <t t-if="line.product_uom_qty > 0">
+                                        <t t-set="qty_filler" t-value="line.product_uom_qty*line.filler"/>
+                                        <t t-set="qty_weight" t-value="line.product_uom_qty*line.weight"/>
+                                    </t>
+                                    <t t-elif="line.qty_done>0">
+                                        <t t-set="qty_filler" t-value="line.qty_done*line.filler"/>
+                                        <t t-set="qty_weight" t-value="line.qty_done*line.weight"/>
+                                    </t>
+                                    <t t-set="filler_loaded" t-value="qty_filler+filler_loaded"/>
+                                    <t t-set="weight_loaded" t-value="qty_weight+weight_loaded"/>
+                                </t>
+
+                                <td class="text-left" style="vertical-align: middle;">
+                                
+                                    <t t-if="filler_loaded > 0">
+                                        <b class="fw-semibold">&amp;nbsp;Capacidad Filler: </b>
+                                        <span class="fw-semibold">&amp;nbsp;<t t-esc="o.vehicle_filler" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span><br/>
+                                        <b class="fw-semibold">&amp;nbsp;Filler Cargado: </b>
+                                        <span class="fw-semibold">&amp;nbsp;<t t-esc="filler_loaded" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span><br/>
+                                        <b class="fw-semibold">&amp;nbsp;Filler Disponible: </b>
+                                        <span class="fw-semibold">&amp;nbsp;<t t-esc="o.vehicle_filler - filler_loaded" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                    </t>
+                                    <t t-if="filler_loaded > 0 and weight_loaded > 0">
+                                        <br/>
+                                    </t>
+                                    <t t-if="weight_loaded > 0">
+                                        <b class="fw-semibold">&amp;nbsp;Capacidad de Peso: </b>
+                                        <span class="fw-semibold">&amp;nbsp;<t t-esc="o.vehicle_weight" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span><br/>
+                                        <b class="fw-semibold">&amp;nbsp;Peso de la Carga: </b>
+                                        <span class="fw-semibold">&amp;nbsp;<t t-esc="weight_loaded" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span><br/>
+                                        <b class="fw-semibold">&amp;nbsp;Peso Disponible: </b>
+                                        <span class="fw-semibold">&amp;nbsp;<t t-esc="o.vehicle_weight - weight_loaded" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                    </t>
+                                    
+                                </td>
+                            </tr>
+                            <tr class="border border-dark row-sm">
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Desde: </b>
+                                    <span class="fw-semibold">&amp;nbsp;<t t-esc="o.date_start" t-options="{'widget': 'datetime'}"/></span>
+                                </td>
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Fecha de cierre: </b>
+                                    <span class="fw-semibold">&amp;nbsp;<t t-esc="o.date_end" t-options="{'widget': 'datetime'}"/></span>
+                                </td>
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Cantidad de clientes: </b>
+                                    <span class="fw-semibold">&amp;nbsp;<t t-esc="round(o.get_qty_clients())"/></span>
+                                </td>
+                                <td class="text-left" style="vertical-align: middle;">
+                                    <b class="fw-semibold">&amp;nbsp;Cantidad de productos: </b>
+                                    <span class="fw-semibold">&amp;nbsp;<t t-esc="round(o.get_qty_products())"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <!-- Tabla 2 -->
+                        <table class="table table-sm table-bordered w-100">
+                            <colgroup>
+                                <col span="1" class="w-10"/>
+                                <col span="1" class="w-10"/>
+                                <col span="1" class="w-12"/>
+                                <col span="1" class="w-26"/>
+                                <col span="1" class="w-14"/>
+                                <col span="1" class="w-20"/>
+                                <col span="1" class="w-8"/>
+                            </colgroup>
+                            <tr class="border border-dark">
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <b>Nro. Pedido</b>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                <b>Nro. Factura</b>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <b>Almacén</b>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <b>Cliente</b>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <b>Zona</b>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <b>Vendedor</b>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <b>FillerT</b>
+                                </td>
+                            </tr>
+                            
+
+                            <t t-foreach="o.picking_ids" t-as="picking">
+                                <t t-foreach="picking.sale_id" t-as="sale">
+                                    <tr style="border: 1px solid black;">
+                                        <td class="text-center table-cell" style="vertical-align: middle;">
+                                            <span><t t-esc="picking.origin"/></span>
+                                        </td>
+                                        <td class="text-center table-cell" style="vertical-align: middle;">
+                                            <t t-if="sale.invoice_ids">
+                                                <span><t t-out="sale.invoice_ids.mapped('invoice_number')[0]"/></span>
+                                            </t>
+                                            <t t-else="">
+                                                <span></span>
+                                            </t>
+                                            
+                                        </td>
+                                        <td class="text-center table-cell" style="vertical-align: middle;">
+                                            <span class="fw-6"><t t-esc="picking.name"/></span>
+                                        </td>
+                                        <td class="text-left table-cell" style="vertical-align: middle;">
+                                            <span>&amp;nbsp;<t t-esc="sale.partner_id.name"/></span>
+                                        </td>
+                                        <td class="text-left table-cell" style="vertical-align: middle;">
+                                            <span>&amp;nbsp;<t t-esc="picking.city_id"/></span>
+                                        </td>
+                                        <td class="text-left table-cell" style="vertical-align: middle;">
+                                            <span>&amp;nbsp;<t t-esc="sale.user_id.name"/></span>
+                                        </td>
+                                        <t t-set="fillert" t-value="0"/>
+                                        <t t-set="cantidad" t-value="0"/>
+                                        <t t-foreach="picking.move_ids_without_package.filtered(lambda line: line.filler != 'False')" t-as="line">
+                                            <t t-if="line.product_uom_qty > 0">
+                                                <t t-set="cantidad" t-value="line.product_uom_qty*line.filler"/>
+                                            </t>
+                                            <t t-elif="line.qty_done>0">
+                                                <t t-set="cantidad" t-value="line.quantity*line.filler"/>
+                                            </t>
+                                            <t t-set="fillert" t-value="cantidad+fillert"/>
+                                        </t>
+
+                                        <td class="text-right table-cell" style="vertical-align: middle;">
+                                            <span><t t-esc="fillert" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                        </td>
+                                    </tr>
+                                </t>                               
+                            </t>
+                        </table>
+                        <br/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="gchakao_custom_company_inherit_form" model="ir.ui.view">
+            <field name="name">Datos de la Empresa</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="l10n_ve_payroll.res_company_form__l10n_ve_view_for"/>
+            <field name="priority">30</field>
+            <field name="arch" type="xml">
+                <xpath expr="//page[2]" position="replace">
+                    <page string="Información Nómina">
+                        <group>
+                            <group string="Variables para el calculo de Nómina">
+                                <field name="banavih_id"/>
+                                <field name="cesta_ticket"/>
+                                <field name="por_riesgo"/>
+                                <field name="por_aporte_sso"/>
+                                <field name="por_empleado_rpe"/>
+                                <field name="por_empresa_rpe"/>
+                                <field name="por_empresa_lph"/>
+                                <field name="por_empleado_lph"/>
+                                <field name="nro_cuenta_faov"/>
+                                <field name="salario_minimo"/>
+                                <field name="dias_utilidades"/>
+                                <field name="periodo_prestaciones"/>
+                                <field name="por_discount_pp"/>
+                            </group>
+                            <group string="Información IVSS">
+                                <field name="ivss_id"/>
+                                <field name="numero_patronal"/>
+                                <field name="representante_legal_ivss"/>
+                                <field name="registration_date_IVSS"/>
+                                <field name="regime"/>
+                                <field name="risk"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
+

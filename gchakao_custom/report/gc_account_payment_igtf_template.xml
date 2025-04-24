@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="gc_account_payment_igtf_template">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h6><t t-esc="nombre_reporte"/></h6>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <t t-set="acum_amount_dollar" t-value="0"/>
+                            <t t-set="acum_amount_untaxed_bs" t-value="0"/>
+                            <t t-set="acum_amount_total" t-value="0"/>
+                            <t t-set="total_operations" t-value="0"/>
+                            <div class="col-12">
+                                <table width="100%">
+                                    <colgroup>
+                                        <col span="1" style="width: 3%;"/><!-- N° de Operación -->
+                                        <col span="1" style="width: 6%;"/><!-- Fecha -->
+                                        <col span="1" style="width: 7%;"/><!-- N° de Factura -->
+                                        <col span="1" style="width: 10%;"/><!-- N° de Control -->
+                                        <col span="1" style="width: 7%;"/><!-- Rif -->
+                                        <col span="1" style="width: 24%;"/><!-- Cliente -->
+                                        <col span="1" style="width: 6%;"/><!-- Fecha de pago -->
+                                        <col span="1" style="width: 10%;"/><!-- Monto en $ -->
+                                        <col span="1" style="width: 3%;"/><!-- Tasa -->
+                                        <col span="1" style="width: 8%;"/><!-- Base Imp Bs -->
+                                        <col span="1" style="width: 6%;"/><!-- Alicuota % -->
+                                        <col span="1" style="width: 10%;"/><!-- IGTF Percibido -->
+                                    </colgroup>
+                                    <thead style="font-size: 11px;">
+                                        <tr>
+                                            <td style="border:1px solid black" class="text-center"><b>N°</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Fecha</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>N° de Factura</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>N° de Control</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Rif</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Cliente</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Fecha de pago</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Monto en $</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Tasa</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Base Imp Bs</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>Alicuota %</b></td>
+                                            <td style="border:1px solid black" class="text-center"><b>IGTF Percibido</b></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-size: 10px;">
+                                        <tr t-foreach="form" t-as="dat">
+                                            <t t-if="dat">
+                                                <td class="text-center">
+                                                    <span t-esc="dat['cont']"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-esc="dat['invoice_date']"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="dat['invoice_number']"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="dat['invoice_number_ctrl']"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-esc="dat['rif']"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="dat['partner']"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-esc="dat['payment_date']"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="dat['amount_dollar']" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                                    <t t-set="acum_amount_dollar" t-value="acum_amount_dollar + dat['amount_dollar']"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="dat['rate']" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="dat['amount_untaxed_bs']" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                                    <t t-set="acum_amount_untaxed_bs" t-value="acum_amount_untaxed_bs + dat['amount_untaxed_bs']"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-esc="dat['aliquot']" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="dat['amount_total']" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                                    <t t-set="acum_amount_total" t-value="acum_amount_total + dat['amount_total']"/>
+                                                    <t t-set="total_operations" t-value="dat['cont']"/>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" style="border:1px solid black" class="text-center">
+                                                <strong>TOTALES</strong>
+                                            </td>
+                                            <td style="border:1px solid black" class="text-right">
+                                                <span t-esc="acum_amount_dollar" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                            </td>
+                                            <td/>
+                                            <td style="border:1px solid black" class="text-right">
+                                                <span t-esc="acum_amount_untaxed_bs" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                            </td>
+                                            <td/>
+                                            <td style="border:1px solid black" class="text-right">
+                                                <span t-esc="acum_amount_total" t-options="{'widget': 'float', 'precision': 4}" style="padding-right:2px;"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="font-size:12px; page-break-inside: avoid; page-break-after: auto;">
+                            <div class="col-2"/>
+                            <div class="col-8">
+                                <table class="table table-sm table-bordered" width="100%">
+                                    <tr>
+                                        <td class="text-center">Alícuota</td>
+                                        <td class="text-center">Concepto</td>
+                                        <td class="text-center">Cantidad de operaciones</td>
+                                        <td class="text-center">Base Imponible (Bs.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">3%</td>
+                                        <td class="text-center">Efectivo en moneda extranjera</td>
+                                        <td class="text-right">
+                                            <span t-esc="total_operations" t-options="{'widget': 'float', 'precision': 4}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="acum_amount_untaxed_bs" t-options="{'widget': 'float', 'precision': 4}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">3%</td>
+                                        <td class="text-center">Criptomonedas</td>
+                                        <td class="text-right">0,00</td>
+                                        <td class="text-right">0,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">3%</td>
+                                        <td class="text-center">Criptoactivos</td>
+                                        <td class="text-right">0,00</td>
+                                        <td class="text-right">0,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-right">
+                                            Monto Total de la Base Imponible (Bs.) 3%
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="acum_amount_untaxed_bs" t-options="{'widget': 'float', 'precision': 4}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <table class="table table-sm table-bordered" width="100%" style="margin-top:5px;">
+                                    <tr>
+                                        <td class="text-center" colspan="2">
+                                            RESUMEN
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">Monto Total de las Operaciones de la Alicuota (Bs.) del 2%</td>
+                                        <td class="text-right">0,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">Monto Total de las Operaciones de la Alicuota (Bs.) del 3%</td>
+                                        <td class="text-right"><span t-esc="acum_amount_total" t-options="{'widget': 'float', 'precision': 4}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">Monto Total a Pagar de las Alicuotas (Bs.) del (2% + 3%)</td>
+                                        <td class="text-right"><span t-esc="acum_amount_total" t-options="{'widget': 'float', 'precision': 4}"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-2"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

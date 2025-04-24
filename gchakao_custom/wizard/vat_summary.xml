@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<odoo>
+    <!-- Vista del wizard -->
+    <record id="view_vat_summary_wizard_form" model="ir.ui.view">
+        <field name="name">vat.summary.wizard.form</field>
+        <field name="model">vat.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Resumen de Declaración y Pago de IVA">
+                <group>
+                    <group>
+                        <field name="company_id" string="Compañía"/>
+                        <field name="currency_option" string="Moneda"/>
+                        <field name="journal_ids" string="Diarios" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="date_from" string="Fecha Inicio"/>
+                        <field name="date_to" string="Fecha Fin"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="generate_pdf_report" type="object" string="Imprimir PDF" class="btn-primary"/>
+                    <button string="Imprimir Excel" type="object" name="generate_excel_report" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para abrir el wizard -->
+    <record id="action_vat_summary_wizard" model="ir.actions.act_window">
+        <field name="name">Resumen para Análisis de Impuestos Nacionales</field>
+        <field name="res_model">vat.summary.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menú para acceder al wizard -->
+    <menuitem id="menu_vat_summary_wizard"
+              name="Resumen para Análisis de Impuestos Nacionales"
+              parent="l10n_ve_full.menu_venezuela_reporting"
+              action="action_vat_summary_wizard"
+              sequence="1000"/>
+</odoo>

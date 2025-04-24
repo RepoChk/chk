@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="gc_approval_request_warranty_view_form" model="ir.ui.view">
+            <field name="name">gc.approval.request.warranty.view.form</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='request_details']" position="inside">
+                    <field name="is_warranty" invisible="1"/>
+                    <field name="warranty_id" invisible="is_warranty == 'no'" required="is_warranty == 'required'" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

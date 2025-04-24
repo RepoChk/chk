@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="warranty_sale_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">warranty_sale.view.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="is_warranty" readonly="state in ('send','sale')"/>
+                    <field name="warranty_id" string="Garantía" invisible="is_warranty != True" options="{'no_create': True, 'no_edit': True}" domain="[('state', '=', 'done'), ('sale_order_ids', '=', False)]" readonly="state in ('send','sale')"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="warranty_view_sale_order_tree_inherit" model="ir.ui.view">
+            <field name="name">warranty_view.sale.order.tree.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="is_warranty" readonly="1" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="warranty_view_sale_order_search_inherit" model="ir.ui.view">
+            <field name="name">warranty_view.sale.order.search.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='sales']" position="after">
+                    <separator/>
+                    <filter string="Garantías" name="warranty_orders" domain="[('is_warranty', '=', True)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo> 

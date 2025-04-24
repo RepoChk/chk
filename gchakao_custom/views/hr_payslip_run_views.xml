@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gc_hr_payslip_run_inherit_form" model="ir.ui.view">
+        <field name="name">gc.hr.payslip.run.form</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_payslips_exceeded" class="oe_stat_button" icon="fa-book" type="object" help="Recibos que exceden los descuentos permitidos" invisible="payslip_exceeded_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="payslip_exceeded_count"/></span>
+                        <span class="o_stat_text">Recibos excedidos</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

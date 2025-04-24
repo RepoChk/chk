@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_account_status_wizard_form" model="ir.ui.view">
+        <field name="name">account.status.wizard.form</field>
+        <field name="model">account.status.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reporte de Estado de Cuenta por Cliente">
+                <group>
+                    <field name="start_date" required="1"/>
+                    <field name="ending_date" required="1"/>
+                    <field name="partner_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                    <field name="invoice_user_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True, 'no_edit': True}" readonly="context.get('is_sales_force_user', False)"/>
+                    <field name="company_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                </group>
+                <footer>
+                    <button string="Imprimir Estado de Cuenta" type="object" name="print_account_status" class="btn-primary"/>
+                    <button string="Imprimir Estado de Cuenta Detallado" type="object" name="print_account_status_detailed" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_status_wizard" model="ir.actions.act_window">
+        <field name="name">Reporte de Estado de Cuenta por Cliente (PDF)</field>
+        <field name="res_model">account.status.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_invoice_user_ids': [(4, uid)]}</field>
+    </record>
+    
+    <menuitem id="menu_account_status_wizard"
+              name="Reporte de Estado de Cuenta por Cliente (PDF)"
+              parent="account_reports.account_reports_partners_reports_menu"
+              action="action_account_status_wizard"
+              sequence="30"/>
+</odoo>

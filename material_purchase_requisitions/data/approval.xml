@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+    
+        <!-- Sequences for purchase requence Sequence -->
+        <record id="material_purchase_requisition_approval" model="approval.category">
+            <field name="name">Aprobación de Requisición</field>
+            <field name="has_requisition_request">required</field>
+        </record>
+        <record id="material_purchase_analytic_approval" model="approval.category">
+            <field name="name">Aprobación de Cuenta Analítica</field>
+            <field name="has_analytic_request">required</field>
+        </record>
+    </data>
+</odoo>

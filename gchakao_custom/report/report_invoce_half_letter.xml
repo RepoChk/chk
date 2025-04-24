@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Cabecera y Pie del reporte -->
+    <template id="report_invoice_half_letter_header">
+        <!-- Cabecera -->
+        <div class="header" style="font-family: Arial;  font-size:9px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-9"/>
+                    <div class="col-3">
+                        <table style="width: 100%;" class="table table-borderless table-sm">
+                            <tr>
+                                <td class="p-0" colspan="2">
+                                    <b>
+                                        <t t-if="o.move_type == 'out_invoice' and o.ref">
+                                            <b>
+                                                NOTA DE DÉBITO N° <span t-out="o.get_invoice_number_digits()"/>
+                                            </b>
+                                        </t>
+                                        <t t-elif="o.move_type == 'out_invoice' and o.journal_id.exclude_fiscal_documents">
+                                            <b>
+                                                ORDEN DE ENTREGA N° <span t-out="o.get_invoice_number_digits()"/>
+                                            </b>
+                                        </t>
+                                        <t t-elif="o.move_type == 'out_invoice'">
+                                            <b>
+                                                FACTURA N° <span t-out="o.get_invoice_number_digits()"/>
+                                            </b>
+                                        </t>
+                                        <t t-elif="o.move_type == 'out_refund'">
+                                            <b>
+                                                NOTA DE CRÉDITO N° <span t-out="o.get_invoice_number_digits()"/>
+                                            </b>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-out="o.get_invoice_number_digits()"/>
+                                        </t>
+                                    </b>
+                                </td>
+                            </tr>
+                            <t t-if="o.move_type == 'out_invoice'">
+                                <tr t-if="o.invoice_date">
+                                    <td class="p-0" colspan="2">
+                                        Emisión: <b> <span t-esc="o.invoice_date.strftime('%d/%m/%Y')"/></b>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.invoice_payment_term_id or o.invoice_date_due">
+                                    <td class="p-0" colspan="2">
+                                        Vencimiento: 
+                                        <!-- <t t-if="o.invoice_payment_term_id">
+                                            <b><span t-field="o.invoice_payment_term_id.name"/></b>
+                                        </t> -->
+                                        <!-- <t t-else=""> -->
+                                            <b><span t-if="o.invoice_date_due" t-esc="o.invoice_date_due.strftime('%d/%m/%Y')"/></b><br/>
+                                        <!-- </t> -->
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-9">
+                        <table style="width: 100%;" class="table table-borderless table-sm">
+                            <colgroup>
+                                <col span="1" style="width: 30%;"/>
+                                <col span="1" style="width: 70%;"/>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="p-0">Nombre / Razón Social: </td>
+                                    <td class="p-0"><span t-field="o.partner_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0">C.I. / R.I.F: </td>
+                                    <td class="p-0">
+                                        <t t-if="not o.partner_id.is_company">
+                                            <span t-if="o.partner_id.identification_id" t-field="o.partner_id.identification_id"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-esc="o.partner_id.vat or ''"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-3">
+                        <t t-if="o.move_type == 'out_invoice'">
+                            <table style="width: 100%;" class="table table-borderless table-sm">
+                                <tr>
+                                    <td class="p-0" colspan="2">
+                                        Vendedor : <span t-esc="o.invoice_user_id.name[:10]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0" colspan="2">
+                                        Pedido : <span t-field="o.invoice_origin"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0" colspan="2">
+                                        Cond. Pago : 
+                                        <span t-if="o.invoice_payment_term_id.term_type == 'cash'">Contado</span>
+                                        <span t-if="o.invoice_payment_term_id.term_type == 'credit'">Crédito</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <table style="width: 100%;" class="table table-borderless table-sm">
+                                <tr>
+                                    <td class="p-0" colspan="2">
+                                        Emisión : <span t-esc="o.invoice_date.strftime('%d/%m/%Y')"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0" colspan="2">
+                                        Vendedor : <span t-field="o.invoice_user_id.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <table style="width: 100%;" class="table table-borderless table-sm">
+                    <tr>
+                        <td class="p-0" style="width: auto;">
+                            <span>Domicilio Fiscal:</span>
+                        </td>
+                        <td class="p-0" style="width: auto;">
+                            <span t-field="o.partner_id.street"/> 
+                            <span t-field="o.partner_id.city"/> 
+                            <span t-field="o.partner_id.state_id.name"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+
+        <!-- Pie -->
+        <div class="footer">
+            <div class="container" style="border-top:1px black solid; font-family: Roman; font-size:9px;">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-center">
+                        A los solos efectos de lo previsto en el Art, 25 de la Ley de impuestos al valor agreado se expresa los montos de la factura en Divisas (USD$) considerando la tasa de cambio corriente establecida el BCV de Bs/Dólares <span t-field="o.tax_today" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> el día de la factura
+
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <table style="width: 100%; padding:0;" class="table table-sm table-borderless">
+                            <colgroup>
+                                <col span="1" style="width: 35%;"/>
+                                <col span="1" style="width: 30%;"/>
+                                <col span="1" style="width: 35%;"/>
+                            </colgroup>
+                            <tr>
+                                <td class="text-start p-0"><smal>Cnt. Vendida:</smal></td>
+                                <td class="text-start p-0" colspan="2">
+                                    <t t-set="qty_sell_tot" t-value="sum(o.invoice_line_ids.mapped('quantity'))"/>
+                                    <span t-esc="qty_sell_tot" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.motive or o.narration">
+                                <td colspan="3" class="text-start p-0">
+                                    <span>Observaciones:</span>
+                                </td>
+                            </tr>
+                            <tr t-if="o.motive">
+                                <td colspan="3" class="text-start p-0">
+                                    <span><t t-esc="dict(o._fields['motive'].selection).get(o.motive)"/></span>
+                                </td>
+                            </tr>
+                            <tr t-if="not o.motive and o.narration">
+                                <td colspan="3" class="text-start p-0">
+                                    <span><t t-esc="o.narration"/></span>
+                                </td>
+                            </tr>
+                            <t t-if="o.move_type in ('out_refund', 'out_receipt')">
+                                <t t-call="gchakao_custom.refund_receipt_details"/>
+                            </t>
+                        </table>
+                    </div>
+                    <div class="col-8">
+                        <table style="width: 100%; padding:0;" class="table table-sm table-borderless">
+                            <colgroup>
+                                <col span="1" style="width: 40%;"/>
+                                <col span="1" style="width: 30%;"/>
+                                <col span="1" style="width: 30%;"/>
+                            </colgroup>
+                            <tr t-if="o.invoice_line_ids.sale_line_ids.order_id.picking_ids and o.move_type == 'out_invoice'">
+                                <td colspan="3" class="text-start p-1">
+                                    Número de orden de entrega: 
+                                    <!-- filtramos los picking con el codigo 'outgoing' para imprimirlos-->
+                                    <t t-foreach="o.invoice_line_ids.sale_line_ids.order_id.picking_ids.filtered(lambda l: l.picking_type_id.code == 'outgoing')" t-as="picking">
+                                        <t t-esc="', '.join(picking.mapped('name'))"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td/>
+                                <td class="text-end"><b>Moneda Referencia</b></td>
+                                <td class="text-end"><b>Moneda Local</b></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Sub-total:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_untaxed_usd" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_untaxed" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Ajustes:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    $ 0,00
+                                </td>
+                                <td class="text-end p-0">
+                                    0,00 Bs
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Descuentos:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    $ 0,00
+                                    <!-- <span t-esc="discount_usd" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> -->
+                                </td>
+                                <td class="text-end p-0">
+                                    0,00 Bs
+                                    <!-- <span t-esc="discount_bs" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> -->
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Monto Exento:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-out="exento_usd" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-out="exento_bs" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Base Neta Imponible:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-esc="base_net_usd" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-esc="base_net_bs" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+                            <!-- IMPUESTOS -->
+                            <t t-set="tax_totals" t-value="o.tax_totals"/>
+                            <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+                                <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                <t t-call="gchakao_custom.tax_groups_totals_extended"/>
+                            </t>
+                            <!-- IGTF -->
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>IGTF:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_payment_igtf_usd" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_payment_igtf_bs" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Total a Pagar:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <t t-set="Ttotal_with_igtf" t-value="o.amount_total_usd + o.amount_payment_igtf_usd"/>
+                                    <span t-esc="Ttotal_with_igtf" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <t t-set="Ttotal_without_igtf" t-value="o.amount_total + o.amount_payment_igtf_bs"/>
+                                    <span t-esc="Ttotal_without_igtf" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-center">
+                            Ésta factura causara IGTF del 3% en caso de ser pagada en Divisas total o parcialmente a tasa BCV del día del pago
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </template>
+
+    <!-- Impuestos -->
+    <template id="tax_groups_totals_extended">
+        <!--
+            Generic template to display a list of tax groups with the related amounts.
+
+            ARGUMENTS:
+            - tax_totals: dict in the form generated by account.move's _get_tax_totals.
+            - subtotal_to_show: The subtotal we need to render the groups from
+        -->
+        <t t-foreach="tax_totals['groups_by_subtotal'][subtotal_to_show]" t-as="amount_by_group">
+            <t t-set="display_tax_base" t-value="tax_totals['display_tax_base']"/>
+            <t t-set="tax" t-value="amount_by_group['tax_group_amount']"/>
+            <tr>
+                <t t-if="amount_by_group['tax_group_name'] != 'IVA 0%'">
+                    <t t-if="o.currency_id.id == o.company_id.currency_id_dif.id">
+                        <td class="text-end p-0">
+                            <span t-out="amount_by_group['tax_group_name']"/>:
+                        </td>
+                        <td class="text-end p-0">
+                            <span t-esc="tax" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                        </td>
+                        <td class="text-end p-0">
+                            <span t-esc="tax*o.tax_today" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                        </td>
+                    </t>
+                    <t t-else="">
+                        <td class="text-end p-0">
+                            <span t-out="amount_by_group['tax_group_name']"/>:
+                        </td>
+                        <td class="text-end p-0">
+                            <span t-esc="tax/o.tax_today" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                        </td>
+                        <td class="text-end p-0">
+                            <span t-esc="tax" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                        </td>
+                    </t>
+                </t>
+            </tr>
+        </t>
+    </template>
+
+    <!-- información para las notas de crédito y notas de debito -->
+    <template id="refund_receipt_details">
+        <t t-if="o.reversed_entry_id">
+            <tr>
+                <td class="text-start p-0">
+                    <span>Fact Afect.:</span>
+                </td>
+                <td class="text-start p-0" colspan="2">
+                    <span t-field="o.reversed_entry_id.invoice_number"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start p-0">
+                    <span>Nro Control:</span>
+                </td>
+                <td class="text-start p-0" colspan="2">
+                    <span t-field="o.reversed_entry_id.nro_ctrl"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start p-0">
+                    <span>Fecha Fact.:</span>
+                </td>
+                <td class="text-start p-0" colspan="2">
+                    <span t-out="o.reversed_entry_id.invoice_date.strftime('%d/%m/%Y')"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start p-0">
+                    <span>Monto:</span>
+                </td>
+                <td class="text-start p-0">
+                    <span t-field="o.reversed_entry_id.amount_total_usd" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start p-0">
+                    <span>Motivo:</span>
+                </td>
+                <td class="text-start p-0" colspan="2">
+                    <span t-field="o.motive"/>
+                </td>
+            </tr>
+        </t>
+    </template>
+
+
+    <!-- Cuerpo del reporte -->
+    <template id="report_invoice_half_letter">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="gchakao_custom.report_invoice_half_letter_header">
+                    <div class="page" style="font-size: 9px; font-family: Roman;">
+                        <div class="oe_structure"></div>
+                        <table class="table table-sm table-borderless">
+                            <thead style="border:1px solid black;">
+                                <tr>
+                                    <th class="text-center p-0"><strong>Código</strong></th>
+                                    <th class="text-center p-0"><strong>Descripción</strong></th>
+                                    <th class="text-center p-0"><strong>UdM</strong></th>
+                                    <th class="text-center p-0"><strong>Cant.</strong></th>
+                                    <th class="text-center p-0"><strong>(E)</strong></th>
+                                    <th class="text-center p-0"><strong>Precio Unit.</strong></th>
+                                    <th class="text-center p-0"><strong>%Dcto.</strong></th>
+                                    <th class="text-center p-0"><strong>Total</strong></th>
+                                </tr>
+                            </thead>
+                            <t t-set="discount_usd" t-value="0"/>
+                            <t t-set="discount_bs" t-value="0"/>
+                            <t t-set="exento_usd" t-value="0"/>
+                            <t t-set="exento_bs" t-value="0"/>
+                            <t t-set="base_net_bs" t-value="0"/>
+                            <t t-set="base_net_usd" t-value="0"/>
+                            <t t-set="is_excento" t-value="0"/>
+                            <tbody>
+                                <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+                                <t t-set="count" t-value="1"/>
+                                <tr><td colspan="8" class="mt-50"></td></tr>
+                                <tr t-foreach="lines" t-as="line">
+                                    <t t-set="discount_usd" t-value="discount_usd + line.discount_usd"/>
+                                    <t t-set="discount_bs" t-value="discount_bs + line.discount_bs"/>
+                                    <td class="p-0">
+                                        <span t-field="line.product_id.default_code"/>
+                                    </td>
+                                    <td class="p-0">
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td class="p-0">
+                                        <span t-field="line.product_uom_id.name"/>
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.quantity"/>
+                                    </td>
+                                    <td class="text-center p-0">
+                                        <t t-if="line.tax_ids.filtered(lambda l: l.appl_type == 'exento')">
+                                            E
+                                            <t t-set="exento_usd" t-value="exento_usd + line.price_subtotal_usd"/>
+                                            <t t-set="exento_bs" t-value="exento_bs + line.price_subtotal"/>
+                                            <t t-set="is_excento" t-value="1"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-set="is_excento" t-value="0"/>
+                                        </t>
+                                    </td>
+                                    <t t-if="is_excento != 1">
+                                        <t t-set="base_net_usd" t-value="base_net_usd + line.price_subtotal_usd"/>
+                                        <t t-set="base_net_bs" t-value="base_net_bs + line.price_subtotal"/>
+                                    </t>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.price_unit" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.discount" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.price_subtotal" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

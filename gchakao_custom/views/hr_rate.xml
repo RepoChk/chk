@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="hr_contract_rate_tree_view" model="ir.ui.view">
+        <field name="name">hr.contract.rate.view.tree</field>
+        <field name="model">hr.contract.rate</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="rate"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-success="state == 'confirmed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_contract_rate_form_view" model="ir.ui.view">
+        <field name="name">hr.contract.rate.form.view</field>
+        <field name="model">hr.contract.rate</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="button_confirmed" type="object" string="Confirmar" invisible="state != 'draft'" class="btn-primary" groups="base.group_user"/>
+                    <button name="button_draft" type="object" invisible="state not in ('confirmed','done')" string="Borrador" groups="base.group_user"/>
+                    <button name="button_calculate" type="object" string="Actualizar Sueldos" invisible="state != 'confirmed'" class="btn-primary"/>
+                    <button name="button_done" type="object" string="Marcar como hecho" invisible="state != 'confirmed'" class="btn-primary"/>
+                    <field name="state" widget="statusbar"  statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title pe-0 w-100 mw-100" name="title">
+                        <h1 class="d-flex flex-row justify-content-between">
+                            <field name="name" class="text-truncate"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="rate" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- hr.contract.rate search view -->
+    <record id="hr_contract_rate_request_view_search" model="ir.ui.view">
+        <field name="name">hr.contract.rate.view.search</field>
+        <field name="model">hr.contract.rate</field>
+        <field name="arch" type="xml">
+            <search string="Busqueda de Solicitudes">
+                <!-- Add your fields here -->
+                <field name="name"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="hr_contract_rate_action" model="ir.actions.act_window">
+        <field name="name">Actualizar Sueldos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.contract.rate</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea una nueva tasa para contratos
+            </p>
+        </field>
+    </record>
+
+    <menuitem   
+        name="Actualizar Sueldos" 
+        id="hr_contract_rate_menu"
+        sequence="100"
+        parent="hr_work_entry_contract_enterprise.menu_hr_payroll_configuration"
+        action="hr_contract_rate_action"/>
+
+</odoo>

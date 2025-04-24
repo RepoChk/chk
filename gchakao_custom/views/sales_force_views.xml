@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Grupo Fuerza de Ventas -->
+        <record id="group_sales_force_user" model="res.groups">
+            <field name="name">Fuerza de Ventas (estándar)</field>
+        </record>
+        <record id="group_sales_force_manager" model="res.groups">
+            <field name="name">Fuerza de Ventas (gerente)</field>
+        </record>
+
+        <!-- Permisos de acceso -->
+        <!-- Asiento contable -->
+        <record id="account_move_sales_force_user" model="ir.model.access">
+            <field name="name">Asiento contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Apunte contable -->
+        <record id="account_move_line_sales_force_user" model="ir.model.access">
+            <field name="name">Apunte contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Pagos -->
+        <record id="account_payment_readonly_sales_force_user" model="ir.model.access">
+            <field name="name">Pagos - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Pedido de venta -->
+        <record id="sale_order_sales_force_user" model="ir.model.access">
+            <field name="name">Pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Contacto -->
+        <record id="res_partner_sales_force_user" model="ir.model.access">
+            <field name="name">Contacto - Fuerza de Ventas</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Equipo de ventas -->
+        <record id="crm_team_sales_force_user" model="ir.model.access">
+            <field name="name">Equipo de ventas - Fuerza de Ventas</field>
+            <field name="model_id" ref="crm.model_crm_team"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Registro al evento -->
+        <record id="event_registration_sales_force_user" model="ir.model.access">
+            <field name="name">Registro al evento - Fuerza de Ventas</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Transferir -->
+        <record id="stock_picking_sales_force_user" model="ir.model.access">
+            <field name="name">Transferir - Fuerza de Ventas</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Concepto de retención de ingresos -->
+        <record id="withholding_tax_line_sales_force_user" model="ir.model.access">
+            <field name="name">Concepto de retención de ingresos - Fuerza de Ventas</field>
+            <field name="model_id" ref="l10n_ve_full.model_account_wh_islr_concept"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Línea de pedido de ventas -->
+        <record id="sale_order_line_sales_force_user" model="ir.model.access">
+            <field name="name">Línea pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <!-- Movimiento stock -->
+        <record id="stock_move_sales_force_user" model="ir.model.access">
+            <field name="name">Movimiento stock - Fuerza de Ventas</field>
+            <field name="model_id" ref="stock.model_stock_move"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Opciones de Ventas -->
+        <record id="sale_order_option_sales_force_user" model="ir.model.access">
+            <field name="name">Opciones de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale_management.model_sale_order_option"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Líneas de contabilidad -->
+        <record id="account_move_line_resumen_sales_force_user" model="ir.model.access">
+            <field name="name">Líneas de contabilidad - Fuerza de Ventas</field>
+            <field name="model_id" ref="l10n_ve_full.model_account_move_line_resumen"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Líneas de contabilidad -->
+        <record id="account_move_line_resumen_sales_force_user" model="ir.model.access">
+            <field name="name">Líneas de contabilidad - Fuerza de Ventas</field>
+            <field name="model_id" ref="l10n_ve_full.model_account_move_line_resumen"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Conciliación parcial -->
+        <record id="account_partial_reconcile_sales_force_user" model="ir.model.access">
+            <field name="name">Conciliación parcial - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_partial_reconcile"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Cuentas por Cobrar -->
+        <record id="account_account_receivable_sales_force_user" model="ir.model.access">
+            <field name="name">Reporte de Cuentas Por cobrar - Fuerza de Ventas</field>
+            <field name="model_id" ref="model_account_receivable_wizard"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <!-- Estado de Cuenta -->
+        <record id="account_account_status_sales_force_user" model="ir.model.access">
+            <field name="name">Reporte de Estado de Cuenta - Fuerza de Ventas</field>
+            <field name="model_id" ref="model_account_status_wizard"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <!-- Orden de reparación -->
+        <record id="repair_order_sales_force_rule_G" model="ir.model.access">
+            <field name="name">Orden de reparación - Fuerza de Ventas</field>
+            <field name="model_id" ref="repair.model_repair_order"/>
+            <field name="group_id" ref="group_sales_force_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Orden de reparación -->
+        <record id="account_payment_sales_force_rule_G" model="ir.rule">
+            <field name="name">Pago contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('invoice_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Reglas de Registro - Generales-->
+        <record id="sale_order_sales_force_rule_G" model="ir.rule">
+            <field name="name">Pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record> 
+        <record id="sale_order_line_sales_force_rule_G" model="ir.rule">
+            <field name="name">Línea pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="account_move_sales_force_rule_G" model="ir.rule">
+            <field name="name">Asiento contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('move_type', '=', 'entry')]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="account_payment_sales_force_rule_G" model="ir.rule">
+            <field name="name">Pago contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('invoice_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Reglas de Registro - Asesor de Ventas-->
+        <record id="sale_order_sales_force_rule_1" model="ir.rule">
+            <field name="name">Pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record> 
+        <record id="sale_order_line_sales_force_rule_1" model="ir.rule">
+            <field name="name">Línea pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('order_id.create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record> 
+        <record id="account_move_sales_force_rule_1" model="ir.rule">
+            <field name="name">Asiento contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('invoice_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="account_payment_sales_force_rule_1" model="ir.rule">
+            <field name="name">Pago contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_user'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Reglas de Registro - Gerente de Ventas-->   
+        <record id="sale_order_sales_force_rule_2" model="ir.rule">
+            <field name="name">Pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_manager'))]"/>
+            <field name="domain_force">[('team_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="sale_order_line_sales_force_rule_2" model="ir.rule">
+            <field name="name">Línea pedido de venta - Fuerza de Ventas</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_manager'))]"/>
+            <field name="domain_force">[('order_id.team_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record> 
+        <record id="account_move_sales_force_rule_2" model="ir.rule">
+            <field name="name">Asiento contable - Fuerza de Ventas</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_manager'))]"/>
+            <field name="domain_force">[('team_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="account_payment_sales_force_rule_3" model="ir.rule">
+            <field name="name">Pago contable - Fuerza de Ventas (GVENTAS01)</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="groups" eval="[(4, ref('group_sales_force_manager'))]"/>
+            <field name="domain_force">[('invoice_user_id.partner_id.team_id.id', '=', user.partner_id.team_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Menú principal "Fuerza de Ventas" -->
+        <menuitem id="menu_sales_force_dashboard" name="Fuerza de Ventas" action="sale.action_quotations" web_icon="gchakao_custom,static/img/sales_force.png" sequence="1" groups="gchakao_custom.group_sales_force_user"/>
+
+        <!-- Menú principal "Menú de Fuerza de Ventas" dentro de "Fuerza de Ventas" -->
+        <menuitem id="menu_sales" name="Menú de Fuerza de Ventas" parent="menu_sales_force_dashboard" sequence="2"/>
+
+        <!-- Submenú "Ventas" dentro del menú "Fuerza de Ventas" -->
+        <menuitem id="menu_sales_orders" name="Ventas" parent="menu_sales" sequence="1" action="sale.action_quotations"/>
+
+        <!-- Submenú "Facturas" dentro del menú "Fuerza de Ventas" 
+        Tiene acceso al botón "Nuevo" pero no puede crear Facturas-->
+<!--         <menuitem id="menu_sales_invoices" name="Facturas" parent="menu_sales" sequence="2" action="account.action_move_out_invoice_type"/> -->
+
+        <!-- Submenú "Notas de crédito" dentro del menú "Fuerza de Ventas" 
+        Tiene acceso al botón "Nuevo" pero no puede crear Notas de crédito-->
+<!--         <menuitem id="menu_sales_credit_notes" name="Notas de crédito" parent="menu_sales" sequence="3" action="account.action_move_out_refund_type"/> -->
+
+        <!-- Submenú "Pagos" dentro del menú "Fuerza de Ventas" -->
+        <menuitem id="menu_sales_payments" name="Pagos" parent="menu_sales" sequence="4" action="account.action_account_payments"/>
+
+        <!-- Submenú "Clientes" dentro del menú "Fuerza de Ventas" -->
+<!--         <menuitem id="menu_clients_dashboard" name="Clientes" parent="menu_sales" sequence="5" action="contacts.action_contacts"/> -->
+
+        <!-- Submenú "Reporte de Cuentas por Cobrar"  -->
+        <menuitem id="menu_sales_receivable_invoices" name="Reporte de Cuentas por Cobrar (PDF)" parent="menu_sales" sequence="6" action="action_account_receivable_wizard"/>
+
+        <!-- Submenú "Reporte de Estado de Cuenta"  -->
+        <menuitem id="menu_sales_status_invoices" name="Reporte de Estado de Cuenta (PDF)" parent="menu_sales" sequence="7" action="action_account_status_wizard"/>
+
+        <!-- Submenú "Reporte de Lista de Precios" -->
+<!--         <menuitem id="menu_sales_pricelist" name="Reporte de Lista de Precios (PDF)" parent="menu_sales" sequence="8" action="action_product_price_list"/> -->
+
+        <!-- Submenú "Reporte de Lista de Precios 2" -->
+        <menuitem id="menu_sales_pricelist2" name="Reporte de Lista de precios Multi-Compañía (PDF)" parent="menu_sales" sequence="9" action="action_price_list_multicompany"/>
+
+        <!-- Restricciones "Pedidos de Ventas"-->
+        <record id="view_order_form_sales_force" model="ir.ui.view">
+            <field name="name">sale.order.form.sales.force</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@id='create_invoice']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@id='create_invoice_percentage']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_by_email_primary']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_proforma_primary']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_proforma']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_by_email']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_preview_sale_order']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='payment_action_capture']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='payment_action_void']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm'][@id='action_confirm']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+<!--                     <attribute name="invisible">state == 'draft'</attribute>
+ -->                </xpath>
+                <xpath expr="//button[@name='action_confirm'][not(@id='action_confirm')]" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='client_order_ref']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_shipping']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_reporting']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='branch_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='journal_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//create[@name='add_product_control']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//create[@name='add_section_control']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_status']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='team_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Vista para usuarios del grupo específico -->
+        <record id="view_order_form_sales_force_user" model="ir.ui.view">
+            <field name="name">Sales Order Form (Sales Force User)</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+<!--                 <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='team_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='require_signature']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='require_payment']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='prepayment_percent']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='signed_by']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='signed_on']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='signature']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_add_from_catalog']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Acción específica para asignar la vista al grupo -->
+        <record id="action_orders_sales_force_user" model="ir.actions.act_window">
+            <field name="name">Sales Orders (Sales Force User)</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_order_form_sales_force_user"/>
+            <field name="groups_id" eval="[(6, 0, [ref('gchakao_custom.group_sales_force_user')])]"/>
+        </record>
+
+        <record id="view_order_form_sales_force_custom" model="ir.ui.view">
+            <field name="name">sale.order.form.sales.force.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="gchakao_custom.sale_custom_view_order_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_send_approval']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_form_sales_force_customs" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.dropshipping.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="stock_dropshipping.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_view_delivery']" position="attributes">
+                    <attribute name="groups">gchakao_custom.group_sales_force_user,stock.group_stock_user</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="sale_order_template_form_sales_force_customs" model="ir.ui.view">
+            <field name="name">sale.order.template.form.sales.force.customs</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='optional_products']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Restricciones "Facturas" y "Notas de Crédito"-->
+        <record id="view_move_form_restrictions" model="ir.ui.view">
+            <field name="name">account.move.form.restrictions</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_reverse']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_post']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_sent']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_register_payment']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='preview_invoice']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='251']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_draft']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_request_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_set_checked']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='open_duplicated_ref_bill_view']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_open_business_doc']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='open_reconcile_view']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='open_created_caba_entries']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_void_invoice_wizard']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <!-- <xpath expr="//button[@name='get_early_payment']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath> -->
+                <xpath expr="//notebook/page[@name='other_info']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='igtf_base']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='igtf_aplicado']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='mostrar_igtf_completo']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_reference']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='acuerdo_moneda']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='currency_id_dif']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name_rate']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='marck_paper']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sub_provider_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='wh_iva']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>                
+                <xpath expr="//field[@name='wh_iva_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>    
+                <xpath expr="//field[@name='iva_number_asignado']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>    
+                <xpath expr="//field[@name='vat_apply']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>    
+                <xpath expr="//field[@name='status']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>   
+                <xpath expr="//field[@name='islr_wh_doc_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>   
+                <xpath expr="//field[@name='islr_number_asignado']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>   
+                <xpath expr="//field[@name='municipal_rate_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>   
+                <xpath expr="//field[@name='tipo_contribuyente_mun']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>   
+                <xpath expr="//field[@name='rate_value']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>  
+                <xpath expr="//field[@name='porc_reten_muni']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath> 
+                <xpath expr="//field[@name='monto_reten_muni']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath> 
+                <xpath expr="//field[@name='monto_reten_muni']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath> 
+                <xpath expr="//field[@name='account_move_ret_muni_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath> 
+                <xpath expr="//field[@name='wh_muni_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath> 
+                <xpath expr="//field[@name='comprobante_muni']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='generate_wh_muni']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='tipo_doc']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_con_iva']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_base']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='alicuota_general']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_exento']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='alicuota_reducida']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='alicuota_adicional']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_valor_iva']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='porcentaje_ret']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_ret_iva']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='nro_comprobante']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Restricciones "Pagos"-->
+        <record id="view_payment_form_restrictions" model="ir.ui.view">
+            <field name="name">account.payment.form.restrictions</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_post']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_draft']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_request_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='mark_as_sent']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='unmark_as_sent']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_open_invoices']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_open_bills']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_open_statement_lines']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_open_journal_entry']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='currency_id_dif']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='currency_id_dif']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='analytic_distribution']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_method_line_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='move_id_dif']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='hr_payment_order_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='amount_diferential']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='amount_total_bs']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='amount_total_usd']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='residual_amount']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Restricciones "Picking"-->
+        <record id="view_stock_picking_form_restrictions" model="ir.ui.view">
+            <field name="name">stock.picking.form.restrictions</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_assign']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_validate']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='do_print_picking']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_see_returns']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_see_move_scrap']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_see_packages']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_view_reception_report']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_picking_move_tree']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_detailed_operations']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_assign_serial']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_repair_return']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_view_repairs']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='%(assign_tracking_number_action)d']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_open_label_type']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='extra']/group/group[@name='other_infos']/field[@name='company_id']" position="replace">
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_open': True}" force_save="1"/>
+                </xpath>
+                <xpath expr="//field[@name='date_of_transfer']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='move_type']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='group_id']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='picking_properties']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//page[@name='operations']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//page[@name='note']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Restricciones "Lotes"-->
+        <record id="view_dispatch_control_form_restrictions" model="ir.ui.view">
+            <field name="name">dispatch.control.form.restrictions</field>
+            <field name="model">dispatch.control</field>
+            <field name="inherit_id" ref="gchakao_custom.dispatch_control_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_done']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_print']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_draft']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='page_operations']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='vehicle_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='driver_id']" position="attributes">
+                     <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                     <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="replace">
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_open': True}" force_save="1"/>
+                </xpath>
+                <xpath expr="//field[@name='date_start']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_end']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='delivery_date']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='vehicle_filler']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='loaded_filler']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='available_filler']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='vehicle_weight']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='loaded_weight']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='available_weight']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='km_estimate']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='coste_km']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_value_road']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='initial_km']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='end_km']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='km_total']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='disel_consumed']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='road_ids']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//div[@name='vehicle_weight']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//div[@name='loaded_weight']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//div[@name='available_weight']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//div[@name='km_estimate']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='total_value_road']" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[last()]/group/group[2]" position="attributes">
+                    <attribute name="groups">!gchakao_custom.group_sales_force_user</attribute>
+                </xpath>
+            </field>
+        </record>
+
+            <!-- Ocultar Botón "Nuevo" -->
+<!--             <record id="view_move_tree_sales_force" model="ir.ui.view">
+                <field name="name">account.move.tree.sales.force</field>
+                <field name="model">account.move</field>
+                <field name="inherit_id" ref="account.view_move_tree"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//tree" position="attributes">
+                        <attribute name="create">false</attribute>
+                    </xpath>
+                </field>
+            </record> -->
+
+<!--             <record id="view_move_form_sales_force" model="ir.ui.view">
+                <field name="name">account.move.form.sales.force</field>
+                <field name="model">account.move</field>
+                <field name="inherit_id" ref="account.view_move_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//form" position="attributes">
+                        <attribute name="create">false</attribute>
+                    </xpath>
+                </field>
+            </record> -->
+
+    </data>
+</odoo>
+

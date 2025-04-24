@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="manual_wizard_form" model="ir.ui.view">
+        <field name="name">manual.wizard.form</field>
+        <field name="model">manual.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="product_type" invisible="1"/>
+                    <field name="warranty_id" invisible="1"/>
+                    <field name="product_ids" invisible="1"/>
+                    <field name="related_invoice_ids" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="product_id" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="seller_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="invoice_id" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group/>
+                    </group>
+                    <field name="line_ids" options="{'no_open': True, 'no_create': True}">
+                        <tree editable="bottom">
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="move_id" column_invisible="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="account_id" readonly="1"/>
+                            <field name="price_unit" readonly="1"/>
+                            <field name="price_unit_usd" readonly="1"/>
+                            <button name="action_add_product" 
+                                    type="object" icon="fa-plus-square" 
+                                    title="Seleccionar serial" 
+                                    class="text-info" 
+                                    context="{'default_product_id': product_id, 'default_invoice_id': move_id, 'warranty_id': parent.warranty_id}"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <footer/>
+            </form>
+        </field>
+    </record>
+</odoo>

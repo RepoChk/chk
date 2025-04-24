@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_gc_hr_employee_loan_type_form" model="ir.ui.view">
+        <field name="name">gc.hr.employee.loan.type.form</field>
+        <field name="model">gc.hr.employee.loan.type</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de préstamo">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="struct_id" />
+                            <field name="rule_id" domain="[('struct_id', '=', struct_id)]"/>
+                            <field name="account_id" force_save="1"/>
+                            <field name="note" />
+                        </group>
+                        <group>
+                            <field name="company_id" />
+                            <field name="active" widget="boolean_toggle" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_gc_hr_employee_loan_type_tree" model="ir.ui.view">
+        <field name="name">gc.hr.employee.loan.type.tree</field>
+        <field name="model">gc.hr.employee.loan.type</field>
+        <field name="arch" type="xml">
+            <tree string="Tipo de préstamo">
+                <field name="name" />
+                <field name="rule_id" />
+                <field name="account_id" />
+                <field name="company_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hr_employee_loan_type" model="ir.actions.act_window">
+        <field name="name">Tipo de préstamo</field>
+        <field name="res_model">gc.hr.employee.loan.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_hr_employee_loan_type" name="Tipo de préstamo" parent="l10n_ve_payroll.menu_main_hr_employee_loan" action="action_hr_employee_loan_type"/>
+</odoo>

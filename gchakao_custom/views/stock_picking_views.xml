@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_picking_sale_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="street" placeholder="Street..." class="o_address_street"
+                    invisible="picking_type_code != 'outgoing'"
+                />
+                <field name="street2" placeholder="Street 2..." class="o_address_street"
+                    invisible="picking_type_code != 'outgoing'"
+                />
+                <field name="city_id" placeholder="City" class="o_address_city"
+                    invisible="picking_type_code != 'outgoing'"
+                />
+                <field name="state_id" class="o_address_state" placeholder="State"
+                       options="{&quot;no_open&quot;: True}"
+                    invisible="picking_type_code != 'outgoing'"
+                />
+                <field name="zip" placeholder="ZIP" class="o_address_zip"
+                    invisible="picking_type_code != 'outgoing'"
+                />
+                <field name="country_id" placeholder="Country" class="o_address_country"
+                       options="{&quot;no_open&quot;: True}"
+                    invisible="picking_type_code != 'outgoing'"
+                />
+            </xpath>
+            <xpath expr="//field[@name='backorder_id']" position="before">
+                <field name="filler_total" readonly="1"/>
+                <field name="weight_total" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="date_delivered_to" invisible="state != 'done'" readonly="state != 'done'"/>
+                <field name="invoice_ids" readonly="1" widget="many2many_tags"/>
+                <field name="filler_billed" readonly="1"/>
+                <field name="delivery_request" readonly="1"/>
+                <field name="exhibitor_request" readonly="1"/>
+                <field name="logistic_active" readonly="1"/>
+                <field name="logistic_use" readonly="1"/>
+                <field name="truck_payment" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page/field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="after">
+                <field name="filler" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='location_id']" position="attributes">
+                <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='move_ids_without_package']/tree/button[@name='action_assign_serial']" position="after">
+                <button name="action_validate_serial" type="object" icon="fa-check-square-o" role="img" title="Validar seriales" readonly="1"/>
+            </xpath> -->
+
+            <xpath expr="//header/button[last()]" position="after">
+                <button 
+                    name="%(assign_tracking_number_action)d" 
+                    string="Agregar Seguimiento" 
+                    class="btn-primary" 
+                    type="action" 
+                    invisible="state in ('done','cancel') or picking_type_code != 'outgoing'"
+                    context="{'picking_id': id}"
+                    />
+            </xpath>
+
+            <div name="button_box" position="inside">
+                <button type="object"
+                    name="action_view_dispatch"
+                    class="oe_stat_button"
+                    icon="fa-truck"
+                    string="Despacho"
+                    invisible="not dispatch_id"/>
+            </div>
+            
+            <xpath expr="//page[@name='extra']//field[@name='company_id']" position="after">
+                <field name="dispatch_id"
+                    readonly="1"
+                    options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="stock_picking_inherit_view_tree" model="ir.ui.view">
+        <field name="name">stock.picking.inherit.view.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="filler_total" optional="hide"/>
+                <field name="weight_total" optional="hide"/>
+                <field name="logistic_active" optional="hide"/>
+                <field name="logistic_use" optional="hide"/>
+                <field name="truck_payment" optional="hide"/>
+                <field name="delivery_request" optional="hide"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="invoice_ids" widget="many2many_tags" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="date_delivered_to"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

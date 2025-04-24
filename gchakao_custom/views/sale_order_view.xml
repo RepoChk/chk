@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_custom_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.custom.view.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/control/button[@name='action_add_from_catalog']" position="before">
+                    <button name="%(gchakao_custom.sale_order_product_wizard_action)d" string="Selec. desde almacén" type="action" class="m-1 px-2 btn-link" context="{'default_sale_id': parent.id}"/>
+                </xpath>
+
+                <xpath expr="//kanban/control/button[@name='action_add_from_catalog']" position="before">
+                    <button name="%(gchakao_custom.sale_order_product_wizard_action)d" string="Selec. desde almacén" type="action" class="btn-secondary" context="{'default_sale_id': parent.id}"/>
+                </xpath>
+
+                <xpath expr="//tree/control/button[@name='action_add_from_catalog']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='product_template_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+
+                <xpath expr="//kanban/control/button[@name='action_add_from_catalog']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+
+                <xpath expr="//div[@name='ordered_qty']/field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                    <field name="price_unit" readonly="0"/>
+                </xpath>
+
+                <xpath expr="//div[@name='invoice_lines']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+                    <field name="warehouse_ids" widget='many2many_tags' optional="hide"/>
+                    <!-- <field name="warehouse_info" optional="hide"/> -->
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="readonly">detailed_type != 'service'</attribute>
+                </xpath>
+
+                <xpath expr="//group[@name='sales_person']/field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="force_save">1</attribute>
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                    <field name="purchase_price" readonly="1" optional="hide"/>
+                    <field name="profitability" readonly="1" optional="hide"/>
+                    <field name="detailed_type" invisible="1"/>
+                    <field name="profitability_percent" readonly="1" optional="hide"/>
+                    <field name="early_payment_discount" optional="hide"/>
+                    <field name="price_unit_discount" readonly="1" optional="hide"/>
+                    <field name="profitability_discount" readonly="1" optional="hide"/>
+                    <field name="profitability_percent_discount" readonly="1" optional="hide"/>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_invoice_id']" position="replace">
+                    <field name="partner_invoice_id" 
+                           widget="res_partner_many2one" 
+                           context="{'res_partner_search_mode': 'customer', 'default_type': 'invoice', 'show_address': 1, 'show_vat': True}" 
+                           placeholder="Type to find an invoice partner..." 
+                           readonly="state in ['cancel', 'sale']"/>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_shipping_id']" position="replace">
+                    <field name="partner_shipping_id" 
+                           widget="res_partner_many2one" 
+                           context="{'res_partner_search_mode': 'customer', 'default_type': 'delivery', 'show_address': 1, 'show_vat': True}" 
+                           placeholder="Type to find a shipping partner..." 
+                           readonly="state in ['cancel', 'sale']"/>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="fillert" readonly="1"/>
+                    <field name="situation" readonly="1"/>
+                    <field name="delivery_request"/>
+                    <field name="exhibitor_request"/>
+                    <field name="logistic_active" groups="gchakao_custom.logistic_active_groups"/>
+                    <field name="logistic_use" groups="gchakao_custom.logistic_use_groups"/>
+                    <field name="truck_payment"/>
+                    <field name="remove_approval" invisible="1"/>
+                    <field name="term_type" invisible="1"/>
+                    <field name="is_approval" force_save="1" readonly="remove_approval == False or term_type == 'cash' or state != 'draft'"/>
+                    <field name="tax_no_fiscal"/>
+                    <field name="approver_ids" widget="many2many_tags" invisible="is_approval == False"/>
+                    <field name="approvals_approver_ids" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='customer_lead']" position="before">
+                    <field name="filler"/>
+                    <field name="fillert" readonly="1"/>
+                </xpath>
+
+                <xpath expr="//notebook/page[last()]" position="after">
+                    <page name="send_approval" string="Aprobaciones Enviadas" invisible="is_approval == False">
+                        <field name="approvals_ids" readonly="1">
+                            <tree create="false" edit="false" no_open="1">
+                                <field name="order_id" column_invisible="True"/>
+                                <field name="request_owner_id" widget="many2one_avatar_user" on_change="1" string="Solicitante"/>
+                                <field name="name"/>
+                                <field name="category_id"/>
+                                <field name="request_status" 
+                                    decoration-info="request_status == 'new'" 
+                                    decoration-warning="request_status == 'pending'" 
+                                    decoration-success="request_status == 'approved'" 
+                                    decoration-danger="request_status == 'refused'" 
+                                    widget="badge" 
+                                />
+                                <field name="date_confirmed" decoration-bf="1"/>
+                                <field name="reason" optional="hide"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page name="approval_info" string="Aprobaciones" invisible="not approvals_approver_ids">
+                        <field name="approvals_approver_ids" readonly="1" options="{'no_open': True}">
+                            <tree create="false" edit="false" delete="false" editable="bottom" options="{'no_open': True}">
+                                <field name="request_id"/>
+                                <field name="user_id"/>
+                                <field name="required"/>
+                                <field name="write_date"/>
+                                <field name="status" 
+                                    decoration-info="status == 'new'" 
+                                    decoration-warning="status == 'pending'" 
+                                    decoration-success="status == 'approved'" 
+                                    decoration-danger="status == 'refused'" 
+                                    widget="badge" 
+                                />
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                <xpath expr="//form/header/button[@name='action_confirm'][1]" position="after">
+                    <button string="Solicitud de Aprobación" name="action_send_approval" type="object" class="oe_highlight"
+                    invisible="not id or is_approval == False or state != 'sale' or state == 'cancel' or situation == 'invoiced'"/>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='other_information']/group/group[@name='sale_info']/field[@name='journal_id']" position="before">
+                    <field name="branch_id" options="{'no_create': True, 'no_create': True, 'no_edit': True}"/>
+                </xpath>
+                <xpath expr="//notebook/page[@name='other_information']/group/group[@name='sale_info']/field[@name='journal_id']" position="replace">
+                    <field name="journal_id" domain="[('branch_id', '=', branch_id),('type', '=', 'sale')]" readonly="invoice_count != 0 and state == 'sale' or branch_id == False" options="{'no_create': True}"/>
+                </xpath>
+                <xpath expr="//field[@name='price_unit']" position="after">
+                    <field name="early_payment_discount"/>
+                </xpath>
+                <xpath expr="//button[@id='create_invoice']" position="replace">
+                    <button id="create_invoice" name="action_check_approvals_and_open_wizard" string="Crear factura"
+                        type="object" class="btn-primary" data-hotkey="c"
+                        invisible="invoice_status != 'to invoice'"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_header']/group[@name='partner_details']/field[@name='partner_invoice_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='team_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_shipping']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_reporting']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="gc_sale_order_form_inherit_sale_managemen" model="ir.ui.view">
+            <field name="name">gc.sale.order.form.inherit.sale_management</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='optional_products']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_sale_order_tree_inherit" model="ir.ui.view">
+            <field name="name">view.sale.order.tree.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="logistic_active" optional="hide"/>
+                    <field name="logistic_use" optional="hide"/>
+                    <field name="situation" optional="hide"/>
+                    <field name="truck_payment" optional="hide"/>
+                    <field name="delivery_request" optional="hide"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_status']" position="after">
+                    <field name="logistic_status" readonly="1" optional="show" widget="badge" decoration-info="logistic_status == 'in_progress'" decoration-success="logistic_status == 'dispach'"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="filter_sale_orders_approved_to_invoice" model="ir.filters">
+            <field name="name">Pedidos Aprobados por Facturar</field>
+            <field name="model_id">sale.order</field>
+            <field name="domain">[('situation', '=', 'aprobado_por_facturar')]</field>
+            <field name="context">{}</field>
+            <field name="user_id" eval="False"/>
+            <field name="is_default" eval="False"/> 
+        </record>
+
+<!--         <record id="filter_sale_orders_analysis" model="ir.filters">
+            <field name="name">Pedidos en Análisis</field>
+            <field name="model_id">sale.order</field>
+            <field name="domain">[('situation', '=', 'analisis')]</field>
+            <field name="context">{}</field>
+            <field name="user_id" eval="False"/>
+            <field name="is_default" eval="False"/> 
+        </record> -->
+        
+        <record id="ir_cron_recalculate_situation" model="ir.cron">
+            <field name="name">Recalcular Situación de Pedidos</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_recalculate_situation()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+        </record>
+    </data>
+</odoo>  

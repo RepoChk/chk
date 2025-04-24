@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="material_approvals_category_view_form_inherit" model="ir.ui.view">
+            <field name="name">approvals.category.view_form.inherit</field>
+            <field name="model">approval.category</field>
+            <field name="inherit_id" ref="approvals.approval_category_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='option_settings']" position="inside">
+                    <field name="has_requisition_request" widget="radio" options="{'horizontal': true}" force_save="1"/>
+                    <field name="has_analytic_request" widget="radio" options="{'horizontal': true}" force_save="1"/>
+                    <field name="is_cxp" widget="radio" options="{'horizontal': true}" force_save="1"/>
+                </xpath>
+                <xpath expr="//group[@name='approvers']" position="inside">
+                    <field name="is_amount"/>
+                    <field name="currency_id_dif" invisible="1"/>
+                    <field name="amount" required="is_amount"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

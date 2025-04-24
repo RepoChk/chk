@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="approvals_category_view_form_inherit" model="ir.ui.view">
+            <field name="name">approvals.category.view_form.inherit</field>
+            <field name="model">approval.category</field>
+            <field name="inherit_id" ref="approvals.approval_category_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='option_settings']" position="inside">
+                    <field name="is_purchase" widget="radio" options="{'horizontal': true}" force_save="1"/>
+                    <field name="is_order" widget="radio" options="{'horizontal': true}" force_save="1"/>
+                    <field name="is_order_payment" widget="radio" options="{'horizontal': true}" force_save="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

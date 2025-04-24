@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="warranty_rule" model="ir.rule">
+            <field name="name">Rule - Garantías por compañía</field>
+            <field name="model_id" ref="model_warranty_request"/>
+            <field name="domain_force">['|',('company_id', 'in', company_ids),('company_id', '=', False)]</field>
+        </record>
+    </data>
+</odoo>

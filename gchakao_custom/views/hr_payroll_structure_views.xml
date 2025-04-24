@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="view_hr_employee_inherit_form" model="ir.ui.view">
+            <field name="name">view.hr.employee.inherit.form</field>
+            <field name="model">hr.payroll.structure</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_employee_grade_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='country_id']" position="after">
+                    <field name="hr_payment_type"/>
+                    <field name="confidential"/>
+                </xpath>
+                <xpath expr="//page[@name='salary_rules']" position="after">
+                    <page name="employee_list" string="Empleados">
+                        <div class="row">
+                            <div class="col-2">
+                                <button name="%(empleados_wizard_action)d" 
+                                    string="Agregar empleados" 
+                                    class="btn-primary" 
+                                    type="action" 
+                                    context="{'structure': id, 'assigned_employees': assigned_employees}"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="%(commission_update_wizard_action)d" 
+                                    string="Actualizar Comisiones" 
+                                    class="oe_highlight" 
+                                    type="action" 
+                                    context="{'structure_id': id, 'journal_id': journal_id}" />
+                            </div>
+                        </div>
+                        <field name="assigned_employees" invisible="1"/>
+                        <field name="employee_ids">
+                            <tree editable="bottom">
+                                <field name="employee_id" options="{'no_open': True}" required="1" domain="[('id', 'not in', parent.assigned_employees)]"/>
+                                <field name="company_id" readonly="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

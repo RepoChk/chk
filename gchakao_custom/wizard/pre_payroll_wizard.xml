@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+      <record id="view_pre_payroll_wizard" model="ir.ui.view">
+            <field name="name">Reporte de Pre Nomina</field>
+            <field name="model">pre.payroll.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reporte de Pre Nómina">
+                    <div class="o_row">
+                        <p class="text-muted w-50">Seleccione el rango de fechas para filtras los lotes de nómina. Si desea ser mas específico puede seleccionar los departamentos que desea consular</p>
+                    </div>
+                    <group>
+                        <group>
+                            <label for="date_from" string="Período"/>
+                            <div class="o_row">
+                                <field name="date_from" class="oe_inline o_hr_narrow_field" /> - <field name="date_to" class="oe_inline o_hr_narrow_field"/>
+                            </div>
+                            <field name="run_ids" invisible="1"/>
+                            <field name="payslip_run_ids" string="Lotes de Nómina" required="1" widget="many2many_tags" options="{'no_create': 1}" readonly="date_from == False or date_to == False"/>
+                            <field name="type_report" string="Tipo" required="1" />
+                        </group>
+                        <group>
+                            <field name="company_id" string="Compañía" readonly="1" force_save="1"  options="{'no_open': 1}"/>
+                            <field name="date" invisible="1" force_save="1"/>
+                            <field name="department_ids" widget="many2many_tags" string="Departameto" invisible="type_report == 'analytic'" options="{'no_create': 1}"/>
+                        </group>
+                    </group>
+                    <field invisible="1" name="state"/>
+                    <div invisible="state != 'get'">
+                        <group>
+                            <field name="name" colspan="4" invisible="1"/>
+                            <field name="report" filename="name" colspan="4"/>
+                        </group>
+                    </div>
+                    <footer>
+                        <button name="print_report_data_detailed" string="Imprimir detalle" type="object" class="oe_highlight" invisible="type_report != 'detail'"/>
+                        <button name="print_report_data_summarized" string="Imprimir resumen" type="object" class="oe_highlight" invisible="type_report != 'resume'"/>
+                        <button name="print_report_data_analytic" string="Resumen por cta analítica" type="object" class="oe_highlight" invisible="type_report != 'analytic'"/>
+                        <!-- <button name="print_report_xls" string="Resumen EXCEL" type="object" class="oe_highlight"/> -->
+                        <button special="cancel" string="Cancel" class="oe_highlight" />
+                    </footer>
+                </form>
+
+            </field>
+      </record>
+
+      <record id="action_report_pre_payroll" model="ir.actions.act_window">
+            <field name="name">Reporte pre-nomina</field>
+            <field name="res_model">pre.payroll.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_pre_payroll_wizard"/>
+            <field name="target">new</field>
+      </record>
+
+      <menuitem
+        id="menu_pre_monina"
+        parent="hr_payroll.menu_hr_payroll_report"
+        name="Reporte Pre-Nómina"
+        sequence="11"
+        action="action_report_pre_payroll"/>
+
+    </data>
+</odoo>

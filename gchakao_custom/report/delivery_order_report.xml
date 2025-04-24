@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_delivery_order">
+        <div class="header">
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer">
+        </div>
+    </template>
+
+    <template id="delivery_order_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="gchakao_custom.external_layout_delivery_order">
+                    <div class="page">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4">
+                                </div>
+                                <div class="col-5 text-center"><br/>
+                                    <!-- <b style="font-size:20px;">ORDEN DE ENTREGA</b> -->
+                                </div>
+                                <div class="col-3">
+                                    <b style="font-size:12px;">FECHA: <t t-if="o.date_done" t-esc="o.date_done.strftime('%d/%m/%y')"/><t t-else="" t-esc="o.scheduled_date.strftime('%d/%m/%y')"/></b><br/>
+                                    <b style="font-size:12px;">NUMERO: <t t-esc="o.name"/></b><br/>
+                                    <b style="font-size:12px;">DOCUMENTO ORIGEN: <t t-esc="o.origin"/></b>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-7">
+                                    <table class="table table-borderless table-sm w-100">
+                                        <colgroup>
+                                            <col span="1" style="width:30%;"/>
+                                            <col span="1" style="width:70%;"/>
+                                        </colgroup>
+                                        <tr>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <b style="font-size:12px;">Nombre Apellido / Razón Social:</b>
+                                            </td>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <t t-set="partner" t-value="o.partner_id"/>
+                                                <t t-if="o.partner_id.parent_id">
+                                                    <t t-set="partner" t-value="o.partner_id.parent_id"/>
+                                                </t>
+                                                <b style="font-size:12px;"><t t-esc="partner.name"/></b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <b style="font-size:12px;">C.I. / R.I.F.:</b>
+                                            </td>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <t t-if="company_type == 'person'">
+                                                    <b style="font-size:12px;"><t t-if="identification_id" t-esc="identification_id"/></b>
+                                                </t>
+                                                <t t-else="company_type == 'company'">
+                                                    <b style="font-size:12px;"><t t-if="vat" t-esc="vat"/></b>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <b style="font-size:12px;">Dirección de Fiscal:</b>
+                                            </td>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <t t-set="street" t-value="o.street"/>
+                                                <t t-if="o.partner_id.parent_id">
+                                                    <t t-set="street" t-value="o.partner_id.parent_id.street"/>
+                                                </t>
+                                                <b style="font-size:12px;"><t t-esc="street"/></b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <b style="font-size:12px;">Dirección de Entrega:</b>
+                                            </td>
+                                            <td style="display: table-cell; vertical-align: middle;">
+                                                <b style="font-size:12px;"><t t-esc="o.partner_id.contact_address"/></b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-5">
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div style="width: 100%; height: 400px;">
+                            <table class="table table-sm table-striped w-100">
+                                <colgroup>
+                                    <col span="1" style="width: 10%;"/>
+                                    <col span="1" style="width: 50%;"/>
+                                    <col span="1" style="width: 10%;"/>
+                                    <col span="1" style="width: 10%;"/>
+                                    <col span="1" style="width: 20%;"/>
+                                </colgroup>
+                                <thead>
+                                    <tr style="border: 1px black solid;">
+                                        <th class="text-center" style="border-right: 1px solid black; display: table-cell; vertical-align: middle;">
+                                            <span style="font-size:14px;">Código</span>
+                                        </th>
+                                        <th class="text-center" style="border-right: 1px solid black; display: table-cell; vertical-align: middle;">
+                                            <span style="font-size:14px;">Descripción</span>
+                                        </th>
+                                        <th class="text-center" style="border-right: 1px solid black; display: table-cell; vertical-align: middle;">
+                                            <span style="font-size:14px;">U.M.</span>
+                                        </th>
+                                        <th class="text-center" style="border-right: 1px solid black; display: table-cell; vertical-align: middle;">
+                                            <span style="font-size:14px;">Cantidad</span>
+                                        </th>
+                                        <th class="text-center" style="border-right: 1px solid black; display: table-cell; vertical-align: middle;">
+                                            <span style="font-size:14px;">Precio Bs.</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.move_ids_without_package" t-as="line">
+                                        <tr>
+                                            <td class="text-center">
+                                                <span style="font-size:12px;"><t t-esc="line.product_id.default_code"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span style="font-size:12px;"><t t-esc="line.product_id.name"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span style="font-size:12px;"><t t-esc="line.product_uom.name"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span style="font-size:12px;"><t t-esc="line.quantity"/></span>
+                                            </td>
+                                            <t t-set="price" t-value="o.get_product_price(line.origin, line.product_id.id)"/>
+                                            <td class="text-center">
+                                                <span style="font-size:12px;"><t t-if="price" t-esc="price" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br/>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <b style="font-size:12px;">N° Asignación: <t t-esc="o.dispatch_id.name"/></b>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <b style="font-size:12px;">Chofer: <t t-esc="o.dispatch_id.sudo().driver_id.name"/></b>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <b style="font-size:12px;">Placa: <t t-esc="o.dispatch_id.vehicle_id.license_plate"/></b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

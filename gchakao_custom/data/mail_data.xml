@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_type_alert_hr_payment_order" model="mail.activity.type">
+        <field name="name">Alerta de orden de pago</field>
+        <field name="category">default</field>
+        <field name="res_model">hr.payment.order</field>
+        <field name="icon">fa-tasks</field>
+        <field name="delay_count">0</field>
+    </record>
+
+    <record id="mail_activity_type_alert_payment_with_op" model="mail.activity.type">
+        <field name="name">Alerta de pago desde Orden de Pago</field>
+        <field name="category">default</field>
+        <field name="res_model">account.payment</field>
+        <field name="icon">fa-tasks</field>
+        <field name="delay_count">0</field>
+    </record>
+</odoo>
+

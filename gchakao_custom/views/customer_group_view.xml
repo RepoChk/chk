@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="customer_group_view_form" model="ir.ui.view">
+            <field name="name">customer.group.form</field>
+            <field name="model">customer.group</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="customer_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="total_credit_limit"/>
+                            <field name="credit_difference"/>
+                            <field name="available_credit_group"/>     
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="customer_group_view_tree" model="ir.ui.view">
+            <field name="name">customer.group.tree</field>
+            <field name="model">customer.group</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="customer_ids"/>
+                    <field name="total_credit_limit"/>
+                    <field name="credit_difference"/>
+                    <field name="available_credit_group"/>     
+                    <field name="active" widget="boolean_toggle"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="customer_group_view_search" model="ir.ui.view">
+            <field name="name">customer.group.search</field>
+            <field name="model">customer.group</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <filter string="Activos" name="active" domain="[('active', '=', True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_customer_group" model="ir.actions.act_window">
+            <field name="name">Grupos por Cliente</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">customer.group</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="customer_group_view_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crea tu primer grupo por Cliente
+                </p>
+            </field>
+        </record>
+       
+        <menuitem id="menu_customer_group"
+                  name="Grupos por Cliente"
+                  parent="contacts.res_partner_menu_config"
+                  action="action_customer_group"
+                  sequence="0"/>
+    </data>
+</odoo>

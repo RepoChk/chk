@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Approval Category Approver -->
+    <record id="gc_inherit_approval_category_approver_view_tree" model="ir.ui.view">
+        <field name="name">gc.inherit.approval.category.approver.view.tree</field>
+        <field name="model">approval.category.approver</field>
+        <field name="inherit_id" ref="approvals.approval_category_approver_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='required']" position="after">
+                <field name="is_limited_by_amount" column_invisible="not parent.is_amount"/>
+                <!-- <field name="is_high_payment_approver" column_invisible="not parent.is_amount"/> -->
+            </xpath>
+        </field>
+    </record>
+</odoo>

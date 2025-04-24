@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gc_product_template_form_view_inherit" model="ir.ui.view">
+            <field name="name">gc.product.template.form.view.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']/span[last()]" position="after">
+                    <span class="d-inline-block">
+                        <field name="is_warranty"/>
+                        <label for="is_warranty"/>
+                    </span>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='sales']/group[last()]" position="after">
+                    <group string="Detalle de garantía" name="warranty_detail" invisible="not is_warranty">
+                        <label for="warranty_period" string="Período" />
+                        <div>
+                            <field name="warranty_period" nolabel="1" class="oe_inline" required="is_warranty"/>
+                            <span class="oe_inline">
+                            meses
+                            </span>
+                        </div>
+                    </group>
+                </xpath>
+
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_maintenance_view" type="object" icon="fa-bars" class="oe_stat_button">
+                        <field string="Reg. Garantias" name="warranty_request_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

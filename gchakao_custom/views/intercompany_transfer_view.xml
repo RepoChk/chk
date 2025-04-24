@@ -1,0 +1,127 @@
+<odoo>
+
+    <data>
+        <record id="intercompany_transfer_form" model="ir.ui.view">
+            <field name="name">intercompany.transfer.form</field>
+            <field name="model">intercompany.transfer</field>
+            <field name="arch" type="xml">
+                <form string="Transferencias entre Compañias">
+                    <header>
+                        <button name="draft" 
+                                string="Borrador" 
+                                type="object"
+                                invisible="state not in ('cancel')"
+                                class="oe_highlight"/>
+                        
+                        <button name="validate" 
+                                string="Validar"  
+                                type="object"
+                                invisible="state != 'draft'"
+                                class="oe_highlight"/>
+                                
+                        <button name="terminar" 
+                                string="Terminar" 
+                                type="object"
+                                invisible="state != 'confirmed'"
+                                class="oe_highlight"/>
+                                
+                        <button name="cancel"   
+                                string="Cancelar" 
+                                type="object"
+                                invisible="state in ('draft', 'cancel')"
+                                class="oe_highlight"/>
+                                
+                        <field name="state" 
+                               widget="statusbar"
+                               statusbar_visible="draft,confirmed,done,cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/><br/>
+                            </h1>
+                        </div>
+
+                        <group string="Información de Pago" name="data">
+                            <group>
+                                <field name="amount" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="currency_id" string="Moneda" readonly="state in ('cancel','confirmed','done')" />
+                                <field name="communication" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="rate" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                
+                            </group>
+                            <group>
+                                <field name="out_payment_date" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="in_payment_date" required="0" readonly="state in ('cancel','done')"/>
+                                <field name="payment_concept" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="partner_type" invisible="1" readonly="state in ('cancel','confirmed','done')" />
+                                <field name="transaction_class_id" string="Clasificación" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Compañía que Envía Dinero" name="sending">
+                                <field name="out_payment_type" invisible="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="out_company_id" string="Compañía que envía" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="out_journal_id" string="Diario de envío" widget="selection" required="1" readonly="state in ('cancel','confirmed','done')" domain="[('type', '=', 'bank'),('currency_id','=',currency_id) ,('company_id', '=', out_company_id)]"/>
+                                <field name="out_destination_account_id" string="Cuenta Transitoria" required="1" readonly="state in ('cancel','confirmed','done')" domain="[('company_id', '=', out_company_id)]" />
+                            </group>
+                            <group string="Compañía que Recibe Dinero" name="receiving">
+                                <field name="in_payment_type" invisible="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="in_company_id" string="Compañía receptora" required="1" readonly="state in ('cancel','confirmed','done')"/>
+                                <field name="in_journal_id" string="Diario receptor" widget="selection" required="1" readonly="state in ('cancel','confirmed','done')" domain="[('type', '=', 'bank'),('currency_id','=',currency_id), ('company_id', '=', in_company_id)]"/>
+                                <field name="in_destination_account_id" string="Cuenta Transitoria" domain="[('company_id', '=', in_company_id)]" readonly="state in ('cancel','confirmed','done')"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="move_in" string="Asiento origen">
+                                <group>
+                                    <field name="move_transient_id" readonly="1"/>
+                                </group>
+                            </page>
+                            <page name="move_out" string="Asiento destino">
+                                <group>
+                                    <field name="move_id" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                        
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="intercompany_transfer_tree" model="ir.ui.view">
+            <field name="name">intercompany.transfer.tree</field>
+            <field name="model">intercompany.transfer</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name"/>
+                    <field name="out_company_id" string="Compañía que envía" />
+                    <field name="in_company_id"  string="Receiving Company" />
+                    <field name="amount"/>
+                    <field name="transaction_class_id" optional="show"/>
+                    <field name="state" string="Estado" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_intercompany_transfer" model="ir.actions.act_window">
+            <field name="name">Transferencias InterCompany</field>
+            <field name="res_model">intercompany.transfer</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="intercompany_transfer_tree"/>
+        </record>
+        
+        <menuitem
+            id="action_internal_menu"
+            name="Transferencia InterCompany"
+            action="action_intercompany_transfer"
+            parent="account.menu_finance_entries_actions"
+            sequence="20" />
+    </data>
+
+</odoo>

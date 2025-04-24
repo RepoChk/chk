@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_users_form" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit.hide.menu.user</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='access_rights']/group" position="after">
+                <group string="Menús Ocultos" name="hide_menus_section" class="oe_title">
+                    <group>
+                        <field name="menu_template_ids" widget="many2many_tags" options="{'no_create': True}">
+                            <tree>
+                                <field name="name" string="Plantillas de Menú Oculto"/>
+                            </tree>
+                        </field>
+                        <field name="hide_menu_ids" widget="many2many_tags" options="{'no_create': True}" readonly="1">
+                            <tree>
+                                <field name="complete_name" string="Menús Ocultos para el usuario"/>
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hide_menu_template_form" model="ir.ui.view">
+        <field name="name">hide.menu.template.form</field>
+        <field name="model">hide.menu.template</field>
+        <field name="arch" type="xml">
+            <form string="Plantillas de Menú Oculto">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="menu_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hide_menu_template_tree" model="ir.ui.view">
+        <field name="name">hide.menu.template.tree</field>
+        <field name="model">hide.menu.template</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="menu_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hide_menu_template" model="ir.actions.act_window">
+        <field name="name">Plantillas de Menú Oculto</field>
+        <field name="res_model">hide.menu.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea una nueva plantilla de menú oculto
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_hide_menu_template"
+              name="Plantillas de Menú Oculto"
+              parent="base.menu_users"
+              action="action_hide_menu_template"
+              sequence="100"/>
+</odoo>

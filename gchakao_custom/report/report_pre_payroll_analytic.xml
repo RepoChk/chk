@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_pre_payroll_analytic">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h5>Reporte Pre-nomina Analítica: <span t-esc="name"/></h5>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <t t-set="acum_ded" t-value="0"/>
+                            <t t-set="acum_asig" t-value="0"/>
+                            <t t-set="acum_apor" t-value="0"/>
+                            <div class="col-12">
+                                <t t-foreach="form" t-as="data">
+                                    <t t-foreach="data['analytic_account_ids']" t-as="dep">
+                                        <div style="page-break-inside: avoid; page-break-after: auto;">
+                                            <div class="row" t-if="run_id != data['id']">
+                                                <div class="col-12 primary text-start fw-bold">
+                                                    <span class="text-decoration-underline" t-esc="data['name'].upper()"/>
+                                                </div>
+                                            </div>
+                                            <p>CUENTA ANALÍTICA: <mark><span t-esc="dep['name'].upper()"/></mark></p>
+                                            <table class="table table-bordered page-break-inside: avoid; page-break-after: auto;" width="100%">
+                                                <colgroup>
+                                                    <col span="1" style="width: 40%;"/>
+                                                    <col span="1" style="width: 15%;"/>
+                                                    <col span="1" style="width: 15%;"/>
+                                                    <col span="1" style="width: 15%;"/>
+                                                    <col span="1" style="width: 15%;"/>
+                                                </colgroup>
+                                                <thead>
+                                                    <tr class="text-white bg-secondary fw-bold">
+                                                        <th class="text-center">Concepto</th>
+                                                        <th class="text-center">Asignaciones</th>
+                                                        <th class="text-center">Deducciones</th>
+                                                        <th class="text-center">Neto</th>
+                                                        <th class="text-center">Patronales</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>                                            
+                                                    <t t-set="asig" t-value="0"/>
+                                                    <t t-set="ded" t-value="0"/>
+                                                    <t t-set="apor" t-value="0"/>
+                                                    <t t-foreach="data['line_ids']" t-as="line">
+                                                        <t t-if="line['analytic_account_id'] == dep['id']">
+                                                            <tr>
+                                                                <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                                    <span t-esc="line['name']"/>
+                                                                </td>
+                                                                <td class="text-end pt-0 ps-0 pe-1 pb-0">
+                                                                    <t t-if="line['asig'] &gt; 0">
+                                                                        <span t-esc="line['asig']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                        <t t-set="asig" t-value="asig + line['asig']"/>
+                                                                        <t t-set="acum_asig" t-value="acum_asig +  line['asig']"/>
+                                                                    </t>
+                                                                    <t t-else=""/>
+                                                                </td>
+                                                                <td class="text-end pt-0 ps-0 pe-1 pb-0">
+                                                                    <t t-if="line['ded'] &gt; 0">
+                                                                        <span t-esc="line['ded']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                        <t t-set="ded" t-value="ded + line['ded']"/>
+                                                                        <t t-set="acum_ded" t-value="acum_ded + line['ded']"/>
+                                                                    </t>
+                                                                    <t t-else=""/>
+                                                                </td>
+                                                                <td/>
+                                                                <td class="text-end pt-0 ps-0 pe-1 pb-0">
+                                                                    <t t-if="line['apor'] &gt; 0">
+                                                                        <span t-esc="line['apor']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                                        <t t-set="apor" t-value="apor + line['apor']"/>
+                                                                        <t t-set="acum_apor" t-value="acum_apor + line['apor']"/>
+                                                                    </t>
+                                                                    <t t-else=""/>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
+                                                    <!-- <div style="page-break-after: always"></div> -->
+                                                    <tr class="text-white bg-dark fw-bold">
+                                                        <td class="text-start align-middle pt-0 ps-1 pe-1 pb-0">TOTAL: <span t-esc="dep['name'].upper()"/></td>
+                                                        <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                            <span t-esc="asig" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </td>
+                                                        <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                            <span t-esc="ded" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </td>
+                                                        <td class="text-end align-middle p-0"/>
+                                                        <td class="text-end align-middle pt-0 ps-0 pe-1 pb-0">
+                                                            <span t-esc="apor" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>  
+                                            </table>
+                                            <t t-set="run_id" t-value="data['id']"/>
+                                        </div>
+                                    </t>
+                                </t>
+                                <table class="table table-bordered">
+                                    <colgroup>
+                                        <col span="1" style="width: 30%;"/>
+                                        <col span="1" style="width: 15%;"/>
+                                        <col span="1" style="width: 20%;"/>
+                                        <col span="1" style="width: 15%;"/>
+                                        <col span="1" style="width: 20%;"/>
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="text-white bg-dark fw-bold">
+                                            <th colspan="5" class="text-start">
+                                                TOTAL GENERAL
+                                            </th>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                TOTAL ASIGNACIONES:
+                                            </th>
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                <span t-esc="acum_asig" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                TOTAL DEDUCCIONES:
+                                            </th>
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                <span t-esc="acum_ded" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                TOTAL APORTES:
+                                            </th>
+                                            <th colspan="2"/>
+                                            <th class="text-end pt-0 pb-0">
+                                                <span t-esc="acum_apor" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                        </tr>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                TOTAL NETO:
+                                            </th>
+                                            <th colspan="2" class="text-end pt-0 pb-0">
+                                                <span t-esc="(acum_asig - acum_ded)" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

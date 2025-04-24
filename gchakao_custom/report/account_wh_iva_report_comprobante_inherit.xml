@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="template_wh_vat_inherit" inherit_id="l10n_ve_full.template_wh_vat">
+        <xpath expr="//table[@style='width:100%;margin-top:10px;']" position="replace">
+            <table style="width:100%;margin-top:10px;">
+                <tr>
+                    <td style="width:50%;text-align:center;padding:0px;margin:0px;">
+                        <img t-attf-src="data:image/*;base64,{{d.env.user.signature_seal}}" style="border :0px;width:220px; height:120px;" width="220px" height="120px" />
+                        <hr/>
+                        <b><span t-if="d.env.user.partner_id.name" t-esc="d.env.user.partner_id.name"/></b>
+                        <br/>
+                        <b>Agente de Retención (Sello y Firma)</b>
+                    </td>
+
+                    <td style="width:50%;text-align:center;padding:0px;margin:0px;">
+                        <img class="img Firma_falta" src="/l10n_ve_full/static/src/img/Firma_falta.png" style="width:220px; height:120px; margin-top:0px; margin-bottom:0px;"/>
+                        <hr/>
+                            <b><span t-esc="d.partner_id.name"/></b>
+                        <br/>
+                        <b>Firma del Beneficiario</b>
+                    </td>
+                </tr>
+            </table>
+        </xpath>
+
+    </template>
+</odoo>

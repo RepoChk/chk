@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="view_hr_contract_inherit_form" model="ir.ui.view">
+            <field name="name">view.hr.contract.inherit.form</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//div[@name='wage']" position="after">
+                    <label for="is_average"/>
+                    <div class="o_row mw-50" name="is_average">
+                        <field name="is_average" class="oe_inline" nolabel="1"/>
+                        <field name="average_wage" invisible="not is_average" class="oe_inline" nolabel="1"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='work_entry_source']" position="after">
+                    <field name="calculate"/>
+                    <field name="hr_rate_last" help="Muestra la última tasa de actualización de los montos de ingresos" invisible="calculate == False or hr_rate_last == 0"/>
+                </xpath>
+                <xpath expr="//page[last()]" position="after">
+                    <page string="Información Extra" name="extra_income" class="o_hr_contract_salary_information">
+                        <group name="extra_income_info">
+                            <group string="Bono Ayuda">
+                                <field name="bono_ayuda_usd"/>
+                                <field name="bono_ayuda_bs"/>
+                            </group>
+                            <group string="Comisiones">
+                                <field name="commission_usd"/>
+                                <field name="commission_bs"/>
+                            </group>
+                            <group string="Indicador">
+                                <field name="indicator_usd"/>
+                                <field name="indicator_bs"/>
+                            </group>
+                            <group string="Descuento HC">
+                                <field name="is_discount_hc"/>
+                                <field name="discount_hc_usd" invisible="not is_discount_hc"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_hr_contract_inherit_tree" model="ir.ui.view">
+            <field name="name">view.hr.contract.inherit.tree</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="calculate"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

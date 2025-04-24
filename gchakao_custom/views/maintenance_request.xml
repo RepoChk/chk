@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_maintenance_request_form_inherit_gchakao" model="ir.ui.view">
+        <field name="name">maintenance.request.form.inherit.gchakao</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='maintenance_type']" position="after">
+                <field name="maintenance_workers" widget="many2many_tags"/>
+                <field name="kilometer"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

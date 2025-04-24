@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="wizard_price_list_multicompany" model="ir.ui.view">
+			<field name="name">Lista de Precios Multi-Compañía</field>
+			<field name="model">price.list.multicompany</field>
+			<field name="arch" type="xml">
+				<form string="Lista de Precios Multi-Compañía">
+                    <group>
+                        <field name="product_pricelist_ids" string="Tarifas" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="product_ids" string="Productos" widget="many2many_tags" options="{'no_create': True}"/>
+                        <!-- <field name="company_ids" string="Compañia" widget="many2many_tags" options="{'no_create': True}"/> -->
+                        <!-- <field name="location_ids" string="Ubicaciones" widget="many2many_tags" options="{'no_create': True}" required="1"/> -->
+                        <field name="is_qty_available" widget="boolean_toggle"/>
+                        <!-- <field name="is_qty_total" widget="boolean_toggle"/> -->
+                    </group>
+                    <notebook>
+                        <page name="category" string="Categorías">
+                        	<field name="category_ids" mode="tree" options="{'no_create': True}">
+								<tree string="Requisiciones" editable="bottom" create="0">
+									<field name="name" options="{'no_create': True}"/>
+								</tree>
+							</field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="price_list_print" string="Imprimir" type="object"/>
+                        <button special="cancel" string="Cancelar" class="oe_highlight"/>
+                        <!--<button name="imprimir_xlsx" string="Imprimir XLSX" type="object" />-->
+                    </footer>
+                </form>
+			</field>
+		</record>
+
+		<record id="action_price_list_multicompany" model="ir.actions.act_window">
+			<field name="name">Lista de Precios Multi-Compañía</field>
+			<field name="res_model">price.list.multicompany</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="wizard_price_list_multicompany"/>
+			<field name="target">new</field>
+		</record>
+
+		<menuitem 
+			name="Lista de Precios Multi-Compañía"
+			parent="sale.menu_sale_report" 
+			id="gchakao_custom.wizard_price_list_multicompany_menu" 
+			action="action_price_list_multicompany"
+			sequence="20"/>
+	</data>
+</odoo>

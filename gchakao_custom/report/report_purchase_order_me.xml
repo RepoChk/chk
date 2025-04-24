@@ -1,0 +1,355 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <template id="external_layout_report_purchase_order_me">
+            <div class="header" style="font-size: 12px; font-family: Arial;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-5">
+                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 100px; max-width: 150px; margin-top:22px; margin-bottom: 22px;" alt="Logo"/>
+                        </div>
+                        <div class="col-2">
+                        </div>
+                        <div class="col-5">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td>
+                                        <b>Orden de Compra Realizada a:</b>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <td>
+                                        <b>Proveedor </b>: <t t-esc="o.partner_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <td>
+                                        <b> R.I.F </b>: <t t-esc="o.partner_id.vat"/>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <td>
+                                        <b> Telefono </b>: <t t-esc="o.partner_id.phone"/>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <td>
+                                        <b>Dirección </b>: <t t-esc="o.partner_id.street"/> <t t-esc="o.partner_id.city"/> <t t-esc="o.partner_id.state_id.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-borderless table-sm">
+                                <tr class="align-middle">
+                                    <td>
+                                        <b><t t-if="o.state in ('draft', 'sent', 'to_approve')">Presupuesto</t><t t-else="">Orden</t> de Compra N° <t t-esc="o.name"/></b>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <td>
+                                        <b> Emisión</b> <t t-if="o.state in ('draft', 'sent', 'to_approve')"><t t-if="o.date_order" t-esc="o.date_order.strftime('%d/%m/%Y')"/></t><t t-else=""><t t-if="o.date_approve" t-esc="o.date_approve.strftime('%d/%m/%Y')"/></t>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <td>
+                                        <t t-if="o.date_planned">
+                                            <b t-if="o.date_planned"> Vencimiento </b> <t t-esc="o.date_planned.strftime('%d/%m/%Y')"/> 
+                                            <br/>
+                                        </t>
+                                        <!-- <span><b> Tasa </b></span> <t t-esc="o.rate"/>  -->
+                                    </td>
+                                </tr>
+                                <tr class="align-middle" t-if="o.gc_requisition_ids">
+                                    <td>
+                                        Requisición:
+                                        <t t-foreach="o.gc_requisition_ids" t-as="req">    
+                                            <b>
+                                                <t t-esc="req.requisition_id.name"/>
+                                            </b>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end" t-if="len(o.approvals_ids) > 0">
+                        <div class="col-6">
+                            <table class="table table-borderless table-sm">
+                                <colgroup>
+                                    <col span="1" style="width: 5%"/>
+                                    <col span="1" style="width: 85%"/>
+                                    <col span="1" style="width: 10%"/>
+                                </colgroup>
+                                <tr>
+                                    <td>
+                                        <b>#</b>
+                                    </td>
+                                    <td>
+                                        <b>Aprobador(es)</b>
+                                    </td>
+                                    <td>
+                                        <b>Estado</b>
+                                    </td>
+                                </tr>
+                                <t t-set="counter" t-value="1"/>
+                                <t t-foreach="o.approvals_ids" t-as="approval">
+                                    <t t-foreach="approval.approver_ids" t-as="approver">
+                                        <tr>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="counter"/>
+                                                    <t t-set="counter" t-value="counter + 1"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="approver.user_id.name"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-if="approval.request_status == 'approved'">
+                                                        Aprobado
+                                                    </t>
+                                                    <t t-elif="approval.request_status == 'pending'">
+                                                        Enviado
+                                                    </t>
+                                                    <t t-elif="approval.request_status == 'refused'">
+                                                        Rechazado
+                                                    </t>
+                                                    <t t-elif="approval.request_status == 'cancel'">
+                                                        Cancelado
+                                                    </t>
+                                                    <t t-else="">
+                                                        A enviar
+                                                    </t>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="article o_report_layout_standard">
+                <t t-raw="0"/>
+            </div>
+
+            <div class="footer" style="font-size: 12px; font-family: Arial;">
+                <div class="container">
+                    <t t-if="o.partner_id.bank_ids">
+                        <div class="row">
+                            <div class="col-6 border border-dark border-bottom-0 p-2">
+                                <table class="table table-borderless table-sm">
+                                    <thead>
+                                        <th>Banco</th>
+                                        <th>Nomero de Cuenta</th>
+                                        <th>Documento</th>
+                                        <th>Tipo de Cuenta</th>
+                                    </thead>
+                                    <t t-foreach="o.partner_id.bank_ids" t-as="bank">
+                                        <tr class="text-center">
+                                            <td><t t-esc="bank.bank_id.name"/></td>
+                                            <td><t t-esc="bank.acc_number"/></td>
+                                            <td><t t-esc="bank.doc_identificate"/></td>
+                                            <td>
+                                                <t t-if="bank.account_type == 'checking'">
+                                                    Corriente
+                                                </t>
+                                                <t t-else="">
+                                                    Ahorro
+                                                </t>
+                                            </td>
+                                        </tr>    
+                                    </t>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                    <div class="row">
+                        <div class="col-6 border border-dark p-2">
+                            <b>Notas</b> <br/>
+                            <t t-if="o.notes"><t t-esc="o.notes"/><br/></t> <t t-else=""><br/><br/></t>
+                        </div>
+                        <div class="col-6 border border-start-0 border-dark">
+                            <t t-set="currency_bs" t-value="o.env['res.currency'].search([('id', '=', 3)])"/>
+                            <t t-set="currency_usd" t-value="o.env['res.currency'].search([('id', '=', 2)])"/>
+                            <table class="table table-borderless table-sm w-100">
+                                <tr class="text-end">
+                                    <td>
+                                        <b>Total Interno :</b>
+                                    </td>
+                                    <t t-if="o.currency_id.id == 3">
+                                        <td>
+                                            <b>$ <t t-esc="subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;decimal_precision&quot;: &quot;o.company_id.currency_id&quot;}"/></b>
+                                        </td>
+                                        <td>
+                                            <!-- Obtener tax_today del encabezado -->
+                                            <b><t t-esc="subtotal * (o.tax_today if o.tax_today is not None else 0)" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> Bs.</b>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <b>$ <t t-esc="subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;decimal_precision&quot;: &quot;o.company_id.currency_id&quot;}"/></b>
+                                        </td>
+                                        <td>
+                                            <!-- Obtener tax_today del encabezado -->
+                                            <b><t t-esc="subtotal * (o.tax_today if o.tax_today is not None else 0)" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> Bs.</b>
+                                        </td> 
+                                    </t>
+                                </tr>
+                                
+                                <tr class="text-end">
+                                    <td>
+                                        <b>Impuestos :</b>
+                                    </td>
+                                    <t t-if="o.currency_id.id == 3">
+                                        <td>
+                                            <b>$ <t t-esc="taxes" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;decimal_precision&quot;: &quot;o.company_id.currency_id&quot;}"/></b>
+                                        </td>
+                                        <td>
+                                            <!-- Obtener tax_today del encabezado -->
+                                            <b><t t-esc="taxes * (o.tax_today if o.tax_today is not None else 0)" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> Bs.</b>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <b>$ <t t-esc="taxes" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;decimal_precision&quot;: &quot;o.company_id.currency_id&quot;}"/></b>
+                                        </td>
+                                        <td>
+                                            <!-- Obtener tax_today del encabezado -->
+                                            <b><t t-esc="taxes * (o.tax_today if o.tax_today is not None else 0)" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> Bs.</b>
+                                        </td> 
+                                    </t>
+                                </tr>
+                                
+                                <tr class="text-end">
+                                    <td>
+                                        <b>Total Orden de Compra :</b>
+                                    </td>
+                                    <t t-if="o.currency_id.id == 3">
+                                        <td>
+                                            <b>$ <t t-esc="total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;decimal_precision&quot;: &quot;o.company_id.currency_id&quot;}"/></b>
+                                        </td>
+                                        <td>
+                                            <!-- Obtener tax_today del encabezado -->
+                                            <b><t t-esc="total * (o.tax_today if o.tax_today is not None else 0)" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> Bs.</b>
+                                        </td> 
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <b>$ <t t-esc="total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;decimal_precision&quot;: &quot;o.company_id.currency_id&quot;}"/></b>
+                                        </td>
+                                        <td>
+                                            <!-- Obtener tax_today del encabezado -->
+                                            <b><t t-esc="total * (o.tax_today if o.tax_today is not None else 0)" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/> Bs.</b>
+                                        </td> 
+                                    </t> 
+                                </tr> 
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="report_purchase_order_me">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="gchakao_custom.external_layout_report_purchase_order_me" t-lang="o.partner_id.lang">
+                        <div class="page" style="font-size: 11px; font-family: Arial;" >
+                            <!-- <br/><br/><br/><br/><br/> -->
+                            <table class="table table-borderless table-sm w-100">
+
+                                <!-- Cantidad de columnas -->
+                                <colgroup>
+                                    <col span="1" style="width: 14%;"/>
+                                    <col span="1" style="width: 30%;"/>
+                                    <col span="1" style="width: 9%;"/>
+                                    <col span="1" style="width: 8%;"/>
+                                    <col span="1" style="width: 9%;"/>
+                                    <col span="1" style="width: 15%;"/>
+                                    <col span="1" style="width: 15%;"/>
+                                </colgroup>
+                                <!-- Fin Cantidad de columnas -->
+
+                                <!-- Cabeceras -->
+                                <thead class="text-center aling-middle" style="background: #cacaca;">
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Cant.</th>
+                                    <th>UdM</th>
+                                    <th>FillerT.</th>
+                                    <th>Costo</th>
+                                    <th>Total</th>
+                                </thead>
+                                <!-- Fin Cabeceras -->
+                                
+                                <!-- Variables totales -->
+                                <t t-set="subtotal" t-value="0"/>
+                                <t t-set="taxes" t-value="0"/>
+                                <t t-set="total" t-value="0"/>
+                                <t t-set="total_qty" t-value="0"/>
+                                <!-- Fin variables totales -->
+
+                                <!-- Lineas -->
+                                <tbody>
+                                    <t t-foreach="o.order_line" t-as="item">
+                                        <tr>
+                                            <td class="text-center">
+                                                <span><t t-esc="item.product_id.default_code"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span><t t-esc="item.name"/></span>
+                                            </td>
+                                            <td class="text-end">
+                                                <span><t t-esc="'%.2f'% item.product_qty"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span><t t-esc="item.product_uom.name"/></span>
+                                            </td>
+                                            <td class="text-end">
+                                                <span><t t-esc=" item.product_id.filler * item.product_uom_qty" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_secundaria_id"}' /></span>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span><t t-esc="item.price_unit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span><t t-esc="item.product_qty * item.price_unit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></span>
+                                            </td>
+                                            <t t-set="total_qty" t-value="total_qty + item.product_qty"/>
+                                            <t t-set="price" t-value="item.product_qty * item.price_unit"/>
+                                            <t t-set="subtotal" t-value="subtotal + price"/>
+                                            <t t-if="item.taxes_id">
+                                                <t t-set="tax" t-value="(price * item.taxes_id.amount)/100"/>
+                                                <t t-set="taxes" t-value="taxes + tax"/>
+                                            </t>
+                                            <t t-set="total" t-value="subtotal + taxes"/>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td colspan="2" class="text-end">Total Piezas</td>
+                                        <td class="text-end"><t t-esc="total_qty" t-options='{"widget": "float", "decimal_precision": "o.currency_id"}'/></td>
+                                    </tr>
+                                </tbody>     
+                                <!-- Fin lineas -->
+
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

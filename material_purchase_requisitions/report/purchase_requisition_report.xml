@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="report_purchase_requisition" model="ir.actions.report">
+            <field name="name">Purchase Requisition</field>
+            <field name="model">material.purchase.requisition</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">material_purchase_requisitions.purchase_requisition</field>
+            <field name="report_file">material_purchase_requisitions.purchase_requisition</field>
+            <!-- <field name="paperformat_id" ref="material_purchase_requisitions.paperformat_purchase_requisitions"/> -->
+            <field name="binding_model_id" ref="model_material_purchase_requisition"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="purchase_requisition">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <div class="header">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 150px; max-width: 200px; margin-top:22px; margin-bottom: 22px;" alt="Logo"/>
+                                        </div>
+                                        <div class="col-6">
+                                            <br/><br/>
+                                            <span t-field="o.company_id.name"/><br/>
+                                            <span t-field="o.company_id.street"/><br/>
+                                        </div>
+                                        <div class="col-2">
+                                            <br/><br/>
+                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <table class="table-borderless w-100">
+                                            <tr>
+                                                <td>
+                                                    <b>Empleado:</b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span><t t-esc="o.user_id.name"/></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Departamento:</b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span><t t-esc="o.department_id.name"/></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Responsable de la Requisición:</b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span><t t-esc="o.user_responsible_id.name"/></span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-1"/>
+                                    <div class="col-5">
+                                        <table class="table-borderless" style="width: 100%;">
+                                            <tr>
+                                                <td>
+                                                    <b>Requisición:</b>
+                                                </td>
+                                                <td>
+                                                    <span><t t-esc="o.name"/></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Fecha de Requisición:</b>
+                                                </td>
+                                                <td>
+                                                    <span><t t-if="o.request_date" t-esc="o.request_date.strftime('%d/%m/%Y')"/></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Fecha de Vencimiento:</b>
+                                                </td>
+                                                <td>
+                                                    <span><t t-if="date_end" t-esc="o.date_end.strftime('%d/%m/%Y')"/></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Fecha de Recibido:</b>
+                                                </td>
+                                                <td>
+                                                    <span><t t-if="o.receive_date" t-esc="o.receive_date.strftime('%d/%m/%Y')"/></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Tipo de Requisición:</b>
+                                                </td>
+                                                <td>
+                                                    <span><t t-esc="o.get_requisition_type()"/></span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table-borderless w-100">
+                                            <colgroup>
+                                                <col span="1" style="width: 50%;"/>
+                                                <col span="1" style="width: 25%;"/>
+                                                <col span="1" style="width: 25%;"/>
+                                            </colgroup>
+                                            <tr>
+                                                <td>
+                                                    <b>Aprobado por:</b>
+                                                </td>
+                                                <td>
+                                                    <b>Estado:</b>
+                                                </td>
+                                                <td>
+                                                    <b>Prioridad:</b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <t t-set="approvals" t-value="o.approvals_approver_ids.filtered(lambda l: l.status == 'approved')"/>
+                                                    <t t-set="names" t-value="[]"/>
+                                                    <t t-foreach="approvals" t-as="line">
+                                                        <t t-set="names" t-value="names + [line.user_id.display_name]"/>
+                                                    </t>
+                                                    <span t-esc="'\n'.join(names)"/>
+                                                </td>
+                                                <td>
+                                                    <span><t t-esc="o.get_state_requisition()"/></span>
+                                                </td>
+                                                <td>
+                                                    <span>
+                                                        <t t-if="o.priority == 'very_high'">
+                                                            Muy Alta 
+                                                        </t>
+                                                        <t t-elif="o.priority == 'high'">
+                                                            Alta 
+                                                        </t>
+                                                        <t t-elif="o.priority == 'meddium'">
+                                                            Media
+                                                        </t>
+                                                        <t t-elif="o.priority == 'low'">
+                                                            Baja
+                                                        </t>
+                                                        <t t-elif="o.priority == 'very_low'">
+                                                            Muy Baja
+                                                        </t>
+                                                        <t t-else="o.priority == 'no'">
+                                                            No Asignada
+                                                        </t>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <br/>
+                                <table class="table table-bordered table-sm">
+
+                                    <!-- Cantidad de columnas -->
+                                    <colgroup>
+                                        <col span="1" style="width: 15%;"/>
+                                        <col span="1" style="width: 20%;"/>
+                                        <col span="1" style="width: 35%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <!-- <col span="1" style="width: 20%;"/> -->
+                                    </colgroup>
+                                    <!-- Fin Cantidad de columnas -->
+
+                                    <!-- Cabeceras -->
+                                    <thead class="p-3">
+                                        <th class="text-center">Referencia</th>
+                                        <th class="text-center">Cuenta analítica</th>
+                                        <th class="text-center">Descripción</th>
+                                        <th class="text-center">Detalle</th>
+                                        <th class="text-center">Cantidad</th>
+                                    </thead>
+                                    <!-- Fin Cabeceras -->
+
+                                    <!-- Lineas -->
+                                    <tbody>
+                                        <t t-foreach="o.requisition_line_ids" t-as="item">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <span><t t-esc="item.product_id.default_code"/></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <t t-if="item.analytic_distribution" t-foreach="item.analytic_distribution" t-as="distribution">
+                                                        <t t-esc="item.env['account.analytic.account'].browse(int(distribution))[0].name"/>           
+                                                    </t>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span><t t-esc="item.description"/></span>
+                                                </td>
+                                                <td>
+                                                    <span><t t-esc="item.detail"/></span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span><t t-esc="round(item.qty)"/></span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>     
+                                    <!-- Fin lineas -->
+                                </table>
+                                <div class="footer">
+                                    <div class="container">
+                                        <div class="row">
+                                            <b>Razones para la Requisición:</b><br/>
+                                            <span><t t-esc="o.reason"/></span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="text-center">
+                                                Página <span class="page" t-esc="0"/> de <span class="topage" t-esc="0"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+  </data>
+</odoo>

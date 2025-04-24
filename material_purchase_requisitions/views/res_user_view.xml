@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="material_pruchase_requisition_view_res_users_form_inherit" model="ir.ui.view">
+        <field name="name">material.pruchase.requisition.view.res.users.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="gchakao_custom.gchakao_custom_view_users_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='approval']" position="inside">
+                    <group name="approvers_req" string="Aprobadores Requisiciones">
+                        <field name="approving_leader_req_ids" widget="many2many_tags"/>
+                    </group>
+                </xpath>
+            </field>
+    </record>
+
+</odoo>
+

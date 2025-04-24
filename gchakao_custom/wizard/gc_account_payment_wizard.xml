@@ -1,0 +1,91 @@
+<odoo>
+    <data>
+        <record id="gc_account_payment_wizard_form" model="ir.ui.view">
+            <field name="name">gc.account.payment.wizard.form</field>
+            <field name="model">gc.account.payment.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field invisible="1" name="state"/>
+                    <group>
+                        <field name="range" widget="radio" options="{'horizontal': True}"/>
+                    </group>
+                    <group invisible="range == 'all'">
+                        <label for="date_start"
+                               string="Desde / Hasta"
+                               invisible="range != 'dates'"/>
+                        <div invisible="range != 'dates'">
+                            <field name="date_start"
+                                   class="oe_inline"
+                                   required="range == 'dates'"/>
+                            <span></span>
+                            <field name="date_end"
+                                   class="oe_inline"
+                                   required="range == 'dates'"/>
+                        </div>
+                        <field name="date_def" invisible="range != 'date'"/>
+
+                        <label for="month"
+                               string="Mes / año"
+                               invisible="range != 'month'"/>
+                        <div invisible="range != 'month'" >
+                            <field name="month"
+                                   class="oe_inline"
+                                   required="range == 'month'"/>
+                            <span>/</span>
+                            <field name="year"
+                                   class="oe_inline"
+                                   required="range == 'month'"/>
+                        </div>
+                        
+                    </group>
+                    <!-- <group> -->
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="partner_ids" string="Vendedor(es)"/>
+                                <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </div>                            
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="journal_ids" string="Diario(s)"/>
+                                <field name="journal_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="user_ids" string="Usuario(s)"/>
+                                <field name="user_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </div>
+                        </div>
+                    <!-- </group> -->
+                    <div invisible="state != 'get'">
+                        <group>
+                            <field name="name" colspan="4" invisible="1"/>
+                            <field name="report" filename="name" colspan="4"/>
+                        </group>
+                    </div>
+                    <footer>
+                        <button string='Exportar a pdf' name="action_print_pdf" type="object" class="btn-primary"/>
+                        <button name="generate_xls_report" string="Exportar a Excel" type="object" invisible="state != 'choose'" class="oe_highlight" />
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="gc_account_payment_wizard_action" model="ir.actions.act_window">
+            <field name="name">Reporte de cierre de ventas diario</field>
+            <field name="res_model">gc.account.payment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem 
+            id="gc_account_payment_wizard_menu" 
+            name="Reporte de cierre de ventas diario"
+            parent="account.account_reports_management_menu" 
+            action="gc_account_payment_wizard_action"
+            sequence="20"/>
+    </data>
+</odoo>

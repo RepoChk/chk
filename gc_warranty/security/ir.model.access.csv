@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_warranty_request,warranty_request_model,model_warranty_request,base.group_user,1,1,1,1
+access_manual_wizard,manual_wizard_model,model_manual_wizard,base.group_user,1,1,1,1
+access_apply_credit_note_wizard,apply_credit_note_wizard_model,model_apply_credit_note_wizard,base.group_user,1,1,1,1

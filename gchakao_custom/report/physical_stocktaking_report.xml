@@ -1,0 +1,349 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- Add you code here -->
+        <record id="action_physical_stocktaking" model="ir.actions.report">
+            <field name="name">Reporte de Toma Física de Inventario</field>
+            <field name="model">physical.stocktaking.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.physical_stocktaking_report</field>
+            <field name="report_file">gchakao_custom.physical_stocktaking_report</field>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="external_layout_physical_stocktaking">
+
+            <div class="header">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="col-xs-3">
+                                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 100px; max-width: 150px; margin-top:22px;" alt="Logo"/>
+                            </div>
+                            <div class="col-xs-9 text-right" style="margin-top:22px;" name="moto"/>
+                        </div>
+                        <div t-if="o.company_id.logo or o.company_id.report_header" class="row zero_min_height">
+                            <div class="col-xs-12">
+                                <div style="border-bottom: 1px solid black;"/>
+                            </div>
+                        </div>
+                        <div class="col-4 text-center"><br/>
+                            <b style="font-size:20px;">Reporte de Productos</b>
+                        </div>
+                        <div class="col-4 text-right">
+                            <b style="font-size:12px;">Página <span class="page" style="font-size:12px;"/> / <span class="topage" style="font-size:12px;"/></b><br/>
+                            <b style="font-size:12px;"><t t-esc="o.date_now.strftime('%d/%m/%Y %r')"/></b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <t t-set="warehouse" t-value="len(o.warehouse_ids)"/>
+                            <span t-if="warehouse > 0" style="font-size:12px;">Depositos:<br/>
+                                <t t-foreach="o.warehouse_ids" t-as="item">
+                                    <t t-esc="item.display_name"/>
+                                    <t t-set="warehouse" t-value="warehouse - 1"/>
+                                    <t t-if="warehouse > 0">
+                                        , 
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="article o_report_layout_standard">
+                <t t-raw="0"/>
+            </div>
+
+            <div class="footer ">
+
+            </div>
+            
+        </template>
+
+        <template id="physical_stocktaking_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="gchakao_custom.external_layout_physical_stocktaking">
+                        
+                        <div class="page">
+                            <t t-set="categories" t-value="o.get_categ(o.category_id)"/>
+                            <!-- Totales -->
+                            <t t-set="qty_prod_tot" t-value="0"/>
+                            <t t-set="qty_ava_tot" t-value="0"/>
+                            <t t-set="qty_pedido_tot" t-value="0"/>
+                            <t t-set="qty_filler_tot" t-value="0"/>
+                            <!-- Totales -->
+                            <t t-set="no_reg" t-value="1"/>
+                            <t t-foreach="categories" t-as="categ">
+                                <t t-set="products" t-value="o._get_products(categ)"/>
+                                <!-- Totalizadores -->
+
+                                <t t-set="qty_ava_categ" t-value="0"/>
+                                <t t-set="qty_pedido_categ" t-value="0"/>
+                                <t t-set="qty_filler_categ" t-value="0"/>
+                                <!-- Totalizadores -->
+                                <t t-if="len(products) > 0">
+                                    <table style="width: 100%;">
+                                        <colgroup>
+                                            <col span="1" style="width: auto;"/>
+                                            <col span="1" style="width: auto;"/>
+                                            <col span="1" style="width: auto;"/>
+                                            <col span="1" style="width: auto;"/>
+                                            <col span="1" style="width: auto;"/>
+                                            <col span="1" style="width: auto;"/>
+                                            <t t-if="o.show_qty_av">
+                                                <col span="1" style="width: auto;"/>
+                                            </t>
+                                            <col span="1" style="width: auto;"/>
+                                            <t t-if="o.show_filler">
+                                                <col span="1" style="width: auto;"/>
+                                                <t t-if="o.show_qty_av">
+                                                    <col span="1" style="width: auto;"/>
+                                                </t>
+                                            </t>
+                                            <t t-if="o.show_count">
+                                                <col span="1" style="width: auto;"/>
+                                            </t>
+                                        </colgroup>
+                                        <thead>
+                                            <tr style="background-color: #cacaca">
+                                                <th colspan="100" class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:16px;"><t t-esc="categ.name"/></span>
+                                                </th>
+                                            </tr>
+                                            <tr style="background-color: #cacaca">
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Código</span>
+                                                </th>
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Descripción</span>
+                                                </th>
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Modelo</span>
+                                                </th>
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Marca</span>
+                                                </th>
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Lonas</span>
+                                                </th>
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">Type</span>
+                                                </th>
+                                                <t t-if="o.show_qty_av">
+                                                    <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                        <span style="font-size:14px;">Exist Sistema</span>
+                                                    </th>
+                                                </t>
+                                                <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                    <span style="font-size:14px;">MERC. APARTADA</span>
+                                                </th>
+                                                <t t-if="o.show_filler">
+                                                    <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                        <span style="font-size:14px;">Filler</span>
+                                                    </th>
+                                                    <t t-if="o.show_qty_av">
+                                                        <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                            <span style="font-size:14px;">FillerT</span>
+                                                        </th>
+                                                    </t>
+                                                </t>
+                                                <t t-if="o.show_count">
+                                                    <th class="text-center" style="border-right: 3px solid white; display: table-cell; vertical-align: middle;">
+                                                        <span style="font-size:14px;">Conteo</span>
+                                                    </th>
+                                                </t>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="products" t-as="item">
+                                                <t t-set="ava_qty" t-value="o.get_qty(item)"/>
+                                                <t t-set="pedido_qty" t-value="o._get_orders(item.id)"/>
+
+                                                <!-- Valores totales -->
+                                                <t t-set="qty_ava_categ" t-value="qty_ava_categ + ava_qty"/>
+                                                <t t-set="qty_pedido_categ" t-value="qty_pedido_categ + pedido_qty"/>
+                                                <t t-set="qty_filler_categ" t-value="qty_filler_categ + (item.filler * ava_qty)"/>
+                                                <!-- Valores totales -->
+
+                                                <tr>
+                                                    <!-- Código -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;"><t t-esc="item.default_code"/></span>
+                                                    </td>
+                                                    <!-- Descripción -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;"><t t-esc="item.measure"/><t t-if="item.construction_type == 'r'">R</t><t t-elif="item.construction_type == 'c'">-</t><t t-if="item.rin != 0.00" t-esc="o.get_rin(item.rin)"/></span>
+                                                    </td>
+                                                    <!-- Modelo -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;"><t t-esc="item.model"/></span>
+                                                    </td>
+                                                    <!-- Marca -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;"><t t-esc="item.brand_id.name"/></span>
+                                                    </td>
+                                                    <!-- Lonas -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;">&amp;nbsp;<t t-esc="item.tarps"/>&amp;nbsp;</span>
+                                                    </td>
+                                                    <!-- Type -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;"><t t-esc="item.type_tire"/></span>
+                                                    </td>
+                                                    <!-- Exist Sistema -->
+                                                    <t t-if="o.show_qty_av">
+                                                        <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                            <span style="font-size:12px;"><t t-esc="ava_qty" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                                        </td>
+                                                    </t>
+                                                    <!-- Pedido del cliente -->
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:12px;"><t t-esc="pedido_qty" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                                    </td>
+                                                    <!-- FillerT -->
+                                                    <t t-if="o.show_filler">
+                                                        <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                            <span style="font-size:12px;">&amp;nbsp;<t t-esc="item.filler" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>&amp;nbsp;</span>                                                    
+                                                        </td>
+                                                        <t t-if="o.show_qty_av">
+                                                            <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                                <span style="font-size:12px;">&amp;nbsp;<t t-esc="item.filler * ava_qty" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>&amp;nbsp;</span>                                                    
+                                                            </td>
+                                                        </t>
+                                                    </t>
+                                                    <!-- Conteo Físico -->
+                                                    <t t-if="o.show_count">
+                                                        <td style="border-bottom: 1px solid #000; display: table-cell; vertical-align: bottom;" class="text-center">
+                                                            <span style="font-size:12px;">&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</span>
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </t>
+
+                                            <t t-set="qty_prod_tot" t-value="qty_prod_tot + len(products)"/>
+                                            <t t-set="qty_ava_tot" t-value="qty_ava_tot + qty_ava_categ"/>
+                                            <t t-set="qty_pedido_tot" t-value="qty_pedido_tot + qty_pedido_categ"/>
+                                            <t t-set="qty_filler_tot" t-value="qty_filler_tot + qty_filler_categ"/>
+                                            
+                                            <tr style="border-top: 1px black solid;">
+                                                <!-- Sub total -->
+                                                <td colspan="3" style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                    <span style="font-size:14px;">Sub Total Categoría:</span>
+                                                </td>
+                                                <!-- Cantidad de productos -->
+                                                <td style="display: table-cell; vertical-align: middle;" class="text-right">
+                                                    <span style="font-size:14px;"><t t-esc="len(products)"/></span>
+                                                </td>
+                                                <!-- Relleno -->
+                                                <td colspan="2" style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                </td>
+                                                <!-- Existencia -->
+                                                <t t-if="o.show_qty_av">
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                        <span style="font-size:14px;"><t t-esc="round(qty_ava_categ)"/></span>
+                                                    </td>
+                                                </t>
+                                                <!-- Pedido -->
+                                                <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                    <span style="font-size:14px;"><t t-esc="round(qty_pedido_categ)"/></span>
+                                                </td>
+                                                <!-- FillerT -->
+                                                <t t-if="o.show_filler">
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                    </td>
+                                                    <t t-if="o.show_qty_av">
+                                                        <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                            <span style="font-size:14px;"><t t-esc="qty_filler_categ" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                                        </td>
+                                                    </t>
+                                                </t>
+                                                <!-- Relleno -->
+                                                <t t-if="o.show_count">
+                                                    <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <t t-set="no_reg" t-value="0"/>
+                                    <br/><br/>
+                                </t>
+                            </t>
+                            <div class="text-center" style="border-top: 1px solid black;">
+                                <table style="width: 100%;">
+                                    <colgroup>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <col span="1" style="width: 10%;"/>
+                                        <t t-if="o.show_qty_av">
+                                            <col span="1" style="width: 10%;"/>
+                                        </t>
+                                        <col span="1" style="width: 10%;"/>
+                                        <t t-if="o.show_filler">
+                                            <t t-if="o.show_qty_av">
+                                                <col span="1" style="width: 10%;"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="o.show_count">
+                                            <col span="1" style="width: 10%;"/>
+                                        </t>
+                                    </colgroup>
+                                    <tr>
+                                        <!-- Sub total -->
+                                        <td colspan="3" style="display: table-cell; vertical-align: middle;" class="text-center">
+                                            <span style="font-size:14px;">Sub Total General:</span>
+                                        </td>
+                                        <!-- Cantidad de productos -->
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-right">
+                                            <span style="font-size:14px;"><t t-esc="qty_prod_tot"/></span>
+                                        </td>
+                                        <!-- Relleno -->
+                                        <td colspan="2" style="display: table-cell; vertical-align: middle;" class="text-center">
+                                            <br/>
+                                        </td>
+                                        <!-- Existencia -->
+                                        <t t-if="o.show_qty_av">
+                                            <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                <span style="font-size:14px;"><t t-esc="round(qty_ava_tot)"/></span>
+                                            </td>
+                                        </t>
+                                        <!-- Pedido -->
+                                        <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                            <span style="font-size:14px;"><t t-esc="round(qty_pedido_tot)"/></span>
+                                        </td>
+                                        <!-- FillerT -->
+                                        <t t-if="o.show_filler">
+                                            <t t-if="o.show_qty_av">
+                                                <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                    <span style="font-size:14px;"><t t-esc="qty_filler_tot" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/></span>
+                                                </td>
+                                            </t>
+                                        </t>
+                                        <!-- Relleno -->
+                                        <t t-if="o.show_count">
+                                            <td style="display: table-cell; vertical-align: middle;" class="text-center">
+                                                <br/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </table>
+                            </div>
+                            <t t-if="no_reg == 1">
+                                <div class="text-center container">
+                                    <strong style="font-size:20px;">¡No Hay Registros para esta Búsqueda!<br/>Intente con otros parametros.</strong>
+                                </div>
+                            </t>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_resume_payroll">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h5>Resúmen de Nómina: <span t-esc="name"/></h5>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-bordered" width="100%">
+                                    <thead>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <th class="text-center aling-middle" width="3%">Nro</th>
+                                            <th class="text-center aling-middle" width="6%">Cédula</th>
+                                            <th class="text-center aling-middle" width="22%">Nombre</th>
+                                            <th class="text-center aling-middle" width="15%">Cargo</th>
+                                            <th class="text-center aling-middle" width="7%">Total deposito nómina</th>
+                                            <th class="text-center aling-middle" width="7%">Total cesta ticket</th>
+                                            <th class="text-center aling-middle" width="7%">Poliza HC $.</th>
+                                            <th class="text-center aling-middle" width="7%">Desc. Prest.</th>
+                                            <th class="text-center aling-middle" width="7%">Desc. Prest. $</th>
+                                            <th class="text-center aling-middle" width="19%">Departamento</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>                                            
+                                        <t t-set="nro" t-value="1"/>
+                                        <t t-set="t_total_nomina" t-value="0"/>
+                                        <t t-set="t_total_cestaticket" t-value="0"/>
+                                        <t t-set="t_total_prestamo_desc" t-value="0"/>
+                                        <t t-set="t_total_hc" t-value="0"/>
+                                        <t t-set="t_total_prestamo" t-value="0"/>
+                                        <t t-foreach="form" t-as="line">
+                                            <tr>
+                                                <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                    <span t-esc="nro"/>
+                                                </td>
+                                                <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                    <span t-esc="line['employee_cdi']"/>
+                                                </td>
+                                                <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                    <span t-esc="line['employee_name']"/>
+                                                </td>
+                                                <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                    <span t-esc="line['job_name']"/>
+                                                </td>
+                                                <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                    <span t-esc="line['total_nomina']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="t_total_nomina" t-value="t_total_nomina + line['total_nomina']"/>
+                                                </td>
+                                                <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                    <span t-esc="line['total_cestaticket']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="t_total_cestaticket" t-value="t_total_cestaticket + line['total_cestaticket']"/>
+                                                </td>
+                                                <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                    <span t-esc="line['total_hc']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="t_total_hc" t-value="t_total_hc + line['total_hc']"/>
+                                                </td>
+                                                <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                    <span t-esc="line['total_prestamo']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="t_total_prestamo" t-value="t_total_prestamo + line['total_prestamo']"/>
+                                                </td>
+                                                <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                    <span t-esc="line['total_prestamo_desc']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    <t t-set="t_total_prestamo_desc" t-value="t_total_prestamo_desc + line['total_prestamo_desc']"/>
+                                                </td>
+                                                <td class="text-start pt-0 pe-0 pb-0 ps-1">
+                                                    <span t-esc="line['department_name']"/>
+                                                </td>
+                                            </tr>
+                                            <t t-set="nro" t-value="nro + 1"/>
+                                        </t>
+                                        <tr class="text-white bg-secondary fw-bold">
+                                            <td colspan="4">Totales</td>
+                                            <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                <span t-esc="t_total_nomina" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                <span t-esc="t_total_cestaticket" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                <span t-esc="t_total_hc" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                <span t-esc="t_total_prestamo" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="text-end pt-0 pe-1 pb-0 ps-0">
+                                                <span t-esc="t_total_prestamo_desc" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

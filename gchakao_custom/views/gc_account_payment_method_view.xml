@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gc_account_payment_method_tree" model="ir.ui.view">
+        <field name="name">gc.account.payment.method.tree</field>
+        <field name="model">gc.account.payment.method</field>
+        <field name="arch" type="xml">
+            <tree string="Modo de pago" editable="bottom">
+                <field name="name"/>
+                <field name="requires_conciliation"/>
+                <field name="payment_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="gc_account_payment_method_search" model="ir.ui.view">
+        <field name="name">Buscar Modo de pago</field>
+        <field name="model">gc.account.payment.method</field>
+        <field name="arch" type="xml">
+            <search string="Buscar">
+                <field name="name"/>
+                <group expand="1" string="Agrupar por">
+                    <filter string="Tipo" name="group_by_payment_type" context="{'group_by':'payment_type'}"/>
+                    <filter string="Requiere Conciliación" name="group_by_requires_conciliation" context="{'group_by':'requires_conciliation'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="gc_account_payment_method_action" model="ir.actions.act_window">
+        <field name="name">Modo de pago</field>
+        <field name="view_mode">tree</field>
+        <field name="res_model">gc.account.payment.method</field>
+        <field name="view_id" ref="gc_account_payment_method_tree"/>
+        <field name="search_view_id" ref="gc_account_payment_method_search"/>
+        <field name="context">{'search_default_group_by_payment_type': 1}</field>
+    </record>
+
+    <menuitem 
+        action="gc_account_payment_method_action" 
+        id="menu_gc_account_payment_method" 
+        parent="account.root_payment_menu"
+        sequence="10"/>
+</odoo>
+
+

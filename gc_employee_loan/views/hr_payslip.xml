@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="gc_hr_payslip_form_inherit_views_lunes" model="ir.ui.view">
+        <field name="name">gc.hr_payslip_form_inherit_views_lunes</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="l10n_ve_payroll.hr_payslip_form_inherit_views_lunes"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='installment_int']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='installment_ids']" position="replace">
+                <field name="installment_ids" widget="many2many_tags" readonly="state not in ['draft','verify']"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="physical_stocktaking_wizard" model="ir.ui.view">
+			<field name="name">Asistente para Reporte de Toma Física de Inventario</field>
+			<field name="model">physical.stocktaking.wizard</field>
+			<field name="arch" type="xml">
+				<form string="Reporte de Toma Física de Inventario">
+					<field invisible="1" name="state"/>
+					<group>
+						<group>
+							<field name="user_id" invisible="1"/>
+							<field name="warehouse_ids" string="Ubicación" widget="many2many_tags" domain="[('usage', '=', 'internal')]" options="{'no_create': True, 'no_open': True}"/>
+							<field name="company_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
+							<field name="show_qty_av"/>
+							<field name="show_count"/>
+						</group>
+						<group >
+							<field name="category_id" string="Categoría" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
+							<field name="show_filter" required="1"/>
+							<field name="show_filler"/>
+						</group>
+					</group>
+					<group string="Descargar Archivo" invisible="state != 'get'">
+						<group class="col-6">
+							<field name="name" invisible="1"/>
+							<field name="report" filename="name"/>
+						</group>
+					</group>
+					<footer>
+						<button name="generate_xls_report" string="Exportar Excel" type="object" class="oe_highlight" />
+						<button name="print_inventario" string="Exportar PDF" type="object" class="oe_highlight" />
+						<button special="cancel" string="Cancel" class="oe_highlight" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_physical_stocktaking_wizard" model="ir.actions.act_window">
+			<field name="name">Reporte de Toma Física de Inventario</field>
+			<field name="res_model">physical.stocktaking.wizard</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="physical_stocktaking_wizard"/>
+			<field name="target">new</field>
+		</record>
+
+		<menuitem name="Reporte de Toma Física de Inventario" parent="stock.menu_warehouse_report" id="gchakao_custom.stock_wizard_physical_stocktaking" action="action_physical_stocktaking_wizard"/>
+	</data>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="assign_tracking_number_form" model="ir.ui.view">
+            <field name="name">Nro de seguimiento</field>
+            <field name="model">assign.tracking.number.wizard</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <div colspan="2" class="text-muted">
+                        Acá se muestran todas las lineas del pedido: [<field name="picking_id" readonly="1" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}"/>] IMPORTATE: Estar atentos a los productos cuando sean diferentes
+                    </div>
+
+                    <field name="line_ids" nolabel="1" widget="many2many" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}">
+                        <tree editable="bottom" create="false" delete="false">
+                            <field name="state" column_invisible="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="lot_id" readonly="1"/>
+                            <field name="tracking_number" readonly="state in ['done','cancel']" required="state not in ['done','cancel']"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="action_assign_tracking_number" string="Agregar" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="assign_tracking_number_action" model="ir.actions.act_window">
+            <field name="name">Nro de seguimiento</field>
+            <field name="res_model">assign.tracking.number.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

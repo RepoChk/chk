@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_discount_rule" model="ir.rule">
+            <field name="name">Rule - Descuentos por Compañía</field>
+            <field name="model_id" ref="model_hr_discount"/>
+            <field name="domain_force">['|',('company_id', 'in', company_ids),('company_id', '=', False)]</field>
+        </record>
+
+        <record id="gc_hr_payment_order" model="ir.rule">
+            <field name="name">Rule - Ordenes de Pago</field>
+            <field name="model_id" ref="model_hr_payment_order"/>
+            <field name="domain_force">['|',('company_id', 'in', company_ids),('company_id', '=', False)]</field>
+        </record>
+    </data>
+</odoo>

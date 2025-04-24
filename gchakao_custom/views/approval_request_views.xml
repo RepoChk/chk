@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View approval.request form -->
+    <record id="view_approval_request_form_inherit" model="ir.ui.view">
+        <field name="name">view.approval.request.form.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//button[@name='action_approve']" position="attributes">
+                <attribute name="invisible">request_status != 'pending' or is_next_approver == False</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_refuse']" position="attributes">
+                <attribute name="invisible">request_status != 'pending' or is_next_approver == False</attribute>
+            </xpath> -->
+            <xpath expr="//group[@name='request_details']" position="inside">
+                <field name="currency_id_dif" invisible="true"/>
+                <field name="currency_id" invisible="true"/>
+                <field name="approving_amount" readonly="1" invisible="purchase_id == False"/>
+                <field name="amount_purchase" readonly="1" invisible="purchase_id == False"/>
+                <field name="amount" readonly="1" invisible="purchase_id == False"/>
+                <field name="is_next_approver" readonly="1"/>
+                <field name="next_approver_ids" widget="many2many_tags" readonly="1" invisible="is_next_approver == False"/>
+                <field name="previous_approver_ids" readonly="1" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='action_approve']" position="after">
+                <button name="action_next_approve" string="Siguiente Aprobador" type="object" invisible="request_status != 'pending' or is_next_approver == False"/>
+            </xpath>  
+
+            <xpath expr="//group[@name='request_details']" position="inside">
+                <field name="is_purchase" invisible="1"/>
+                <field name="is_order" invisible="1"/>
+                <field name="is_order_payment" invisible="1"/>
+                <field name="purchase_id" invisible="is_purchase == 'no'" required="is_purchase == 'required'" readonly="1"/>
+                <field name="payment_order_id" invisible="is_order_payment == 'no'" readonly="1"/>
+                <field name="order_id" invisible="is_order == 'no'" required="is_order == 'required'" readonly="1"/>
+                <field name="partner_id" invisible="is_order == 'no'" readonly="1" force_save="1"/>
+                <field name="amount" invisible="is_order == 'no'" required="is_order == 'required'" readonly="1"/>
+                <field name="credit_limit" invisible="is_order == 'no'" required="is_order == 'required'" readonly="1"/>
+                <field name="available_credit" invisible="is_order == 'no'" required="is_order == 'required'" readonly="1"/>
+                <field name="group_name" invisible="is_order == 'no' or group_name == False" required="is_order == 'required'" readonly="1"/>
+                <field name="group_total_credit_limit" invisible="is_order == 'no' or group_name == False" required="is_order == 'required'" readonly="1"/>
+                <field name="group_credit_difference" invisible="is_order == 'no' or group_name == False" required="is_order == 'required'" readonly="1"/>
+                <field name="group_available_credit" invisible="is_order == 'no' or group_name == False" required="is_order == 'required'"  readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_approval_request_tree_inherit" model="ir.ui.view">
+        <field name="name">view.approval.request.tree.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="user_status" invisible="1"/>
+                <field name="has_access_to_request" invisible="1"/>
+                <button name="action_approve" string="Aprobar" type="object" invisible="request_status in ['approved', 'refused', 'cancel'] or user_status != 'pending'"/> 
+                <field name="is_purchase" invisible="1" optional="hide"/>
+                <field name="is_order" invisible="1" optional="hide"/>
+                <field name="purchase_id" invisible="is_purchase == 'no'" required="is_purchase == 'required'" readonly="1" optional="hide"/>
+                <field name="order_id" invisible="is_order == 'no'" required="is_order == 'required'" readonly="1" optional="hide"/>
+                <field name="partner_id" invisible="is_order == 'no'" readonly="1" force_save="1" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

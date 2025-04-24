@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="warranty_approval" model="approval.category">
+            <field name="name">Aprobación de Garantías</field>
+            <field name="is_warranty">required</field>
+        </record>
+    </data>
+</odoo>

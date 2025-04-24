@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_report_account_status_detailed" model="ir.actions.report">
+        <field name="name">ESTADO DE CUENTA DETALLADO</field>
+        <field name="model">account.status.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gchakao_custom.report_account_status_detailed</field>
+        <field name="report_file">gchakao_custom.report_account_status_detailed</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_account_status_detailed">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-3">
+                            <!-- <img src="/logo.png" alt="Logo" t-att-style="'max-height: 45px;'"/> -->
+                            <span t-att-style="'margin-left: 11px; color: black;'">GRUPO CHAKAO</span>
+                        </div>
+                        <div class="col-6 text-center">
+                            <h2 t-att-style="'font-weight: bold; color: red;'">ESTADO DE CUENTA</h2>
+                        </div>
+                        <div class="col-3" t-att-style="'text-align: right;'">
+                            Página <span class="page"/> / <span class="topage"/>
+                            <br/>
+                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="page">
+                    <p>CLIENTE(S): <t t-esc="customer"/></p>
+                    <t t-set="grouped_data" t-value="{}"/>
+                    <t t-foreach="data" t-as="line">
+                        <t t-set="partner" t-value="line['partner_name']"/>
+                        <t t-set="grouped_data" t-value="dict(grouped_data, **{partner: grouped_data.get(partner, []) + [line]})"/>
+                    </t>
+                    <t t-foreach="grouped_data.items()" t-as="partner_data">
+                        <h4 t-att-style="'font-weight: bold; margin-top: 20px;'"><t t-esc="partner_data[0]"/></h4>
+                        <t t-foreach="partner_data[1]" t-as="line">
+                            <!-- Título Factura -->
+                            <table t-att-style="'width: 100%; border-collapse: collapse; font-size: 9px;'">
+                                <thead>
+                                    <tr t-att-style="'border: 1px solid black; background-color: #f2f2f2;'">
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">COMPAÑÍA</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">VENDEDOR</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">FACT. N°</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">F. EMISIÓN</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">F. ENTREGA</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">F. VENCIMIENTO</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">DÍAS C.</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">DÍAS V.</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">MONTO $</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">PAGOS $</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">NC $</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">RET $</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">SALDO $</th>
+                                        <th t-att-style="'border: 1px solid black; font-size: 11px; background-color: #f2f2f2;'">ESTADO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-att-style="'border: 1px solid black;'">
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['company_id']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['invoice_user_id']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['invoice']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['invoice_date']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['delivery_date']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['invoice_date_due']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['credit_days']"/></td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['overdue_days']"/></td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'"><span t-esc="line['amount']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>  $</td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'"><span t-esc="line['payment']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>  $</td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'"><span t-esc="line['credit_note']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>  $</td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'"><span t-esc="line['total_withholdings']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>  $</td>
+                                        <td t-att-style="'border: 1px solid black; padding: 3px; white-space: nowrap;'"><span t-esc="line['balance']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>  $</td>
+                                        <td t-att-style="'border: 1px solid black;'"><span t-esc="line['status']"/></td>
+                                    </tr>
+                                    <t t-if="line['has_payments']">
+                                        <tr>
+                                            <td colspan="14">
+                                                <div style="text-align: center; font-weight: bold; font-size: 10px; margin: 3px 0;">PAGOS ASOCIADOS</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="14" t-att-style="'border: none; padding: 5px;'">
+                                                <table t-att-style="'width: 100%; border-collapse: collapse; font-size: 9px; border: 1px solid black;'">
+                                                    <thead>
+                                                        <tr t-att-style="'border: 1px solid black; background-color: #e6e6e6;'">
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">RECIBO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">FECHA</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">DIARIO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">MONEDA</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">REFERENCIA</th>
+                                                            <!-- <th t-att-style="'border: 1px solid black; font-size: 10px;'">TASA</th> -->
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">MONTO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="line['payments']" t-as="payment">
+                                                            <tr t-att-style="'border: 1px solid black;'">
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="payment['name']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="payment['date']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="payment['journal_id']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="payment['currency_id']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="payment['ref']"/></td>
+                                                                <!-- <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; white-space: nowrap;'"><span t-esc="payment['tax_today']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td> -->
+                                                                <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; white-space: nowrap;'"><span t-esc="payment['amount']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" />  $</td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- Aquí agregamos la sección de Notas de Crédito -->
+                                    <t t-if="line['credit_notes']">
+                                        <tr>
+                                            <td colspan="14">
+                                                <div style="text-align: center; font-weight: bold; font-size: 10px; margin: 3px 0;">NOTAS DE CRÉDITO ASOCIADAS</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="14" t-att-style="'border: none; padding: 5px;'">
+                                                <table t-att-style="'width: 100%; border-collapse: collapse; font-size: 9px; border: 1px solid black;'">
+                                                    <thead>
+                                                        <tr t-att-style="'border: 1px solid black; background-color: #e6e6e6;'">
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">NC N°</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">MOTIVO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">FECHA</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">MONTO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="line['credit_notes']" t-as="credit_note">
+                                                            <tr t-att-style="'border: 1px solid black;'">
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="credit_note['credit_note_number']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'">
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'd'">Devolución</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dr'">Devolución por refacturación</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dreu'">Devolución por reubicación</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dgar'">Devolución por garantía</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'de'">Descuento</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dp'">Descuento por pronto pago</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dg'">Descuento por garantía</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dcp'">Descuento por compensación</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dc'">Descuento por compensación 4%</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'dcc'">Descuento por compensación 2%</t>
+                                                                    <t t-if="credit_note['credit_note_motive'] == 'ap'">Ajuste de precio</t>
+                                                                </td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="credit_note['credit_note_date']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; white-space: nowrap;'"><span t-esc="credit_note['credit_note_amount']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>  $</td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- Aquí agregamos la sección de Retenciones -->
+                                    <t t-if="line['withholdings']">
+                                        <tr>
+                                            <td colspan="14">
+                                                <div style="text-align: center; font-weight: bold; font-size: 10px; margin: 3px 0;">RETENCIONES ASOCIADAS</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="14" t-att-style="'border: none; padding: 5px;'">
+                                                <table t-att-style="'width: 100%; border-collapse: collapse; font-size: 9px; border: 1px solid black;'">
+                                                    <thead>
+                                                        <tr t-att-style="'border: 1px solid black; background-color: #e6e6e6;'">
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">RET N°</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">TIPO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">MONTO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="line['withholdings']" t-as="withholdings">
+                                                            <tr t-att-style="'border: 1px solid black;'">
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="withholdings['number']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'"><span t-esc="withholdings['type']"/></td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: right; padding: 3px; white-space: nowrap;'"><span t-esc="withholdings['amount']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> $</td>  
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- Añadir tabla de líneas de factura -->
+                                    <t t-if="line['invoice_lines']">
+                                        <tr>
+                                            <td colspan="14">
+                                                <div style="text-align: center; font-weight: bold; font-size: 10px; margin: 3px 0;">LÍNEAS DE FACTURA</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="14" t-att-style="'border: none; padding: 5px;'">
+                                                <table t-att-style="'width: 100%; border-collapse: collapse; font-size: 9px; border: 1px solid black;'">
+                                                    <thead>
+                                                        <tr t-att-style="'border: 1px solid black; background-color: #e6e6e6;'">
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">CÓDIGO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">PRODUCTO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">CANTIDAD</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">PRECIO UNITARIO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">DESCUENTO %</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">SUBTOTAL SIN DESCUENTO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">SUBTOTAL CON DESCUENTO</th>
+                                                            <th t-att-style="'border: 1px solid black; font-size: 10px;'">IMPUESTOS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="line['invoice_lines']" t-as="invoice_line">
+                                                            <tr t-att-style="'border: 1px solid black;'">
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'">
+                                                                    <span t-esc="invoice_line['product_code']"/>
+                                                                </td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center;'">
+                                                                    <span t-esc="invoice_line['product_id']"/>
+                                                                </td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center; padding: 3px; white-space: nowrap;'">
+                                                                    <span t-esc="invoice_line['quantity']"/>
+                                                                </td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center; padding: 3px; white-space: nowrap;'">
+                                                                    <span t-esc="invoice_line['price_unit']"/>  $
+                                                                </td> 
+                                                                <td t-att-style="'border: 1px solid black; text-align: center; padding: 3px; white-space: nowrap;'">
+                                                                    <span t-esc="invoice_line['discount']"/>  %
+                                                                </td>
+                                                                <td t-att-style="'border: 1px solid black; text-align: center; padding: 3px; white-space: nowrap;'">
+                                                                    <span t-esc="invoice_line['price_subtotal_usd']"/>  $
+                                                                </td> 
+                                                                <td t-att-style="'border: 1px solid black; text-align: center; padding: 3px; white-space: nowrap;'">
+                                                                    <span t-esc="invoice_line['price_subtotal']"/>  $
+                                                                </td> 
+                                                                <td t-att-style="'border: 1px solid black; text-align: center; padding: 3px; white-space: nowrap;'">
+                                                                    <span t-foreach="invoice_line['tax_ids']" t-as="tax">
+                                                                        <span t-esc="tax[0]"/>
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                                    <br/>
+
+                        </t>
+                    </t>
+                                    <br/>
+                </div>
+                <div class="footer text-center">
+                    <div class="text-muted">
+                        Página <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_custom_e" model="report.paperformat">
+        <field name="name">Formato de Papel para Estado de Cuenta</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing">5</field>
+    </record>
+
+</odoo>

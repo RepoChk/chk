@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+      <record id="view_resume_payroll_wizard_form" model="ir.ui.view">
+       	    <field name="name">Resúmen de Nómina</field>
+            <field name="model">resume.payroll.wizard</field>
+    	    <field name="arch" type="xml">
+    	    	<form string="Resúmen de Nómina">
+                    <div class="o_row">
+                        <p class="text-muted w-50">Seleccione el rango de fechas para filtras los lotes de nómina.</p>
+                    </div>
+                    <group>
+                        <group>
+                            <label for="date_from" string="Período"/>
+                            <div class="o_row">
+                                <field name="date_from" class="oe_inline o_hr_narrow_field" /> - <field name="date_to" class="oe_inline o_hr_narrow_field"/>
+                            </div>
+                            <field name="run_ids" invisible="1"/>
+                            <field name="payslip_run_ids" string="Lotes de Nómina" required="1" widget="many2many_tags" options="{'no_create': 1}" readonly="date_from == False or date_to == False"/>
+                        </group>
+                        <group>
+                            <field name="company_id" string="Compañía" readonly="1" force_save="1"  options="{'no_open': 1}"/>
+                            <field name="date" invisible="1" force_save="1"/>
+                        </group>
+                    </group>
+                    <field invisible="1" name="state"/>
+                    <div invisible="state != 'get'">
+                        <group>
+                            <field name="name" colspan="4" invisible="1"/>
+                            <field name="report" filename="name" colspan="4"/>
+                        </group>
+                    </div>
+	                <footer>
+                        <button name="print_report_data" string="Imprimir" type="object" class="oe_highlight"/>
+	                    <button special="cancel" string="Cancel" class="oe_highlight" />
+	                </footer>
+                </form>
+
+    	    </field>
+      </record>
+
+      <record id="action_report_resume_payroll_chakao" model="ir.actions.act_window">
+        	<field name="name">Resúmen de Nómina</field>
+        	<field name="res_model">resume.payroll.wizard</field>
+        	<field name="view_mode">form</field>
+        	<field name="view_id" ref="view_resume_payroll_wizard_form"/>
+        	<field name="target">new</field>
+      </record>
+
+      <menuitem
+        id="menu_resume_monina"
+        parent="hr_payroll.menu_hr_payroll_report"
+        name="Resúmen de Nómina"
+        sequence="11"
+        action="action_report_resume_payroll_chakao"/>
+
+    </data>
+</odoo>

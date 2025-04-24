@@ -1,0 +1,8 @@
+__pycache__
+*/__pycache__
+models/__pycache__
+wizard/__pycache__
+controller/__pycache__
+account_dual_currency/*
+l10n_ve_full/*
+l10n_ve_payroll/*

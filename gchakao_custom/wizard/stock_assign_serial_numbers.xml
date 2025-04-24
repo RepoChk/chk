@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gc_assign_serial_numbers_inherit" model="ir.ui.view">
+        <field name="name">gc.assign.serial.numbers.inherit</field>
+        <field name="model">stock.assign.serial</field>
+        <field name="inherit_id" ref="stock.view_assign_serial_numbers"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group/field[@name='next_serial_number']" position="attributes">
+                <attribute name="force_save">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

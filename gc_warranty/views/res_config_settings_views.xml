@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_inherit_warranty" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.warranty</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Garantías" string="Garantías" name="gc_warranty" groups="gc_warranty.group_warranty_management">
+                        <block title="Configuración de notificaciones">
+                            <setting string="Seleccione el encargado de los pedidos" id="warranty_order_user_id" help="Este usuario recibira notificaciones cuando la garantía este por pedidos.">
+                                <field name="warranty_order_user_id" class="w-40"/>
+                            </setting>
+                            <setting string="Seleccione el encargado de cerrar las garantías" help="Este usuario recibira notificaciones cuando la garantía este por cerrar." id="warranty_close_user_id">
+                                <field name="warranty_close_user_id" class="w-40"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_warranty_config_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'gc_warranty', 'bin_size': False}</field>
+        </record>
+
+        <menuitem id="menu_warranty_config_settings" name="Configuración" parent="menu_warranty_root"
+            sequence="2"/>
+        <menuitem id="menu_stock_general_settings" name="Ajustes" parent="menu_warranty_config_settings"
+            sequence="0" action="action_warranty_config_settings"/>
+    </data>
+</odoo>

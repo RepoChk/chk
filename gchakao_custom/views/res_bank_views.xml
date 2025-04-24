@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gc_custom_view_partner_bank_form" model="ir.ui.view">
+            <field name="name">gc.customres.partner.bank.form</field>
+            <field name="model">res.partner.bank</field>
+            <field name="inherit_id" ref="base.view_partner_bank_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bank_id']" position="after">
+                    <field name="doc_identificate" placeholder="V-12345678 ó J-12345678-1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

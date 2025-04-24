@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top menu item -->
+
+    <menuitem 
+        name="Garantía" 
+        id="menu_warranty_root" 
+        web_icon="gc_warranty,static/description/icon.png" 
+        groups="gc_warranty.group_warranty_management"
+        sequence="26"/>
+
+    <menuitem 
+        id="menu_warranty_management" 
+        name="Garantías" 
+        parent="gc_warranty.menu_warranty_root" 
+        sequence="1"/>
+
+    <menuitem 
+        action="warranty_request" 
+        id="menu_warranty_request" 
+        parent="gc_warranty.menu_warranty_management" 
+        sequence="2"/>
+</odoo>

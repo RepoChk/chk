@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="product_category_inherit_form_view" model="ir.ui.view">
+        <field name="name">product.category.inherit.view.form</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="inside">
+                <field name="type_category" class="oe_inline"/>
+            </xpath>
+
+            <xpath expr="//group[@name='first']/field[@name='parent_id']" position="after">
+                <field name="is_sequence" groups="gchakao_custom.categ_seq_groups"/>
+                <field name="short_name" invisible="not is_sequence" required="is_sequence" groups="gchakao_custom.categ_seq_groups" force_save="1"/>
+            </xpath>
+            <xpath expr="//group[@name='first']" position="after">
+                <group name="category_seq">
+                    <field name="category_seq_id" invisible="not is_sequence" readonly="1" groups="gchakao_custom.categ_seq_groups"/>
+                    <!-- <field name="code_sequence" invisible="not is_sequence or not category_seq_id" readonly="1" groups="gchakao_custom.categ_seq_groups"/> -->
+                    <field name="category_seq_number_next" invisible="not is_sequence or not category_seq_id" readonly="1" string="Próximo número de secuancia" groups="gchakao_custom.categ_seq_groups"/>
+                </group>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="create_seq_if_not_exist" type="object" invisible="not is_sequence or category_seq_id" string="Crear Secuencia" class="oe_highlight" data-hotkey="q" groups="gchakao_custom.categ_seq_groups"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gchakao_custom.product_category_list_view" model="ir.ui.view">
+        <field name="name">gchakao_custom.product.category.list.view</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_list_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="multi_edit">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='display_name']" position="after">
+                <field name="is_sequence" groups="gchakao_custom.categ_seq_groups"/>
+                <field name="short_name" groups="gchakao_custom.categ_seq_groups" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_brand_view_form" model="ir.ui.view">
+        <field name="name">product.brand.view.form</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <form editable="bottom">
+                <sheet>
+                    <div class="col-12">
+                        <field name="image" widget="image" class="oe_avatar" no_label="True" />
+                    </div>
+                    <group> 
+                        <group class="col-12">
+                            <field name="name"/>
+                            <field name="ranking" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_brand_view_tree" model="ir.ui.view">
+        <field name="name">product.brand.view.tree</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="ranking" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="product_brand_view_search" model="ir.ui.view">
+        <field name="name">product.brand.view.search</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_product_brand" model="ir.actions.act_window">
+        <field name="name">Marca de Productos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.brand</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="gchakao_custom_product_template_tree_view" model="ir.ui.view">
+        <field name="name">gchakao_custom.product.template.tree.view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="model" optional="hide" readonly="1"/>
+                <field name="brand_id" optional="hide" readonly="1"/>
+                <field name="filler" optional="hide" readonly="1"/>
+                <field name="measure" optional="hide" readonly="1"/>
+                <field name="tarps" optional="hide" readonly="1"/>
+                <field name="load_speed" optional="hide" readonly="1"/>
+                <field name="rin" optional="hide" readonly="1"/>
+                <field name="tier" optional="hide" readonly="1"/>
+                <field name="type_tire" optional="hide" readonly="1"/>
+                <field name="construction_type" optional="hide" readonly="1"/>
+                <field name="tire_class" optional="hide" readonly="1"/>
+                <field name="qty_hq" optional="hide" readonly="1"/>
+                <field name="is_battery" optional="hide" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='priority']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='barcode']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_template_variant_value_ids']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lst_price']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_tag_ids']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='additional_product_tag_ids']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gchakao_custom_product_template_dual_currency" model="ir.ui.view">
+        <field name="name">gchakao_custom.product.template.dual_currency</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="account_dual_currency.product_variant_easy_edit_view_dual_currency"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id_dif']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='standard_price_usd']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='last_cost_usd']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gchakao_custom_product_template_dual_currency_two" model="ir.ui.view">
+        <field name="name">gchakao_custom.product.template.dual_currency.two</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="account_dual_currency.product_product_dual_currency_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='list_price_usd']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id_dif']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='standard_price_usd']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gchakao_custom_view_stock_product_tree" model="ir.ui.view">
+        <field name="name">gchakao_custom.view.stock.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.view_stock_product_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_available']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='virtual_available']" position="attributes">
+                <attribute name="column_invisible">(context.get('gc_hide_field'))</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem
+        action="action_product_brand" 
+        id="menu_product_brand"
+        parent="stock.menu_stock_config_settings"
+        sequence="4"/>
+
+</odoo>

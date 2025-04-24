@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='rif']" position="replace">
+                    <field name="rif" placeholder="Ej.: J-01234567-8 / V-1234567-8 / E-1234567-8 / V12345678" string="RIF" required="1"/>
+                </xpath>
+                <xpath expr="//group[@name='sale']" position="inside">
+                    <field name="customer_group_id" widget="many2many_tags"/>
+                    <field name="credit_limit"/>
+                    <field name="available_credit"/>
+                    <field name="key_account"/>
+                    <field name="customer_type"/>
+                    <field name="customer_segmentation"/>
+                    <field name="location_client"/>
+                </xpath>
+                
+                <!-- Agregar el nuevo grupo de documentos asociados después del grupo de ventas -->
+                <xpath expr="//group[@name='sale']" position="after">
+                    <group string="DOCUMENTOS ASOCIADOS">
+                        <field name="client_creation_sheet"/>
+                        <field name="commercial_registry"/>
+                        <field name="constitutive_act"/>
+                        <field name="updated_constitutive_act"/>
+                        <field name="copy_document_legal_representative"/>
+                        <field name="updated_rif"/>
+                    </group>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page string="Sub Proveedores" name="sub_providers">
+                        <field name="sub_provider_ids" options="{'no_create': True, 'no_open': True}">
+                            <tree>
+                                <field name="name"/>
+                                <field name="vat"/>
+                                <field name="city"/>
+                                <field name="state_id"/>
+                                <field name="country_id"/>
+                                <field name="phone"/>
+                                <field name="email"/>
+                                <field name="company_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//form/sheet/group[1]/group[1]/field[@name='title']" position="replace">
+                    <field name="title" placeholder="e.g. Mr." invisible="1"/>
+                </xpath>
+
+                <xpath expr="//form/sheet/group[1]/group[1]/field[@name='title']" position="after">
+                    <field name="identification_document" placeholder="Ej.: V-01234567"/>
+                </xpath>
+
+                <xpath expr="//sheet/group[1]/group[2]/field[@name='function']" position="before">
+                    <field name="identification_document" string="Documento de Identificación" invisible="is_company == True"/>
+                </xpath>
+
+                <xpath expr="//form/sheet/group[1]/group[2]/field[@name='email']" position="replace">
+                    <field name="email" widget="email" required="type == 'contact'"/>
+                </xpath>
+
+                <xpath expr="//field[@name='bank_ids']/tree" position="inside">
+                    <field name="doc_identificate"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

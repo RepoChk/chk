@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="group_warranty_management" model="res.groups">
+            <field name="name">Acceso a Garantías</field>
+            <field name="comment">Acceso al módulo de Garantías</field>
+        </record>
+    </data>
+</odoo>

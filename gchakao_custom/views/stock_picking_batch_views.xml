@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View stock.picking.batch form -->
+    <record id="view_stock_picking_batch_form_inherit" model="ir.ui.view">
+        <field name="name">view.stock.picking.batch.form.inherit</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="vehicle_id" required="1" readonly="state != 'draft'"/>
+                <field name="driver_id" required="1" readonly="state != 'draft'"/>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="date_end" required="1" readonly="state != 'draft'"/>
+                
+                <field name="vehicle_filler" readonly="1"/>
+                <field name="loaded_filler" readonly="1"/>
+
+                <field name="delivery_date" readonly="state != 'done'"/>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                <attribute name="string">Fecha desde</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Otra Información">
+                    <label for="type_vehicle" class="me-3 my-3"/>
+                    <field name="type_vehicle" readonly="1"/>
+                    <group>
+                        <group>
+                            <field name="km_estimate" required="1"/>
+                        </group>
+                        <group>
+                            <field name="coste_km" required="1" invisible="type_vehicle != 'external'"/>
+                            <field name="disel_consumed" required="1" invisible="type_vehicle != 'internal'"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

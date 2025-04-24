@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="paperformat_vat_summary" model="report.paperformat">
+        <field name="name">Formato Resumen IVA</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="header_spacing">5</field>
+        <field name="dpi">90</field>
+        <field name="disable_shrinking" eval="False"/>
+    </record>
+    
+    <record id="action_report_vat_summary" model="ir.actions.report">
+        <field name="name">Resumen de IVA</field>
+        <field name="model">vat.summary.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gchakao_custom.report_vat_summary</field>
+        <field name="report_file">gchakao_custom.report_vat_summary</field>
+        <field name="binding_model_id" ref="model_vat_summary_wizard"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_vat_summary"/>
+    </record>
+
+    <template id="report_vat_summary">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <!-- Variables de contexto -->
+                <t t-set="ventas" t-value="env.context.get('ventas', [])"/>
+                <t t-set="compras" t-value="env.context.get('compras', [])"/>
+                <t t-set="totales_ventas" t-value="env.context.get('totales_ventas', {})"/>
+                <t t-set="totales_compras" t-value="env.context.get('totales_compras', {})"/>
+                <t t-set="resumen_ventas" t-value="env.context.get('resumen_ventas', {})"/>
+                <t t-set="resumen_compras" t-value="env.context.get('resumen_compras', {})"/>
+                <t t-set="resumen_iva" t-value="env.context.get('resumen_iva', {})"/>
+                <t t-set="moneda" t-value="env.context.get('moneda', '')"/>
+                <t t-set="date_from" t-value="env.context.get('date_from', '')"/>
+                <t t-set="date_to" t-value="env.context.get('date_to', '')"/>
+
+                <!-- Encabezado -->
+                <div class="text-center mb-4" style="margin-top: 20px;">
+                    <h1 style="margin: 0; font-weight: bold; font-size: 20px;">Resumen para Análisis de Impuestos Nacionales</h1>
+                    <p style="margin: 5px 0; font-size: 14px;">Desde: <t t-esc="date_from"/> Hasta: <t t-esc="date_to"/></p>
+                    <p style="margin: 5px 0; font-size: 14px;">Moneda: <t t-esc="moneda"/></p>
+                </div>
+
+                <!-- Tabla Principal -->
+                <div style="font-size: 9px;">
+                    <table class="table table-sm" style="width: 100%; border-collapse: collapse;">
+                        <!-- Encabezados principales -->
+                        <thead>
+                            <tr>
+                                <th colspan="8" style="background-color: #C9C9C9; border: 1px solid black; text-align: center; font-weight: bold;">Ventas</th>
+                                <th colspan="8" style="background-color: #C9C9C9; border: 1px solid black; text-align: center; font-weight: bold;">Compras</th>
+                            </tr>
+                            <tr style="background-color: #C9C9C9; font-weight: bold;">
+                                <th style="border: 1px solid black;">Fecha</th>
+                                <th style="border: 1px solid black;">Número de Factura</th>
+                                <th style="border: 1px solid black;">Total Ventas Incluyendo IVA</th>
+                                <th style="border: 1px solid black;">Base Imponible</th>
+                                <th style="border: 1px solid black;">Exento</th>
+                                <th style="border: 1px solid black;">I.V.A.</th>
+                                <th style="border: 1px solid black;">I.V.A. Ret.</th>
+                                <th style="border: 1px solid black;">IGTF</th>
+                                <th style="border: 1px solid black;">Fecha</th>
+                                <th style="border: 1px solid black;">Número de Factura</th>
+                                <th style="border: 1px solid black;">Total Compras Incluyendo IVA</th>
+                                <th style="border: 1px solid black;">Base Imponible</th>
+                                <th style="border: 1px solid black;">Exento</th>
+                                <th style="border: 1px solid black;">I.V.A.</th>
+                                <th style="border: 1px solid black;">I.V.A. Ret.</th>
+                                <th style="border: 1px solid black;">I.S.L.R. Ret.</th>
+                            </tr>
+                        </thead>
+                           <!-- Cuerpo de la tabla -->
+                        <tbody>
+                            <t t-foreach="range(max(len(ventas), len(compras)))" t-as="i">
+                                <tr>
+                                    <!-- Columnas de Ventas -->
+                                    <td style="border: 1px solid black;"><t t-esc="ventas[i]['fecha'] if i &lt; len(ventas) else ''"/></td>
+                                    <td style="border: 1px solid black;"><t t-esc="ventas[i]['factura'] if i &lt; len(ventas) else ''"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(ventas)" t-esc="'{:,.2f}'.format(ventas[i]['total']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(ventas)" t-esc="'{:,.2f}'.format(ventas[i]['base_imponible']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(ventas)" t-esc="'{:,.2f}'.format(ventas[i]['exento']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(ventas)" t-esc="'{:,.2f}'.format(ventas[i]['iva']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(ventas)" t-esc="'{:,.2f}'.format(ventas[i]['iva_retenido']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(ventas)" t-esc="'{:,.2f}'.format(ventas[i]['igtf']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    
+                                    <!-- Columnas de Compras -->
+                                    <td style="border: 1px solid black;"><t t-esc="compras[i]['fecha'] if i &lt; len(compras) else ''"/></td>
+                                    <td style="border: 1px solid black;"><t t-esc="compras[i]['factura'] if i &lt; len(compras) else ''"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(compras)" t-esc="'{:,.2f}'.format(compras[i]['total']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(compras)" t-esc="'{:,.2f}'.format(compras[i]['base_imponible']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(compras)" t-esc="'{:,.2f}'.format(compras[i]['exento']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(compras)" t-esc="'{:,.2f}'.format(compras[i]['iva']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(compras)" t-esc="'{:,.2f}'.format(compras[i]['iva_retenido']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                    <td style="border: 1px solid black; text-align: right;"><t t-if="i &lt; len(compras)" t-esc="'{:,.2f}'.format(compras[i]['islr_retenido']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <!-- Totales -->
+                        <tfoot>
+                            <tr style="font-weight: bold;">
+                                <td colspan="2" style="border: 1px solid black; text-align: center; background-color: #C9C9C9;">Total</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_ventas['total']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_ventas['base_imponible']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_ventas['exento']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_ventas['iva']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_ventas['iva_retenido']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_ventas['igtf']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td colspan="2" style="border: 1px solid black; text-align: center; background-color: #C9C9C9;">Total</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_compras['total']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_compras['base_imponible']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_compras['exento']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_compras['iva']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_compras['iva_retenido']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(totales_compras['islr_retenido']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Tablas de Resumen -->
+                <div style="width: 80%; margin: 20px auto; font-size: 11px;">
+                    <!-- Resumen de Ventas -->
+                    <table class="table table-sm" style="margin-bottom: 20px; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background-color: #C9C9C9; border: 1px solid black; text-align: center; font-weight: bold;">RESUMEN DE VENTAS</th>
+                            </tr>
+                            <tr style="background-color: #C9C9C9; font-weight: bold;">
+                                <th style="border: 1px solid black;">Descripción</th>
+                                <th style="border: 1px solid black;">Base Imponible</th>
+                                <th style="border: 1px solid black;">Débito Fiscal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;">Ventas Internas Exentas o Exoneradas</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_exentas']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Ventas Internas Gravadas Alíc. Reducida (8%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_gravadas_general8']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_gravadas8_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Ventas Internas Gravadas Alíc. General (16%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_gravadas_general16']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_gravadas16_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Ventas Internas Gravadas Alíc. General + Alíc. Adicional (31%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_gravadas_general31']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['ventas_gravadas31_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Ventas de Exportación</td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">TOTAL VENTAS Y DÉBITOS FISCALES DEL PERÍODO</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['total_ventas']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['total_debito_fiscal']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">TOTAL RETENCIONES DEL PERÍODO</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['total_retenciones']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">ANTICIPO ISLR 1%</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['anticipo_islr']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">IGTF</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['igtf']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Resumen de Compras -->
+                    <table class="table table-sm" style="margin-bottom: 20px; border-collapse: collapse; font-size: 11px;">
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background-color: #C9C9C9; border: 1px solid black; text-align: center; font-weight: bold;">RESUMEN DE COMPRAS</th>
+                            </tr>
+                            <tr style="background-color: #C9C9C9; font-weight: bold;">
+                                <th style="border: 1px solid black;">Descripción</th>
+                                <th style="border: 1px solid black;">Base Imponible</th>
+                                <th style="border: 1px solid black;">Crédito Fiscal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;">Compras Internas Exentas o Exoneradas</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_exentas']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Importación Gravadas por Alíc. General (16%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['importacion_gravadas_general16']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas16_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Compras Internas Gravadas Alíc. Reducida (8%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas_general8']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas8_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Compras Internas Gravadas Alíc. General (16%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas_general16']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas16_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Compras Internas Gravadas Alíc. General + Alíc. Adicional (31%)</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas_general31']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['compras_gravadas31_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">TOTAL</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['total_compras']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['total_credito_fiscal']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">TOTAL RETENCIONES IVA DEL PERÍODO</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['total_retenciones_iva']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">TOTAL RETENCIONES ISLR DEL PERÍODO</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['total_retenciones_islr']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Resumen IVA del Período -->
+                    <table class="table table-sm" style="margin-bottom: 20px; border-collapse: collapse; font-size: 11px;">
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background-color: #C9C9C9; border: 1px solid black; text-align: center; font-weight: bold;">RESUMEN IVA DEL PERÍODO</th>
+                            </tr>
+                            <tr style="background-color: #C9C9C9; font-weight: bold;">
+                                <th style="border: 1px solid black;">Descripción</th>
+                                <th style="border: 1px solid black;">Base Imponible</th>
+                                <th style="border: 1px solid black;">Débito/Crédito Fiscal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;">EXCEDENTE CRÉDITO FISCAL DEL PERÍODO ANTERIOR</td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_iva['excedente_anterior']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">TOTAL VTAS. Y DÉBI. FISCALES P/EFECTOS DE DETERM.</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['total_ventas']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['total_debito_fiscal']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">TOTAL RETENCIONES DEL PERÍODO</td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_ventas['total_retenciones']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">TOTAL IMPORTACIÓN GRAVADAS POR ALÍCUOTA GENERAL</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['importacion_gravadas_general16']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['importacion_gravadas16_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">TOTAL COMPRAS Y CRÉDITOS FISCALES DEL PERÍODO</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['total_compras_nacionales']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_compras['total_compras_nacionales_tax']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #C9C9C9;">
+                                <td style="border: 1px solid black;">TOTAL IVA A PAGAR</td>
+                                <td style="border: 1px solid black; text-align: right;">0,00</td>
+                                <td style="border: 1px solid black; text-align: right;"><t t-esc="'{:,.2f}'.format(resumen_iva['iva_pagar']).replace(',', '@').replace('.', ',').replace('@', '.')"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

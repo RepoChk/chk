@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data> 
+        <record id="view_production_lot_form" model="ir.ui.view">
+            <field name="name">stock.lot.form</field>
+            <field name="model">stock.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Garantía">
+                        <group>
+                            <group>
+                                <field name='warranty_active'/>
+                                <field name='date_sale'/>
+                                <field name='date_warranty'/>
+                            </group>
+                            <group invisible="not warranty_active">
+                                <label for="date_from" string="Desde"/>
+                                <div>
+                                    <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                        <field name="date_from" class="oe_inline"/>
+                                        <span class="oe_inline">
+                                            Hasta
+                                        </span>
+                                        <field name="date_to" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

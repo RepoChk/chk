@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="view_hr_payslip_inherit_form" model="ir.ui.view">
+            <field name="name">view.hr.payslip.inherit.form</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[last()]" position="after">
+                    <button string="Generar Orden de Pago" name="action_create_payment_order" type="object" invisible="state not in ('verify','done') or payment_order_id" class="oe_highlight"/>
+                </xpath>
+                <xpath expr="//group" position="replace">
+                    <div class="alert alert-warning" role="alert" invisible="not warning_message_status">
+                        <field name="warning_message_status"/>
+                    </div>
+                    <group>
+                        <group>
+                            <label for="date_from" string="Period"/>
+                            <div>
+                                <field name="date_from" class="oe_inline" readonly="state in ['cancel', 'done', 'paid']"/> - <field name="date_to" class="oe_inline" readonly="state in ['cancel', 'done', 'paid']"/>
+                            </div>
+                            <field name="company_id" invisible="1"/>
+                            <field name="contract_id" context="{'default_employee_id': employee_id}" required="1" readonly="state in ['cancel', 'done', 'paid']"/>
+                            <field name="struct_code" invisible="1"/>
+                            <field name="country_id" invisible="1"/>
+                            <field name="country_code" invisible="1"/>
+                            <field name="payslip_run_id" string="Lote" readonly="state not in ['draft', 'verify']"/>
+                            <field name="struct_id" required="1" readonly="state in ['cancel', 'done', 'paid']"/>
+                            <field name="salary_attachment_ids" invisible="1" force_save="1"/>
+                            <field name="wage_type" invisible="1"/>
+                            <field name="sum_worked_hours" invisible="1"/>
+                            <field name="credit_note" invisible="1" readonly="state not in ['draft', 'verify']"/>
+                            <field name="is_superuser" invisible="1"/>
+                            <field name="has_refund_slip" invisible="1"/>
+                            <field name="use_worked_day_lines" invisible="1"/>
+                            <field name="payment_order_id" readonly="1" invisible="not payment_order_id"/>
+                            <label for="add_discount" string="Agregar Descuentos"/>
+                            <div>
+                                <field name="add_discount" readonly="state in ['cancel', 'done', 'paid']" class="oe_inline" help="Este porcentaje viene de la configuración de la compañía. Para cambiarlo debe tener acceso a ajustes de compañía, de lo contrario debera comunicarse con el departamento de TI"/>
+                                <field name="por_discount_pp" invisible="not add_discount" widget="percentage" class="oe_inline"/>
+                            </div>
+                        </group>
+                        <group string="Información de Vacaciones" name="info_vac" invisible="struct_code != 'VACA'">
+                            <label for="anio_from" invisible="struct_code != 'VACA' or state in ['paid','cancel']" string="Periodo de Vacaciones"/>
+                            <div class="o_row" invisible="struct_code != 'VACA' or state in ['paid','cancel']">
+                                <field name="anio_from" class="oe_inline w-25" string="Inicio"/>
+                                <i class="fa fa-long-arrow-right" role="img" aria-label="Flecha"/>
+                                <field name="anio_to" class="w-25"/>
+                            </div>
+                            <field name="period_to_vacation" readonly="1" invisible="state not in ['paid','cancel']"/>
+                            <field name="date_from_vacation" readonly="1"/>
+                            <field name="date_to_vacation" readonly="1"/>
+                            <field name="date_return_vacation" readonly="1"/>
+                            <field name="vacation_days" readonly="1"/>                            
+                            <field name="antiguedad_pagar" readonly="1"/>
+                            <field name="dia_adicional_vaca" readonly="1"/>
+                            <field name="dia_adicional_bono" readonly="1"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//notebook/page[@name='account_info']" position="after">
+                    <page string="Descuentos" name="discount_info" invisible="not add_discount">
+                        <field name="discount_ids" nolabel="1" required="add_discount" readonly="1">
+                            <tree string="Lineas de descuento">
+                                <field name="discount_type_id"/>
+                                <field name="amount_usd" sum="Total USD"/>
+                                <field name="amount_bs" sum="Total Bs" column_invisible="True"/>
+                                <field name="currency_id_dif" column_invisible="True"/>
+                                <field name="currency_id_company" column_invisible="True"/>
+                                <field name="company_id" column_invisible="True" force_save="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="gc_hr_payslip_form_inherit_views_lunes" model="ir.ui.view">
+            <field name="name">gc.hr.payslip.form.inherit.views.lunes.form</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="l10n_ve_payroll.hr_payslip_form_inherit_views_lunes"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lunes_trabajados']" position="after">
+                    <field name="sabados_periodo"/>
+                    <field name="domingos_periodo"/>
+                    <field name="feriados_periodo"/>
+                </xpath>
+                <xpath expr="//field[@name='complemento']" position="after">
+                    <field name="dias_pendientes"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="gc_view_hr_payslip_tree_inherit" model="ir.ui.view">
+            <field name="name">gc.view.hr.payslip.inherit.tree</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="discount_status" readonly="1" widget="badge" decoration-muted="discount_status == 'sin_descuentos'" decoration-danger="discount_status == 'excedido'" decoration-success="discount_status == 'bueno'"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

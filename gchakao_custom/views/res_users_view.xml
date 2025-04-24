@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="gchakao_custom_view_users_form_inherit" model="ir.ui.view">
+            <field name="name">gchakao.custom.view.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@name='access_rights']/group" position="after">
+                    <group string="Términos de Pago">
+                        <field name="payment_term_ids" widget="many2many_tags" options="{'no_create': True}" />
+                    </group>
+                </xpath>
+                <xpath expr="//notebook/page[last()]" position="after">
+                    <page name="users_warehouse" string="Información de Almacenes">
+                        <group col="2">
+                            <field name="warehouse_ids" widget="many2many_tags"/>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page name="approval" string="Aprobaciones">
+                        <group string="Permiso para deshabilitar aprobaciones">
+                            <field name="remove_approval"/>
+                        </group>
+                        <group name="aprovers_oc" string="Aprobadores Ordenes de Compra">
+                            <field name="approving_amount"/>
+                            <field name="approving_leader_oc_ids" widget="many2many_tags"/>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//group[@name='messaging']" position="inside">
+                    <group name="signature_seal" string="Firma y Sello">
+                        <field name="signature_seal" string="Firma y Sello" widget="signature" options="{'full_name': 'display_name', 'size': ['',200]}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- <record id="gchakao_res_users_groups" model="ir.ui.view">
+            <field name="name">gchakao.res.users.groups.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@name='access_rights']" position="inside">
+                    <field name="payment_term_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                </xpath>
+            </field>
+        </record> -->
+    </data>
+</odoo>

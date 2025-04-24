@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- QWeb Reports -->
+        <!-- NOTA ME CON IVA -->
+        <record id="paperformat_invoice_nota_with_iva" model="report.paperformat">
+            <field name="name">NOTA ME CON IVA</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">150</field>
+            <field name="page_width">160</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+        <!-- NOTA ME SIN IVA -->
+        <record id="paperformat_invoice_nota_without_iva" model="report.paperformat">
+            <field name="name">NOTA ME SIN IVA</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">150</field>
+            <field name="page_width">160</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- TAMAÑO CARTA -->
+        <record id="paperformat_report_invoice_letter" model="report.paperformat">
+            <field name="name">Letter Personalizado</field>
+            <field name="default" eval="True" />
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">85</field>
+            <field name="margin_bottom">110</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- MEDIA CARTA -->
+        <record id="paperformat_report_invoice_half_letter" model="report.paperformat">
+            <field name="name">Half Letter Personalizado</field>
+            <field name="default" eval="True" />
+            <field name="format">custom</field>
+            <field name="page_height">100</field> 
+            <field name="page_width">100</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">32</field>
+            <field name="margin_bottom">55</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">1</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">16</field>
+            <field name="dpi">120</field>
+        </record>
+
+        <record id="paperformat_report_purchase_with_iva" model="report.paperformat">
+            <field name="name">Letter Personalizado Purchase with IVA</field>
+            <field name="default" eval="True" />
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">60</field>
+            <field name="margin_bottom">60</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">55</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_invoice_letter" model="ir.actions.report">
+            <field name="name">Documento Tamaño Carta</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_invoice_letter</field>
+            <field name="report_file">gchakao_custom.report_invoice_letter</field>
+            <field name="print_report_name">(object._get_report_base_filename())</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_report_invoice_letter"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_invoice_half_letter" model="ir.actions.report">
+            <field name="name">Documento Tamaño Media Carta</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_invoice_half_letter</field>
+            <field name="report_file">gchakao_custom.report_invoice_half_letter</field>
+            <field name="print_report_name">(object._get_report_base_filename())</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_report_invoice_half_letter"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_purchase_me_without_iva_letter" model="ir.actions.report">
+            <field name="name">Nota ME sin IVA</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_purchase_without_iva</field>
+            <field name="report_file">gchakao_custom.report_purchase_without_iva</field>
+            <field name="print_report_name">('Nota ME sin IVA - %s' % (object._get_report_base_filename()))</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_invoice_nota_without_iva"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_purchase_me_with_iva_letter" model="ir.actions.report">
+            <field name="name">Nota ME con IVA</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_purchase_with_iva</field>
+            <field name="report_file">gchakao_custom.report_purchase_with_iva</field>
+            <field name="print_report_name">('Nota ME con IVA - %s' % (object._get_report_base_filename()))</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_invoice_nota_with_iva"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- REPORTE DE DESPACHO -->
+        <!-- REPORTE DE DESPACHO -->
+        <record id="paperformat_dispatch_control_report" model="report.paperformat">
+            <field name="name">Reporte de despacho</field>
+            <field name="format">custom</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">25</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">25</field>
+            <field name="dpi">140</field>
+        </record>
+        
+        
+        <record id="action_dispatch_control_report" model="ir.actions.report">
+            <field name="name">Reporte de despacho</field>
+            <field name="model">dispatch.control</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.dispatch_control_report</field>
+            <field name="report_file">gchakao_custom.dispatch_control_report</field>
+            <field name="print_report_name">('Reporte de despacho - %s' % (object.name))</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_dispatch_control_report"/>
+            <field name="binding_model_id" ref="model_dispatch_control"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- ORDEN DE SALIDA (CONSUMIBLE) -->
+        <record id="action_consumable_output_order" model="ir.actions.report">
+            <field name="name">Orden de Salida (Consumible)</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_consumable_output_order</field>
+            <field name="report_file">gchakao_custom.report_consumable_output_order</field>
+            <field name="print_report_name">('Orden de Salida (Consumible) - %s' % (object.name))</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="paperformat_report_picking_extra" model="report.paperformat">
+            <field name="name">Operaciones de albaran (seguimiento)</field>
+            <field name="format">custom</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">45</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">100</field>
+        </record>
+
+        <!-- OPERACIONES DE ALBARAN (SEGUIMIENTO) -->
+        <record id="action_report_picking_extra" model="ir.actions.report">
+            <field name="name">Operaciones de albaran (seguimiento)</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_picking_extra</field>
+            <field name="report_file">gchakao_custom.report_picking_extra</field>
+            <field name="print_report_name">('Operaciones de albaran - %s - %s' % (object.partner_id.name or '', object.name))</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_report_picking_extra"/>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- REPORTE DE O COMPRAS ME -->
+        <record id="paperformat_report_purchase_order" model="report.paperformat">
+            <field name="name">Formato Ordenes de Compras</field>
+            <field name="format">Letter</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">80</field>
+            <field name="margin_bottom">60</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">80</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- REPORTE DE O COMPRAS ME -->
+        <record id="action_report_purchase_order_me" model="ir.actions.report">
+            <field name="name">O Compras ME</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_purchase_order_me</field>
+            <field name="report_file">gchakao_custom.report_purchase_order_me</field>
+            <field name="print_report_name">('O Compras ME - %s' % (object.name))</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_report_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- REPORTE DE O COMPRAS PM -->        
+        <record id="action_report_purchase_order_pm" model="ir.actions.report">
+            <field name="name">O Compras PM</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_purchase_order_pm</field>
+            <field name="report_file">gchakao_custom.report_purchase_order_pm</field>
+            <field name="print_report_name">('O Compras PM - %s' % (object.name))</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_report_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="paperformat_payslip_receip" model="report.paperformat">
+            <field name="default" eval="True"/>
+            <field name="name">Formato Recibo Nomina</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">279</field>
+            <field name="page_width">216</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">26</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">96</field>
+        </record>
+        
+        <record id="action_report_payslip_gchakao" model="ir.actions.report">
+            <field name="name">Recibo de nómina Gchakao</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_payslip_gchakao</field>
+            <field name="report_file">gchakao_custom.report_payslip_gchakao</field>
+            <field name="print_report_name">'Recibo - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_payslip_receip"/>
+            <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="binding_type">report</field>
+            <!-- Erase fields to avoid double PDF posting -->
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+
+        <record id="action_report_payslip_ba_gchakao" model="ir.actions.report">
+            <field name="name">Recibo de Bono Ayuda</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_payslip_ba_gchakao</field>
+            <field name="report_file">gchakao_custom.report_payslip_ba_gchakao</field>
+            <field name="print_report_name">'Bono Ayuda - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_payslip_receip"/>
+            <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="binding_type">report</field>
+            <!-- Erase fields to avoid double PDF posting -->
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+
+        <record id="action_report_payslip_ct_gchakao" model="ir.actions.report">
+            <field name="name">Recibo de Cesta Ticket</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_payslip_ct_gchakao</field>
+            <field name="report_file">gchakao_custom.report_payslip_ct_gchakao</field>
+            <field name="print_report_name">'Cesta Ticket - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_payslip_receip"/>
+            <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="binding_type">report</field>
+            <!-- Erase fields to avoid double PDF posting -->
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+
+        <record id="action_report_vacation_gchakao" model="ir.actions.report">
+            <field name="name">Recibo de Vacaciones</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_payslip_va_gchakao</field>
+            <field name="report_file">gchakao_custom.report_payslip_va_gchakao</field>
+            <field name="print_report_name">'Vacaciones - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_payslip_receip"/>
+            <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="binding_type">report</field>
+            <!-- Erase fields to avoid double PDF posting -->
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+
+        <record id="paperformat_custom_cxc" model="report.paperformat">
+            <field name="name">Formato de Papel para Cuentas por Cobrar</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="orientation">Portrait</field>
+            <field name="page_height">279</field>
+            <field name="page_width">216</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">30</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">20</field>
+        </record>
+        <record id="action_report_account_receivable" model="ir.actions.report">
+            <field name="name">Reporte de Cuentas por Cobrar por Cliente (PDF)</field>
+            <field name="model">account.receivable.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_receivable</field>
+            <field name="report_file">gchakao_custom.report_account_receivable</field>
+            <field name="binding_model_id" ref="model_account_receivable_wizard"/>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_custom_cxc"/>
+            <field name="binding_type">report</field>
+        </record>
+        
+        <record id="action_report_account_receivable_supplier" model="ir.actions.report">
+            <field name="name">Reporte de Cuentas por Pagar por Proveedor (PDF)</field>
+            <field name="model">account.receivable.supplier.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_receivable_supplier</field>
+            <field name="report_file">gchakao_custom.report_account_receivable_supplier</field>
+            <field name="binding_model_id" ref="model_account_receivable_supplier_wizard"/>
+            <field name="binding_type">report</field>
+        </record>        
+
+        <record id="action_report_account_receivable_subprovider" model="ir.actions.report">
+            <field name="name">Reporte de Cuentas por Pagar por Sub-Proveedor (PDF)</field>
+            <field name="model">account.receivable.subprovider.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_receivable_subprovider</field>
+            <field name="report_file">gchakao_custom.report_account_receivable_subprovider</field>
+            <field name="binding_model_id" ref="model_account_receivable_subprovider_wizard"/>
+            <field name="binding_type">report</field>
+        </record>      
+
+        <record id="action_report_account_status" model="ir.actions.report">
+            <field name="name">Reporte de Estado de Cuenta por Cliente (PDF)</field>
+            <field name="model">account.status.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_status</field>
+            <field name="report_file">gchakao_custom.report_account_status</field>
+            <field name="binding_model_id" ref="model_account_status_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_account_status_supplier" model="ir.actions.report">
+            <field name="name">Reporte de Estado de Cuenta por Proveedor (PDF)</field>
+            <field name="model">account.status.supplier.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_status_supplier</field>
+            <field name="report_file">gchakao_custom.report_account_status_supplier</field>
+            <field name="binding_model_id" ref="model_account_status_supplier_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_account_status_subprovider" model="ir.actions.report">
+            <field name="name">Reporte de Estado de Cuenta por Sub-Proveedor (PDF)</field>
+            <field name="model">account.status.subprovider.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_status_subprovider</field>
+            <field name="report_file">gchakao_custom.report_account_status_subprovider</field>
+            <field name="binding_model_id" ref="model_account_status_subprovider_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_bank_conciliation" model="ir.actions.report">
+            <field name="name">Diario de Banco</field>
+            <field name="model">bank.conciliation.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_bank_conciliation</field>
+            <field name="report_file">gchakao_custom.report_bank_conciliation</field>
+            <field name="binding_model_id" ref="model_bank_conciliation_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_vat_summary" model="ir.actions.report">
+            <field name="name">Resumen de IVA</field>
+            <field name="model">vat.summary.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_vat_summary</field>
+            <field name="report_file">gchakao_custom.report_vat_summary</field>
+            <field name="binding_model_id" ref="model_vat_summary_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+        
+        <!-- Reporte de Pre Nomina -->
+
+        <record id="paperformat_pre_nomina" model="report.paperformat">
+            <field name="default" eval="True"/>
+            <field name="name">A4 Resumen Pre nomina</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">25</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">110</field>
+        </record>
+
+        <record id="paperformat_resume_payslip" model="report.paperformat">
+            <field name="default" eval="True"/>
+            <field name="name">A4 Resumen nomina</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">210</field>
+            <field name="page_width">297</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">110</field>
+        </record>
+          
+        <record id="action_report_pre_payroll_detailed" model="ir.actions.report">
+            <field name="name">Reporte Pre Nómina</field>
+            <field name="model">pre.payroll.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_pre_payroll_detailed</field>
+            <field name="report_file">gchakao_custom.report_pre_payroll_detailed</field>
+            <field name="print_report_name">'Reporte de Pre Nómina - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_pre_nomina"/>
+            <field name="binding_type">report</field>
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+        
+        <record id="action_sale_order_budget" model="ir.actions.report">
+            <field name="name">Presupuesto / Pedido ME</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_sale_order_budget</field>
+            <field name="report_file">gchakao_custom.report_sale_order_budget</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_account_payment_extend" model="ir.actions.report">
+            <field name="name">Recibo ME</field>
+            <field name="model">account.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.account_payment_extend</field>
+            <field name="report_file">gchakao_custom.account_payment_extend</field>
+            <field name="binding_model_id" ref="account.model_account_payment"/>
+            <field name="binding_type">report</field>
+        </record>
+        
+        <record id="action_report_account_status_detailed" model="ir.actions.report">
+            <field name="name">Reporte de Estado de Cuenta Detallado (PDF)</field>
+            <field name="model">account.status.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_account_status_detailed</field>
+            <field name="report_file">gchakao_custom.report_account_status_detailed</field>
+            <field name="binding_model_id" ref="model_account_status_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_pre_payroll_analytic" model="ir.actions.report">
+            <field name="name">Reporte Pre Nómina Analitica</field>
+            <field name="model">pre.payroll.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_pre_payroll_analytic</field>
+            <field name="report_file">gchakao_custom.report_pre_payroll_analytic</field>
+            <field name="print_report_name">'Reporte de Pre Nómina Cta. Analitica - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_pre_nomina"/>
+            <field name="binding_type">report</field>
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+        
+        <record id="action_report_pre_payroll_summarized" model="ir.actions.report">
+            <field name="name">Reporte Pre Nómina Resumido</field>
+            <field name="model">pre.payroll.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_pre_payroll_summarized</field>
+            <field name="report_file">gchakao_custom.report_pre_payroll_summarized</field>
+            <field name="print_report_name">'Reporte de Pre Nómina Resumido - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_pre_nomina"/>
+            <field name="binding_type">report</field>
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+       
+
+        <record id="action_report_resume_payroll" model="ir.actions.report">
+            <field name="name">Resumen de Nómina</field>
+            <field name="model">resume.payroll.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.report_resume_payroll</field>
+            <field name="report_file">gchakao_custom.report_resume_payroll</field>
+            <field name="print_report_name">'Resúmen de Nómina - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_resume_payslip"/>
+            <field name="binding_type">report</field>
+            <field name="attachment"></field>
+            <field name="attachment_use" eval="False"/>
+        </record>
+
+        <!-- CIERRE DIARIO -->
+        <record id="paperformat_gc_account_payment_report" model="report.paperformat">
+            <field name="name">Cierre de ventas diario</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">25</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+        </record>
+
+        <record id="action_gc_account_payment_report" model="ir.actions.report">
+            <field name="name">Reporte de cierre de ventas diario</field>
+            <field name="model">gc.account.payment.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.gc_account_payment_template</field>
+            <field name="report_file">gchakao_custom.gc_account_payment_template</field>
+            <field name="print_report_name">'Reporte de %s' % (object.nombre_reporte)</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_gc_account_payment_report" />
+        </record>
+
+        <!-- Reporte Orden de Entrega -->
+        <record id="paperformat_delivery_order" model="report.paperformat">
+            <field name="name">Orden de Entrega</field>
+            <field name="format">custom</field>
+            <field name="page_height">227</field> 
+            <field name="page_width">217</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">1</field>
+            <field name="margin_right">1</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">25</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_delivery_order_report" model="ir.actions.report">
+            <field name="name">Orden de Entrega</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.delivery_order_report</field>
+            <field name="report_file">gchakao_custom.delivery_order_report</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_delivery_order" />
+            <field name="print_report_name">'Reporte de %s' % (object.name)</field>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- LIBRO MAYOR DE ANALISIS PDF -->
+        <record id="paperformat_analysis_ledger" model="report.paperformat">
+            <field name="name">Libro de Análisis</field>
+            <!-- <field name="default" eval="True"/> -->
+            <field name="format">Letter</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">30</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_analysis_ledger_report" model="ir.actions.report">
+            <field name="name">Libro mayor de análisis</field>
+            <field name="model">wizard.analysis.ledger</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.analysis_ledger_report</field>
+            <field name="report_file">gchakao_custom.analysis_ledger_report</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_analysis_ledger"/>
+            <field name="binding_model_id" ref="model_wizard_analysis_ledger"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- <record id="action_forma1312_report" model="ir.actions.report">
+            <field name="name">Forma 13 - 12</field>
+            <field name="model">wizard.forma.1312</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.forma1312_report</field>
+            <field name="report_file">gchakao_custom.forma1312_report</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_analysis_ledger"/>
+            <field name="binding_model_id" ref="model_wizard_forma_1312"/>
+            <field name="binding_type">report</field>
+        </record> -->
+
+        <!-- Formato de Factura de Compra ME -->
+        <record id="paperformat_purchase_invoice_me" model="report.paperformat">
+            <field name="name">Formato Compras Factura ME</field>
+            <!-- <field name="default" eval="True"/> -->
+            <!-- <field name="format">custom</field>
+            <field name="page_height">230</field> 
+            <field name="page_width">216</field> -->
+            <field name="format">Letter</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">50</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_purchase_me_invoice" model="ir.actions.report">
+            <field name="name">Compras ME Factura</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gchakao_custom.purchase_me_invoice_report</field>
+            <field name="report_file">gchakao_custom.purchase_me_invoice_report</field>
+            <field name="paperformat_id" ref="gchakao_custom.paperformat_purchase_invoice_me"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

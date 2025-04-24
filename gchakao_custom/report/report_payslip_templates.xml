@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_payslip_gchakao_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.basic_layout" >
+                <div class="header">
+                    <table width="100%" class="table table-borderless table-sm">
+                        <tr>
+                            <td class="text-start">
+                                <t t-if="o.company_id.logo">
+                                    <img t-attf-src="data:image/*;base64,{{o.company_id.logo}}" style="width:300px; height:auto;"/>
+                                </t>
+                            </td>
+                            <td class="text-end align-middle fw-bold">
+                                Recibo de Pago
+                                <br/>
+                                Emisión: <span t-out="datetime.datetime.now().strftime('%d/%m/%Y')"/>
+                                <br/>
+                                Nómina Nro: <span t-field="o.number"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="page">
+                    <!-- TABLA 1 -->
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <td class="align-middle">
+                                    Cédula No. <span t-field="o.employee_id.identification_id"/>
+                                </td>
+                                <td colspan="2" class="align-middle">
+                                    Apellidos y Nombres: <span t-field="o.employee_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle border-top-1">Ficha: </td>
+                                <td class="align-middle">Fecha de Ingreso: <span t-field="o.employee_id.contract_id.date_start"/></td>
+                                <td class="align-middle">Cargo: <span t-field="o.employee_id.job_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle">Sueldo Mensual a la fecha: <span t-field="o.wage" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
+                                <td class="align-middle">Sueldo Diario: <span t-field="o.wage_diario" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
+                                <td class="align-middle">Dpto: <span t-field="o.employee_id.department_id.name"/></td>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <!-- TABLA 2 -->
+                    <table width="100%" class="table table-sm table-borderless">
+                        <thead>
+                            <tr>
+                                <td class="text-center border border-1 p-2 align-middle">Concepto</td>
+                                <td class="text-center border border-1 p-2 align-middle">Referencia</td>
+                                <td class="text-center border border-1 p-2 align-middle">Asignación</td>
+                                <td class="text-center border border-1 p-2 align-middle">Deducción</td>
+                            </tr>
+                        </thead>
+                        <t t-set="acum_asig" t-value="0"/>
+                        <t t-set="acum_dedu" t-value="0"/>
+                        <tboby>
+                            <t t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip and line.code not in ('TOTAL_ASIG','TOTAL_DED'))" t-as="line">
+                                <t t-if="line.category_id.code != 'GROSS'">                        
+                                    <t t-if="line.category_id.code != 'NET'">
+                                        <tr>
+                                            <td class="p-0"><strong><span t-field="line.name"/></strong></td>
+                                            <td class="text-center p-0">
+                                                <t t-if="line.code in ['DESCSSO','RPE']">
+                                                    <span t-out="float(line.slip_id.lunes_periodo)"/>
+                                                </t>
+                                                <t t-if="line.code == 'FAOV'">
+                                                    <span t-field="line.slip_id.company_id.por_empleado_lph"/>%
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-field="line.dias"/>
+                                                </t>
+                                            </td>
+                                            <td class="text-end p-0">
+                                                <t t-if="line.category_id.code != 'DED'">
+                                                    <span t-field="line.total" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                    <t t-set="acum_asig" t-value="acum_asig+line.total"/>
+                                                </t>
+                                            </td>
+                                            <td class="text-end p-0">
+                                                <t t-if="line.category_id.code == 'DED'">
+                                                    <span t-field="line.total" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                    <t t-set="acum_dedu" t-value="acum_dedu+line.total"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                        </tboby>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-start align-middle border border-1">
+                                    Total Asignaciones y Deducciones:
+                                </td>
+                                <td class="text-end align-middle border border-1">
+                                    <t t-out="acum_asig" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                                <td class="text-end align-middle border border-1">
+                                    <t t-out="acum_dedu" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="align-middle border border-1">
+                                    Periodo del:  <span t-field="o.date_from"/>  al  <span t-field="o.date_to"/> Fecha del Pago: <span t-field="o.date_to"/>
+                                </td>
+                                <td class="align-middle border-bottom fw-bolder text-end">
+                                    <samp>
+                                    NETO A COBRAR:
+                                    </samp>
+                                </td>
+                                <td class="align-middle border-bottom border-end fw-bolder text-center">
+                                    <samp>
+                                    <span style="font-size:16px" t-out="(acum_asig-acum_dedu)" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                    </samp>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle border border-1">No. Cuenta: 
+                                    <span t-out="o.employee_id.bank_account_id.acc_number if o.employee_id.bank_account_id else ''"/>
+                                </td>
+                                <td class="align-middle border border-1">Saldo Préstamo:
+                                    <t t-set="total_cuotas" t-value="sum(o.installment_ids.mapped('amount'))"/>
+                                    <t t-set="cuotas_restantes" t-value="len(o.installment_ids.mapped('loan_id').installment_lines.ids) - len(o.installment_ids)"/>
+                                    <t t-set="saldo_restante" t-value="sum(o.installment_ids.mapped('loan_id').installment_lines.mapped('amount')) - sum(o.installment_ids.mapped('amount'))"/>
+                                    <!-- <t t-esc="total_cuotas" t-options="{'widget': 'float', 'precision': 2}"/> -->
+                                    <!-- <t t-esc="cuotas_restantes"/> -->
+                                    $<t t-esc="saldo_restante" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height:15px;"/>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end">
+                                    Recibo Conforme:
+                                </td>
+                                <td colspan="2" style="border-bottom:1px solid black;"/>
+                            </tr>
+                            <tr>
+                                <td colspan="2"/>
+                                <td colspan="2" class="text-center">
+                                    <span t-field="o.employee_id.name"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </t> 
+        </t>
+    </t>
+</template>
+
+<template id="report_payslip_gchakao">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-set="o" t-value="o.with_context(lang=o.employee_id.lang or o.env.lang)"/>
+            <t t-call="gchakao_custom.report_payslip_gchakao_template" t-lang="o.env.lang"/>
+        </t>
+    </t>
+</template>
+</odoo>

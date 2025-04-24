@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_payslip_by_employees_inherit" model="ir.ui.view">
+        <field name="name">hr.payroll.payslip.employees.inherit</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_by_employees"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="replace">
+                <form string="Recibos de nómina de los empleados">
+                    <sheet>
+                        <div class="o_row">
+                            <span nolabel="1" colspan="2">Este asistente generará recibos de nómina para todos los empleados seleccionados. Si al momento de seleccionar la estructura (nómina) no ve un listado de empleados, debe previamente asignar los empleados en la estructura.</span>
+                        </div>
+                        <group colspan="2">
+                            <separator string="Estructura salarial" colspan="2"/>
+                            <newline/>
+                            <group>
+                                <field name="structure_type_code" invisible="1"/>
+                                <field name="structure_type_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="structure_id" readonly="not structure_type_id" domain="[('type_id', '=', structure_type_id)]" options="{'no_create': True, 'no_open': True}"/>
+                                <label for="anio_from" invisible="structure_type_code != 'VACA'" string="Periodo"/>
+                                <div class="o_row" invisible="structure_type_code != 'VACA'">
+                                    <field name="anio_from" class="oe_inline w-25" string="Inicio"/>
+                                    <i class="fa fa-long-arrow-right" role="img" aria-label="Flecha"/>
+                                    <field name="anio_to" class="w-25"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="hr_payment_type"/>
+                            </group>
+                        </group>
+                        <separator string="Departmento" colspan="2"/>
+                        <div class="o_row">
+                            <p class="text-muted w-50">Establezca un departamento específico si desea seleccionar todos los empleados de este departamento (y subdepartamentos) a la vez.</p>
+                            <field name="department_id" nolabel="1" options="{'no_create': True, 'no_open': True}"/>
+                        </div>
+                        <separator string="Empleados"/>
+                        <field name="employee_ids" nolabel="1">
+                            <tree>
+                                <field name="name" string="Nombre"/>
+                                <field name="work_email"/>
+                                <field name="department_id"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button string="Generate" name="compute_sheet" type="object" class="oe_highlight" data-hotkey="q"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="x"/>
+                    </footer>
+               </form>
+            </xpath>
+        </field>
+    </record>
+</odoo>

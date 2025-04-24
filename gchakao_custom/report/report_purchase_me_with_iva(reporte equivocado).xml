@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Cabecera y Pie del reporte -->
+    <template id="report_purchase_with_iva_header">
+        <!-- Cabecera -->
+        <div class="header">
+            <div class="container my-3">
+                <div class="row">
+                    <div class="col-5">
+                        <img t-if="o.company_id.logo" class="mt-1" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 100px;max-width: 200px;" alt="Logo"/>
+                    </div>
+                    <div class="col-7">
+                    </div>
+                </div>
+                <hr class="mt-0"/>
+            </div>
+            <div class="container" style="font-family: Arial;  font-size:12px;">
+                <div class="row">
+                    <div class="col-9">
+                        <table style="width: 100%;" class="table table-borderless table-sm">
+                            <colgroup>
+                                <col span="1" style="width: 15%;"/>
+                                <col span="1" style="width: 85%;"/>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="p-0">Proveedor: </td>
+                                    <td class="p-0"><span t-field="o.partner_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0">R.I.F: </td>
+                                    <td class="p-0">
+                                        <t t-if="not o.partner_id.is_company">
+                                            <span t-if="o.partner_id.nationality" t-esc="o.partner_id.nationality.upper()"/>-<span t-if="o.partner_id.identification_id" t-field="o.partner_id.identification_id"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="o.partner_id.vat"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0">Teléfono: </td>
+                                    <td class="p-0"><span t-out="o.partner_id.phone or o.partner_id.mobile"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0">
+                                        <span>Dirección:</span>
+                                    </td>
+                                    <td class="p-0">
+                                        <span t-field="o.partner_id.street"/> 
+                                        <span t-field="o.partner_id.city"/> 
+                                        <span t-field="o.partner_id.state_id.name"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-3">
+                        <table style="width: 100%;" class="table table-borderless table-sm">
+                            <tr>
+                                <td class="p-0"  colspan="2">
+                                    <b>
+                                        Factura N° <span t-field="o.name"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr t-if="o.invoice_date">
+                                <td class="p-0" colspan="2">
+                                    Emisión: <b> <span t-out="o.invoice_date.strftime('%d/%m/%Y')"/></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-0" colspan="2">
+                                    Registro: <b> <span t-out="o.create_date.strftime('%d/%m/%Y')"/></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-0" colspan="2">
+                                    Fecha Contable: <b> <span t-out="o.date.strftime('%d/%m/%Y')"/></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-0" colspan="2">
+                                    Vencimiento: <b><span t-if="o.invoice_date_due" t-esc="o.invoice_date_due.strftime('%d/%m/%Y')"/></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-0" colspan="2">
+                                    Tasa: <b><span t-out="o.tax_today" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></b>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+
+        <!-- Pie -->
+        <div class="footer">
+            <div class="container" style="font-family: Roman; font-size:12px;">
+                <div class="row">
+                    <div class="col-12">
+                        <table style="width: 100%; padding:0;" class="table table-sm table-borderless">
+                            <tr>
+                                <td class="p-0"><b>P.M.: </b></td>
+                                <td class="p-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-0"><b>Cuentas Bancarias: </b></td>
+                                <td class="p-0"></td>
+                            </tr>
+                            <tr><td colspan="2" class="mt-50"></td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="border-top:1px black solid; font-family: Roman; font-size:12px;">
+                <div class="row">
+                    <div class="col-4">
+                        <table style="width: 100%; padding:0;" class="table table-sm table-borderless">
+                            <colgroup>
+                                <col span="1" style="width: 35%;"/>
+                                <col span="1" style="width: 30%;"/>
+                                <col span="1" style="width: 35%;"/>
+                            </colgroup>
+                            <tr><td colspan="3" class="mt-50"></td></tr>
+                            <tr>
+                                <td class="text-start p-0"><smal>Cnt. Vendida:</smal></td>
+                                <td class="text-start p-0" colspan="2">
+                                    <t t-set="qty_sell_tot" t-value="sum(o.invoice_line_ids.mapped('quantity'))"/>
+                                    <span t-esc="qty_sell_tot" t-options='{"widget": "float", "decimal_precision": "o.company_id.currency_id"}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start p-0"><smal>Total Filler:</smal></td>
+                                <td class="text-start p-0" colspan="2">
+                                    <!-- filler -->
+                                </td>
+                            </tr>
+                            <tr t-if="o.narration">
+                                <td colspan="3" class="text-start p-0">
+                                    <span>Notas:</span>
+                                </td>
+                            </tr>
+                            <tr t-if="o.narration">
+                                <td colspan="3" class="text-start p-0">
+                                    <span><t t-esc="o.narration"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-8">
+                        <table style="width: 100%; padding:0;" class="table table-sm table-borderless">
+                            <colgroup>
+                                <col span="1" style="width: 40%;"/>
+                                <col span="1" style="width: 30%;"/>
+                                <col span="1" style="width: 30%;"/>
+                            </colgroup>
+                            <tr><td colspan="3" class="mt-50"></td></tr>
+                            <tr>
+                                <td/>
+                                <td class="text-end"><b>Moneda Referencia</b></td>
+                                <td class="text-end"><b>Moneda Local</b></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Sub-total:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_untaxed_usd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id_dif}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Descuentos:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-esc="discount_usd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id_dif}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-esc="discount_bs" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Monto Exento:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-out="exento_usd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id_dif}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-out="exento_bs" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Base Neta Imponible:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_untaxed_usd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id_dif}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            <!-- IMPUESTOS -->
+                            <t t-set="tax_totals" t-value="o.tax_totals"/>
+                            <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+                                <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                <t t-call="gchakao_custom.tax_groups_totals_extended"/>
+                            </t>
+                            <!-- IGTF -->
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>IGTF:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_payment_igtf_usd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id_dif}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_payment_igtf_bs" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end p-0">
+                                    <span>Total a Pagar:</span>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_total_usd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id_dif}'/>
+                                </td>
+                                <td class="text-end p-0">
+                                    <span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </template>
+
+    <!-- Cuerpo del reporte -->
+    <template id="report_purchase_with_iva">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="gchakao_custom.report_purchase_with_iva_header">
+                    <div class="page" style="font-size: 12px; font-family: Roman;">
+                        <div class="oe_structure"></div>
+                        <table class="table table-sm table-borderless">
+                            <thead style="border:1px solid black;">
+                                <tr>
+                                    <th class="text-center p-0"><strong>Código</strong></th>
+                                    <th class="text-center p-0"><strong>Descripción</strong></th>
+                                    <th class="text-center p-0"><strong>Cant.</strong></th>
+                                    <th class="text-center p-0"><strong>Filler T.</strong></th>
+                                    <th class="text-center p-0"><strong>Costo</strong></th>
+                                    <th class="text-center p-0"><strong>Impuestos</strong></th>
+                                    <th class="text-center p-0"><strong>Total</strong></th>
+                                </tr>
+                            </thead>
+                            <t t-set="discount_usd" t-value="0"/>
+                            <t t-set="discount_bs" t-value="0"/>
+                            <t t-set="exento_usd" t-value="0"/>
+                            <t t-set="exento_bs" t-value="0"/>
+                            <tbody>
+                                <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+                                <t t-set="count" t-value="1"/>
+                                <tr><td colspan="7" class="mt-50"></td></tr>
+                                <tr t-foreach="lines" t-as="line">
+                                    <td class="p-0">
+                                        <span t-field="line.product_id.default_code"/>
+                                    </td>
+                                    <td class="p-0">
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.quantity"/>
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <!-- filler -->
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.price_unit_usd"/>
+                                    </td>
+                                    <td class="text-center p-0">
+                                        <span t-out="', '.join(map(lambda x: str(int(x.amount))+'%' if x.amount > 0 else 'Exento', line.tax_ids))" />
+                                    </td>
+                                    <td class="text-end p-0">
+                                        <span t-field="line.price_subtotal_usd"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

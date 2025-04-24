@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_hr_employee_loan_form" model="ir.ui.view">
+            <field name="name">gc.account.payment.register.form</field>
+            <field name="model">hr.employee.loan</field>
+            <field name="arch" type="xml">
+                <form string="Prestamos de Empleados">
+                    <header>
+                        <button string="Pasar a Borrador" name="action_draft" 
+                                invisible="is_close or state in ['paid','close','draft']" class="btn-primary" 
+                                type="object" groups="base.group_user"/>
+                        
+                        <button string="Calcular Cuotas" name="compute_installment" 
+                                invisible="state not in ['draft']"
+                                class="btn-primary" type="object" groups="base.group_user"/>                        
+                        
+                        <button string="Enviar Solicitud" name="action_send_request" 
+                                invisible="state not in ['draft']"  
+                                class="btn-primary" type="object" groups="base.group_user"/>
+
+                        <button string="Aprobar Solicitud" name="dep_manager_approval_loan" 
+                                invisible="state != 'request'" class="btn-primary"
+                                type="object" groups="l10n_ve_payroll.group_department_manager"/>
+                        
+                        <button string="Rechazar Solicitud" name="dep_manager_reject_loan" 
+                                invisible="state != 'request'" class="btn-primary"
+                                type="object" groups="l10n_ve_payroll.group_department_manager"/>
+
+                        <button string="Cancelar" name="cancel_loan" 
+                                invisible="state != 'request'" type="object"
+                                groups="base.group_user"/>
+
+                        <button string="Confirmar" name="hr_manager_approval_loan" 
+                                invisible="state not in ['dep_approval']" class="btn-primary"
+                                type="object" groups="hr.group_hr_manager"/>
+                        
+                        <button string="Rechazar" name="hr_manager_reject_loan" 
+                                invisible="state not in ['dep_approval']" class="btn-primary"
+                                type="object" groups="hr.group_hr_manager"/>
+
+                        <button string="Desembolsar préstamo" name="paid_loan" 
+                                invisible="not payment_order_id or state != 'hr_approval' or not generate_payment_order"  class="btn-primary" type="object"
+                                groups="hr.group_hr_manager"/>
+
+                        <button string="Cerrar" name="action_close_loan" class="btn-primary" type="object"
+                                groups="hr.group_hr_manager" 
+                                invisible="state != 'done' or not payment_order_id" confirm="Esta acción es irreversible ¿Desea continuar?"/>
+
+                        <button string="Finalizar" name="action_done_loan" 
+                                invisible="state not in ['paid']" class="btn-primary" type="object"
+                                groups="hr.group_hr_manager" />
+
+                        <button string='Enviar Email' name='send_loan_detail' 
+                                invisible="state not in ['done']" 
+                                class="btn-primary" type="object" groups="hr.group_hr_user"/>
+
+                        <button string="Generar Orden de Pago" name="action_create_payment_order" 
+                                type="object" invisible="state != 'hr_approval' or payment_order_id or not generate_payment_order" 
+                                class="oe_highlight"/>
+
+                        <button string="Marcar como pagado" name="action_mark_paid" 
+                                type="object" invisible="generate_payment_order or state != 'hr_approval'" 
+                                class="oe_highlight"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,request,dep_approval,hr_approval,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <b>
+                                <button name="view_journal_entry" 
+                                    type="object"  
+                                    class="oe_stat_button" 
+                                    icon="fa-external-link" 
+                                    string="Asiento Contable" 
+                                    groups="hr.group_hr_manager"
+                                    invisible="state not in ['done','paid']"/>
+                            </b>
+                            <button type="object"
+                                name="action_view_loan_installment"
+                                class="oe_stat_button"
+                                icon="fa-list"
+                                invisible="installment_count == 0">
+                                <field name="installment_count" string="Cuotas" widget="statinfo" />
+                            </button>
+                        </div>
+                        <label for="name" class="oe_edit_only" invisible="name == '/'"/>
+                        <h1><field name="name" readonly="1" invisible="name == '/'"/></h1>
+                        
+                        <group>
+                            <group>
+                                <field name="employee_id" readonly="state != 'draft'"/>
+                                <field name="department_id" readonly="state != 'draft'"/>
+                                <field name="manager_id" readonly="state != 'draft'"/>
+                                <!-- <field name="loan_type" readonly="state != 'draft'"/> -->
+                            </group>
+                            <group>
+                                <field name="date" readonly="1"/>
+                                <field name="job_id" readonly="state != 'draft'"/>
+                                <field name="loan_url" invisible="1"/>
+                                <field name="user_id" string="Usuario" readonly="1" options="{'no_open': True}"/>
+                                <field name="hr_manager_id" invisible="1"/>
+                                <field name="is_close" invisible="1"/>
+                                <field name="move_id" invisible="1" />
+                                <!-- <field name="payment_order_id" readonly="1" invisible="not payment_order_id"/> -->
+
+                                <label for="payment_order_id" invisible="not payment_order_id"/>
+                                <div class="oe_inline" invisible="not payment_order_id">
+                                    <field name="payment_order_id" class="oe_inline" readonly="1"/>
+                                    <field name="payment_order_state" 
+                                        class="oe_inline" style="margin-left:5px" widget="badge"
+                                        decoration-muted="payment_order_state == 'draft'" 
+                                        decoration-success="payment_order_state == 'confirm'" 
+                                        decoration-primary="payment_order_state == 'approved'" 
+                                        decoration-danger="payment_order_state == 'rejected'" 
+                                        decoration-info="payment_order_state == 'done'"/>
+                                </div>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="gc_loan_type_id" readonly="state != 'draft'"/>
+                                <field name="is_apply_interest" invisible="1"/>
+                                <!-- <field name="struct_type_id"/> -->
+                                <!-- <field name="struct_id"/> -->
+                                <!-- <field name="hr_payment_type"/> -->
+                                <field name="currency_id_dif" readonly="1" options="{'no_open': True}" invisible="1" force_save="1"/>
+                                <field name="loan_account" readonly="1" force_save="1"/>
+
+                                <field name="hr_payment_type" readonly="state != 'draft'"/>
+                                <field name="period" readonly="state != 'draft'"/>
+
+                                <field name="loan_amount" readonly="state != 'draft'"/>
+                                <field name="interest_amount" invisible="not is_apply_interest"/>
+                                <field name="paid_amount"/>
+                                <field name="remaing_amount"/>
+                            </group>
+                            <group>
+                                <field name="start_date" readonly="state != 'draft'"/>
+                                <!-- <field name="is_percentage" readonly="state != 'draft'" force_save="1" invisible="hr_payment_type == 'quota'"/>
+                                <label for="percentage" invisible="not is_percentage"/>
+                                <div class="oe_inline" invisible="not is_percentage">
+                                    <field name="percentage" class="oe_inline" readonly="state != 'draft'" force_save="1" widget="percentage"/>
+                                </div> -->
+                                <field name="term" readonly="state != 'draft'" force_save="1"/>
+                                <field name="end_date"/>
+                                <field name="interest_rate" invisible="not is_apply_interest" readonly="state != 'draft'"/>
+                                <field name="interest_type" invisible="not is_apply_interest" readonly="state != 'draft'"/>
+                                <field name="generate_payment_order"/>
+                                <field name="journal_id" readonly="1" invisible="not generate_payment_order"/>
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_open': True}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Razón">
+                                <br/>
+                                <field name="notes" readonly="state != 'draft'"/>
+                            </page>
+                            <page string="Cuotas">
+                                <br/>
+                                <field name="installment_lines">
+                                    <tree string="Installment" decoration-success="is_paid == True"  decoration-muted="is_skip == True" editable="bottom">
+                                        <field name="name" readonly="1"/>
+                                        <field name="date" readonly="parent.state == 'close' or is_skip or is_paid"/>
+                                        <field name="struct_id" readonly="parent.state == 'close' or is_skip or is_paid"/>
+                                        <field name="amount" sum="Total Prestamo" readonly="parent.state == 'close' or is_skip or is_paid"/>
+                                        <field name="interest" column_invisible="1"/>
+                                        <field name="installment_amt" sum="installment_amt" column_invisible="1"/>
+                                        <field name="ins_interest" sum="ins_interest" column_invisible="1"/>
+                                        <field name="total_installment" sum="total_installment" column_invisible="1"/>
+                                        <field name="currency_id_dif" readonly="1" options="{'no_open': True}" column_invisible="1"/>
+                                        <field name="is_paid" readonly="1" column_invisible="parent.state != 'paid'"/>
+                                        <field name="move_id" column_invisible="1"/>
+                                        <field name="payslip_id" column_invisible="1"/>
+                                        <field name="is_skip" readonly="is_paid or move_id or payslip_id" column_invisible="parent.state != 'paid'"/>
+                                        <button type="object" name="action_view_payslip" string="Recibo" class="btn-primary"
+                                                invisible="not is_paid or move_id or not payslip_id or is_skip" groups="hr.group_hr_manager"/>
+                                        <button type="object" name="action_view_move" string="Asiento" class="btn-primary"
+                                                invisible="not is_paid or not move_id or payslip_id or is_skip" groups="hr.group_hr_manager"/>
+                                        <button type="object" name="action_cancel_move" string="Cancelar"
+                                                groups="hr.group_hr_manager" invisible="not is_paid or parent.state == 'done'"/>
+                                        <button type="object" name="action_pay_wizard" string="Pagar" class="btn-primary"
+                                                groups="hr.group_hr_manager" invisible="is_paid or parent.state != 'paid' or is_skip"/>
+                                    </tree>
+                                </field>
+                            </page>
+                             <page string="Documentos">
+                                <field name="loan_document_line_ids" mode="kanban" context="{'default_loan_id': active_id,'default_employee_id':employee_id }">
+                                    <kanban>
+                                        <field name="name"/>
+                                        <field name="document"/>
+                                        <field name="employee_id"/>
+                                        <field name="date"/>
+                                            <templates>
+                                                <t t-name="kanban-box">
+                                                    <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                        <div class="oe_kanban_details">
+                                                            
+                                                            <strong><h3><field name="sequ_name"/></h3></strong>
+                                                            <ul>
+                                                                <li><span style="color: #800000">Name : </span><field name="name"/></li>
+                                                                <li><span style="color: #800000">Date: </span><field name="date"/></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                                
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="gc_view_hr_employee_loan_tree" model="ir.ui.view">
+            <field name="name">gc.view.hr.employee.loan.tree</field>
+            <field name="model">hr.employee.loan</field>
+            <field name="inherit_id" ref="l10n_ve_payroll.view_hr_employee_loan_tree"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//field[@name='state']" position="before">
+                    <field name="hr_payment_type"/>
+                </xpath> -->
+
+                <xpath expr="//field[@name='state']" position="replace">
+                    <field name="state" string="Estatus" widget="badge" 
+                        decoration-success="state == 'hr_approval'" 
+                        decoration-primary="state == 'paid'" 
+                        decoration-info="state == 'done'" 
+                        decoration-warning="state == 'reject'" 
+                        decoration-muted="state == 'cancel'"/> 
+                    <field name="company_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
